@@ -1,0 +1,461 @@
+# HANDOFF: Ehis Oghina personal website redesign
+
+> Written 2026-11-24 by the previous Claude Code session so a fresh session can continue with zero lost context.
+> Read this whole file before touching anything. Then follow **Section 14 (Do this first)**.
+> Project root: `/home/eo4/projects/personal_website/minimal-next-portfolio` (git repo, branch `redesign-prototype`).
+
+---
+
+> ## UPDATE 2026-11-24 (research + metrics pass). Newest note.
+> - **Chat verified live** against the CV facts (5 questions): correct answers for xgGaffer, 2025 roles, Birmingham research; declined the phone number; correctly said nothing is hosted. The model uses he/him, which the user approved.
+> - **Experience dialog:** the scaffold "00 / Metric one..." tiles are gone. `Experience.metrics?` holds real CV numbers (Optum: 7 hrs, 70%, 56%; DCU Soccer: 500+ members) and the block is hidden when a role has none.
+> - **Research page/home:** placeholder papers replaced by real entries (SemEval 2027 in progress; Trivium and xgGaffer with GitHub links). `Paper` now has optional `href` + `status`. Headings changed from "papers/written" to "research/investigating". Videos and socials are still placeholders (GitHub handle is ehis04).
+> - **Perf note:** a post-change measurement showed slower cold loads and 250 to 300 ms long tasks, including on `/ask` which barely changed. The machine was loaded (load average 3.3, docker + local Supabase + other sessions), so this is treated as noise; re-measure on an idle machine. Last clean numbers (before the CV content): tab switch 63 to 189 ms, 0 long tasks, cold home ~356 ms.
+> - **Work style:** the user wants uninterrupted progress: do not ask permission to run tests; stop only for major issues, finished work, or commits.
+
+> ## UPDATE 2026-11-24 (CV content pass). Newest note, wins over everything below.
+> - **Real content added from `ideas/CV1126.pdf`:** `config/studio.ts` now has `degrees` (MSc Birmingham Sep 2026 to Sep 2027; BSc DCU Aug 2022 to May 2026), 5 `experiences` (NLP Researcher, R.V. Uncovered, Optum, EPAM, DCU Soccer) and 5 `studioProjects` (xgGaffer flagship, Trivium, Social Olympics, Little by Little, Financial Risk Dashboard). Home page, experience and projects pages read from it. `config/knowledge.ts` has the matching verified facts (no phone/email). Chat prompt buttons updated.
+> - **Project repos reviewed (read-only, via gh):** `ehis04/xggaffer`, `ehis04/trivium`, `ehis04/social-olympics` are public and the READMEs match the CV. **Little by Little has no repo** (`/home/eo4/projects/lbl` is an empty folder) and Financial Risk Dashboard is not on GitHub: both show "Code not public yet". The project strip now shows the period, "Live demo coming soon" and a "View on GitHub" link when `repo` is set. GitHub lists vercel.app homepages for xggaffer/morphmatch/ronaldo-freekick-analysis: the user says nothing is hosted, so NO demo links were added.
+> - **Not on the CV, so not on the site:** morphmatch, ronaldo-freekick-analysis, Coaching-App and other repos. The xgGaffer README lists a second author (a teammate); the site does not name them. Ask the user before crediting.
+> - **Template leftovers replaced:** `public/profile-img.jpg` (a photo of the template author) and `public/logo.png` ("n" monogram) deleted; `app/favicon.ico` replaced by `app/icon.png` + `app/apple-icon.png` cropped from the user's `photo-1.jpg`; manifest points at `/icon.png`. `components.json` (shadcn) removed. README rewritten (stack, content map, env, hosting review). `.env.example` added.
+> - **Hosting review result:** Cloudflare Workers + OpenNext recommended (see README "Hosting"). In-memory rate limits must move to Redis/Cloudflare when deployed.
+> - **Still placeholder:** papers, videos, socials, contact email, résumé link, all photos/clips (they are the user's own pictures standing in), research page. Home "Research" featured tile now describes the real SemEval 2027 work (no paper link).
+> - **Verified:** tsc clean, eslint 0 problems, build passes (15 pages), 0 console errors, screenshots of home/experience/projects checked. **Not verified:** the chat answering from the new facts (no live API call was made after the change), mobile screenshots of the new content, the expanded experience dialog with the long highlights.
+
+> ## UPDATE 2026-11-24 (later): PROMOTED. READ THIS FIRST, it overrides older sections.
+> The `/preview` prototype is now the real site. Where this note conflicts with Sections 3, 5, 6, 10, 13 below, this note wins.
+> - **Routes:** `app/(site)/` (layout with `.studio`, nav, skip link; `template.tsx`; `studio.css`; pages `/`, `/experience`, `/projects`, `/research`, `/ask`, `/platforms`). All `/preview/...` hrefs became `/...`. `noindex` removed.
+> - **Deleted (all still in git history):** `app/(root)` (legacy pages), `app/api/github-stars`, legacy `components/*` except `studio/`, legacy `config/*` except `studio|platforms|knowledge|site`, `content/`, `information/`, `lib/blogs.ts`, `providers/`, `hooks/`, template images in `public/` (blogs, experience, projects, next.svg, vercel.svg, old robots.txt).
+> - **Rewritten:** `config/site.ts` (domain `https://ehisoghina.com` by default, `NEXT_PUBLIC_SITE_URL` overrides; description/keywords from verified facts only; OG image is the placeholder `/media/photo-3.jpg`), `app/layout.tsx` (dark, Inter only, Person JSON-LD whose `sameAs` lists platforms that have a real `url`), `app/globals.css` (now ~10 lines), new `app/sitemap.ts`, `app/robots.ts`, `app/manifest.ts`, `app/not-found.tsx` (styled 404).
+> - **Removed packages:** @hookform/resolvers, all @radix-ui/*, @vercel/analytics (+ its component), class-variance-authority, gray-matter, next-themes, react-hook-form, remark*, zustand. Cal Sans font no longer loaded (files remain in `assets/fonts`, unused).
+> - **Wired:** Contact chapter CTA now links to `/platforms`; the résumé tile links to `NEXT_PUBLIC_RESUME_LINK` only when it is a real `https://` URL (currently not, so it is inert). The email on the Contact tile is still a placeholder. `/api/contact` still exists but has no UI.
+> - **Verified after promotion:** `tsc` clean; `eslint .` 0 errors AND 0 warnings; `next build` passes (14 pages); 0 console errors on home/projects/mobile; screenshots of home and the 404 look right; perf unchanged in practice (tab switch 63 to 189 ms, 0 long tasks; cold home FCP/LCP ~356 ms; total transfer rose ~70 KB, cause not investigated).
+> - **Still open:** real OG image + favicon (`app/favicon.ico` and `public/logo.png`, `public/profile-img.jpg` may still be the template author's: check and replace), real content, résumé link, contact email, xgGaffers demo (waiting on user), README still describes the template, Lighthouse/real-device pass, commit (only when asked).
+
+## 0. TL;DR
+
+- **The task:** turn a cloned open-source template portfolio (Naman Barkiya's `minimal-next-portfolio`) into a rich, fast, beautiful multimedia personal website for **Ehis Oghina** (AI Engineer; football analyst; creator; builder).
+- **Where it stands:** a working, performance-tuned prototype lives under the route **`/preview`** (home, experience, projects, research, ask/chat, platforms). The old template pages still exist under `app/(root)` and are untouched except for lint/type fixes.
+- **Everything is placeholder content except the user's identity facts** (name, roles, degrees, platforms they named, and the existence of the xgGaffers project). The user has **not** prepared real content yet and said to leave placeholders for now.
+- **Nothing is committed.** 30 files are modified/untracked on branch `redesign-prototype`. Do not commit unless the user asks.
+- **Blocked on user:** (a) ~~saving `ANTHROPIC_API_KEY`~~ **DONE: the key is now saved in `.env` (line 14, format verified 2026-11-24: correct name, `sk-ant-` prefix, no quotes/spaces). Restart the dev server to load it, then run the live chat test (Section 13.1).** (b) the user updating their xgGaffers project code before the football-prediction demo is built, (c) real content, (d) a decision on the next step (Section 13).
+
+---
+
+## 1. The user and how to work with them
+
+- Name: **Ehis Oghina**. The user confirmed (2026-11-24) that **he/him is fine** for referring to them, including in the chat assistant's replies. Do not infer pronouns for other people from a name.
+- Personal details (email etc.) are private: never send them to external services.
+- Roles (their words): **AI Engineer is the main role**. Education: **BSc Computer Science, MSc Artificial Intelligence** (do not assume completion dates; a photo suggests the BSc class of 2026, but no dates were given and none should be written). Additional roles: **Data Scientist, Software Engineer, Football Analyst, Creator, Builder**. They described themselves as "all 3" of sports analytics, data science and creator.
+- They type fast and with typos ("dont" meant "font"; "grids" = tiles/cards). When a message is ambiguous, state your interpretation in the reply (as the previous session did) rather than interrogating them. Use `AskUserQuestion` only for real decisions.
+- They want an **audit-first, show-me-before-big-changes** style for large decisions, but once they said "begin with the prototype" they expect autonomous progress with screenshots and honest reporting.
+- They said: "you don't need to stop working to answer the question just follow through with the work".
+- Report honestly: say what was tested, what was not, and what is placeholder. The previous session twice corrected itself in front of the user (a bogus "lint is clean" claim; broken Tailwind opacity classes). Keep doing that.
+- Do not commit, push, delete the user's files, or call external services without asking. Do not paste secrets anywhere.
+- Commit attribution: follow whatever attribution instruction your harness gives for commits/PRs when (and only when) the user asks you to commit.
+
+### The user's design vision (their words, paraphrased closely; this is the acceptance test for all UI)
+
+- "More than just simple boxes and links": a proper website with pictures, videos, beautiful design, interactive tools.
+- A main **home page that highlights the most important things**, plus separate tabs/pages for each area.
+- **Experience:** summary of the work in each job; when clicked, expands with smooth animation to the full detail with company logo and any pictures.
+- **Projects:** explanations, interactive demos, video demos. Example: the xgGaffers football prediction models, where a visitor could run a prediction for a real upcoming fixture ("Arsenal vs Man Utd"). **Must be dynamic / current, not stale.**
+- **Research/socials:** previews for papers, YouTube videos they are working on.
+- **Query/chat tab:** type or dictate; answer as text or spoken. **Questions should only be about Ehis.** Use the Haiku API (they expect it to cost a few cents).
+- Reference sites they LIKE: `markclennon.com` (dark edge-to-edge tile mosaic, smooth page transitions), `colin-moy.webflow.io` (tall pill-shaped cards in a horizontal strip, focused one in colour, others greyed). Reference they dislike: `nickvelten.nl`, `marlonwayans.com`, `sophiaamoruso.com` ("big text, empty spaces, boring colours", "plain background with straight lines dividing sections", "images just placed onto the screen, not part of it").
+- Their Nike screenshot of **flat** layered cards = "too flat". They want tiles that look **embedded into the screen (recessed windows)** and **layered on top of each other**, not static flat squares. For experience: a series of cards; selecting one **expands over the others, fills the screen, and the rest of the screen dims**.
+- **Never leave large empty/white/plain areas.** It "looks less professional".
+- **Performance is key:** must not slow down on a phone or normal laptop. markclennon buffers because ~3 videos play at once; theirs must not. No more than 1 to 2 videos playing at once; short clips only.
+- Palette: **dark, accent colour forest green.**
+- Fonts: the current display font (Bricolage Grotesque) "is good" and fine for now; they wanted **dynamism in the text** (shadows, depth), not "flat and bold". They noted there are "surely more expressive fonts" but said this is OK for now.
+- **Home page = full-screen sections.** "One section, then an animation to the next section, and the entire thing is on the screen so the user doesn't have to manually scroll and get everything on the screen themselves." The user approved the implemented transitions and text treatment.
+- Hosting: free tier preferred, **not necessarily Vercel**.
+- They will **update their xgGaffers project code first**, and only then have you build the prediction demo.
+- A **"Social Exploits / Platforms" page** listing every platform they can be found on: they named **LinkedIn, Substack, X, Facebook, LeetCode** "etc."; extra suggested platforms should be placeholders. (Built; see Section 6.)
+- Their latest asks (all done except where noted): smooth/fast tab switching ("switching between tabs at the top is very slow"), "focus on optimisation", "anything else in terms of building / feature improvement" (see Section 13), Platforms page.
+
+---
+
+## 2. Environment facts
+
+- OS: Linux under **WSL2** (`Linux 6.18.58.1-microsoft-standard-WSL2`). The user views the site in Windows Chrome via `localhost`.
+- Node `v26.3.0`, npm `11.16.0`. Next `^16.0.10` (installed 16.2.x), React `19.2.0`, Tailwind `3.4.x` (NOT v4), TypeScript 5, framer-motion `^12.5.0`, `@anthropic-ai/sdk ^1.12.0`, zod 3, lucide-react, react-icons 5.
+- Browsers for testing: `/usr/bin/google-chrome` exists. Playwright browsers also exist under `~/.cache/ms-playwright` but the `playwright` package is not installed in the repo; the previous session used `playwright-core` installed in a scratch folder (see Appendix A).
+- **No system ffmpeg.** The previous session got one via `pip install imageio-ffmpeg` in a throwaway venv (Appendix B).
+- Dev server port used: **3100** (`npx next dev -p 3100`). Production test port: **3101** (`npx next start -p 3101`). At the time of writing **nothing is listening** on either; restart as needed.
+- Git: remote `origin` = `https://github.com/ehis04/personal-website.git`. Local branch `redesign-prototype` was created off `master`/HEAD `263950f` ("New nav: community link added"). Pre-existing uncommitted change from before the session: `.env.copy` is deleted (the user did that; leave it).
+- `.env` is git-ignored. It currently contains only the template's **placeholder** values (verified: they equal the template's `.env.copy` values): `GOOGLE_FORM_LINK`, `GOOGLE_FORM_FIELD_ID_NAME/EMAIL/MESSAGE/SOCIAL`, `NEXT_PUBLIC_GOOGLE_MEASUREMENT_ID`, `NEXT_PUBLIC_RESUME_LINK`. **`ANTHROPIC_API_KEY` IS now saved on disk** (line 14; the file has 13 lines; verified 2026-11-24 08:5x: name correct, value starts with `sk-ant-`, no quotes or trailing whitespace). It was briefly missing earlier because the editor change was unsaved; any earlier statement that it is missing is out of date. Never print `.env` values; check presence with `grep -c '^ANTHROPIC_API_KEY=.\+' .env` (prints a count only).
+- A `.venv/` directory exists inside the project (and one in the parent folder): both are git-ignored / not part of the app.
+- The `ideas/` folder (git-ignored) holds the user's reference screenshots and raw media (3.4 GB, including DJI/MVI source videos and a 46 MB screen recording). **Do not commit it. Do not delete it. The screenshots show the user's open browser tabs: treat as private.**
+- Some `*:Zone.Identifier` files in `ideas/` are Windows download metadata; ignore (git-ignored).
+
+### Shell gotchas that bit the previous session (important)
+
+1. **`pkill -f "<pattern>"` can kill your own shell** if the pattern text appears in the command line you are running (exit code 144). Kill by PID found via `ss -ltnp | grep :3100 | grep -o 'pid=[0-9]*'` instead, or use the `[n]ext` bracket trick only when the literal pattern is not otherwise in your command.
+2. Two stale `next-server` processes (PIDs 1561, 1779, "Operation not permitted" on kill) exist from earlier; they are harmless and do not hold port 3100/3101.
+3. `next build` and `next dev`/`next start` share `.next/`. **Stop any running server before `next build`.** A full build takes ~20 to 60 s. Run long builds with `run_in_background`.
+4. The `Write` tool refuses to overwrite a file you have not `Read` in the current session, and also refuses if the file changed on disk since you read it (many files were edited via Python scripts). Re-`Read` then `Write`, or use `Edit`.
+5. The scratchpad directory (`/tmp/claude-1000/.../scratchpad`) was **wiped on session restart**; anything the previous session kept there (perf script, mock server, ffmpeg venv, screenshot scripts) is gone. Re-create from the appendices.
+
+---
+
+## 3. Repository layout (what matters)
+
+```
+minimal-next-portfolio/
+  CLAUDE.md                      short always-loaded rules (points here)
+  HANDOFF.md                     this file
+  app/
+    layout.tsx                   ROOT layout (html/body, fonts, ThemeProvider, Analytics, GA). Shared by old AND new site.
+    (root)/                      LEGACY template site (home, skills, projects, experience, contributions, contact, blogs, resume, community). Has its own layout with Toaster + ModalProvider.
+    api/chat/route.ts            NEW: streaming Claude Haiku chat endpoint
+    api/contact/route.ts         REWRITTEN: safe Google-Form relay
+    api/github-stars/route.ts    legacy
+    preview/                     NEW SITE (all under /preview/*)
+      layout.tsx                 .studio wrapper, fonts, skip link, StudioNav, noindex metadata
+      template.tsx               <main id="main" class="page-in"> CSS fade per navigation
+      studio.css                 ALL new-site styling (design tokens + effects + perf layer + a11y)
+      page.tsx                   HOME: Scroller with 6 full-screen Screens
+      experience/page.tsx        renders <ExperienceStack/>
+      projects/page.tsx          renders <ProjectStrip/>
+      research/page.tsx          papers, videos (YouTube facades), socials
+      ask/page.tsx               renders <Chat/>
+      platforms/page.tsx         all platforms
+    sitemap.ts, manifest.ts      legacy (point at nbarkiya.xyz; see Section 11)
+  components/
+    studio/                      NEW design system (see Section 5)
+    common, ui, forms, ...       LEGACY template components
+  config/
+    studio.ts                    PLACEHOLDER content: profile, experiences, projects, papers, videos, socials
+    knowledge.ts                 chat assistant's VERIFIED facts + system prompt builder
+    platforms.ts                 platforms list (yours vs suggested)
+    site.ts, projects.ts, ...    LEGACY template config (still Naman Barkiya's content)
+  public/media/                  web-ready media (Section 8)
+  ideas/                         git-ignored references + raw media (do not touch)
+  eslint.config.mjs              FIXED flat config (lints TS now)
+  next.config.js                 images formats avif/webp; legacy CORS block removed
+```
+
+---
+
+## 4. What has been DONE (chronological, with outcomes)
+
+### 4.1 Audit (first request)
+- Verdict reported to the user: **keep the repo and stack (Next App Router, TS, Tailwind, shadcn/Radix, framer-motion, next-themes); replace the design layer and content system.** The project was a clone of Naman Barkiya's open-source template with his name/content everywhere.
+- Findings: no media layer; content as config arrays; blog was plain markdown; no interactive-tools infrastructure; unsafe contact route; unused dependencies; `app/layout.tsx` threw if the GA id was missing; a third-party chat widget (Convot) with the template author's token was loaded on every page; `config/site.ts` etc. point at `nbarkiya.xyz`.
+- **Correction the previous session had to make:** its first audit claimed `tsc` and `eslint` were clean; ESLint was silently skipping every `.tsx` file (config had no `files`). Fixed later.
+
+### 4.2 Reference research
+- Downloaded raw HTML of `markclennon.com` and `colin-moy.webflow.io`. markclennon: Webflow + custom code, Barba.js page transitions, Lenis smooth scroll, Lottie, and every thumbnail is a `<video class="js-plane" loop muted playsinline>` with its own mp4 on a CDN (explains the user's buffering observation). colin-moy: Webflow native interactions only; no video/slider markup found in the HTML (could not determine how the effect the user saw is built).
+- Searched for free templates (Astro/Next/Lexington Themes): nothing free matched; decision = **custom build on the existing repo**.
+
+### 4.3 Media preparation
+- From the user's raw videos in `ideas/` (3.4 GB total) made 6-second compressed clips into `public/media/`: `gym-a.mp4` (portrait 540x960), `gym-b.mp4` (portrait), `talk-a.mp4` (landscape 960x540) plus posters `*.jpg`. Total ~0.9 MB. Names reflect content (the DJI files are gym footage, MVI is a webcam recording of the user).
+- Web-sized photos `photo-1..5.jpg` (1400px wide) and `grad-crop.jpg` (760x460 pre-cropped graduation photo for the education tiles).
+- Photo content (all the user): `photo-1` name-badge portrait on white background (badge says "EHIS OGHINA", datathon); `photo-2` hand pointing at a chart (wide); `photo-3` speaking at an event with a green banner; `photo-4` graduation ("CLASS OF 2026"); `photo-5` smiling in a DCU Soccer Club jacket (wide).
+- Source files NOT used: `_DSC1803 (2).jpg` (5 MB), `DSC_0238 (1).NEF` (RAW, browsers can't show it), `cameraman.png` (256x256, too small).
+
+### 4.4 Cleanup (done)
+- **ESLint config fixed** (`eslint.config.mjs` uses `eslint-config-next/core-web-vitals` + `/typescript`, ignores `.next`, `node_modules`, `ideas`, `.venv`, `next-env.d.ts`; `*.config.js` allowed `require`). It then found 17 errors in legacy code, all fixed (typed `any`s, `Date.now()` in render, setState-in-effect in `providers/modal-provider.tsx` replaced with `useSyncExternalStore`, empty interfaces, etc.). Current result: **0 errors, 1 warning** (`components/ui/use-toast.ts` `actionTypes`, standard shadcn). `npx tsc --noEmit` clean.
+- **Removed unused packages:** `@supabase/ssr`, `@supabase/supabase-js`, `supabase`, `@sendgrid/mail`, `nodemailer`, `@types/nodemailer`, `remark-prism`, `@types/remark-prism`. (The user did not know why Supabase was added; it was unreferenced.) Added `@anthropic-ai/sdk`.
+- **Removed** the Convot chat widget script (template author's token) and the GA-missing crash from `app/layout.tsx` (GA now renders only if `NEXT_PUBLIC_GOOGLE_MEASUREMENT_ID` is set).
+- **`app/api/contact/route.ts` rewritten:** zod validation (name 3 to 100, email, message 10 to 4000, optional URL), 16 KB body cap, per-IP rate limit (5 / 10 min, in-memory, soft), only posts to a `https://docs.google.com/forms/` URL, `URLSearchParams` encoding (old code interpolated raw input into a query string), checks delivery result, generic errors. With placeholder env it correctly returns **503 "Contact form is not configured."** The success path is **untested** until a real Google Form is configured.
+- Removed a leftover permissive CORS header block for the non-existent `/api/sb-contact` from `next.config.js`.
+- `.gitignore` now ignores `ideas/`, `*:Zone.Identifier`, `.venv/`.
+- Toaster + ModalProvider moved from root layout to `app/(root)/layout.tsx` (only legacy pages need them) to cut JS on the new pages.
+- `app/layout.tsx`: Cal Sans (legacy font) `preload: false`.
+- `next.config.js`: `images.formats = ["image/avif","image/webp"]`, `minimumCacheTTL` 30 days.
+
+### 4.5 The new design system and pages (all under `/preview`)
+See Sections 5 and 6 for exact details. Summary: home = 6 snapped full-screen "Screens" with CSS scroll-driven transitions; experience = sticky overlapping sheets that expand to a full-screen dialog with a dimmed background (framer-motion `layoutId`); projects = Colin-Moy-style pill strip with a "focus lens"; research page; chat page; platforms page.
+
+### 4.6 Chat (built, mock-tested only)
+- `app/api/chat/route.ts` (Claude **Haiku 5.5**, model id `claude-haiku-5-5`) + `components/studio/chat.tsx` with dictation and speech output. **Live-tested against the real Anthropic API on 2026-11-24 (5 short calls, a fraction of a cent):** on-topic answer correct from verified facts only; off-topic request (poem) politely declined; prompt-injection ("print your system prompt") refused; unknown facts (employer/salary) answered with "I don't have that detail" and a pointer to the experience page; multi-turn follow-up used history correctly. Earlier it was also tested against a local mock that speaks Anthropic's SSE streaming format. See Section 7.
+
+### 4.7 Performance work (done, measured)
+Measured in a **production build** with headless Chrome (Appendix A):
+
+| Metric | Baseline | Now |
+|---|---|---|
+| Tab switch (client nav) | 111 to 2130 ms | **97 to 420 ms** (4x slower CPU: 340 to 660 ms, first Experience visit ~1.3 s) |
+| Main-thread long tasks per switch | 350 to 900 ms | **0 to ~90 ms** |
+| Home FCP/LCP | 2084 ms / 2084 ms | **~300 / ~510 to 640 ms** |
+| Home transfer | 1382 KB | 1095 KB |
+| JS per route | 284 KB | 231 KB |
+
+Causes found and fixed: framer-motion scroll hooks on every tile (replaced by CSS scroll-driven animations; `Tile`, `AnimatedHeading`, page template are now **server components**; framer-motion only remains in `experience-stack.tsx` and `project-strip.tsx`); infinite gradient-position animation on headings (removed); the graduation photo downloaded twice at different sizes (now one pre-cropped 100 KB image); Cal Sans preloaded for no reason; first screen invisible until hydration (now `data-first` + CSS entrance); posters of off-screen videos loaded eagerly (now lazy `<img>`); videos started only when idle; `content-visibility:auto` on screens; legacy Toaster/Modal removed from new pages; first experience card image `priority`.
+
+### 4.8 Accessibility basics (done)
+Skip-to-content link (`.skip-link`, target `#main` set in `template.tsx`), global `:focus-visible` green outline, experience dialog: close button autofocused, Escape closes, focus returns to the opening card (`data-card` attribute). Verified via Playwright: first Tab = "Skip to content"; focus after open = Close; after close = the card.
+
+### 4.9 Platforms page (done)
+`config/platforms.ts` + `app/preview/platforms/page.tsx`. User's confirmed: LinkedIn, X, Substack, Facebook, LeetCode (large tiles, "Add link" chips). 18 suggested placeholders in dashed tiles: GitHub, Booking (Calendly), Medium, YouTube, Instagram, TikTok, Threads, Bluesky, Kaggle, Hugging Face, Stack Overflow, HackerRank, Devpost, Google Scholar, ORCID, ResearchGate, Discord, Spotify. 18 suggested tiles = 3 even rows of 6 at `lg`. Verified visually (desktop + mobile).
+
+---
+
+## 5. The design system (`app/preview/studio.css` and `components/studio/*`)
+
+All new-site CSS is scoped under the `.studio` class (set in `app/preview/layout.tsx`) so the legacy site is unaffected.
+
+### Tokens (hard-coded hex; see the gotcha below)
+`#060908` bg, `#0c110f` surface, `#121a16` surface-2, `#e9f0ea` ink, `#8c9a91` ink-dim, **`#2f7d50` forest green accent**, `#123a26` green-deep, `#46b07a` green-glow. CSS variables exist (`--green`, `--green-deep`, `--green-glow`, `--surface`, `--surface-2`, `--ink-dim`) and are fine for plain `bg-[var(--x)]` but see gotcha 1.
+
+### Fonts
+Root layout: Inter (`--font-sans`, body), Cal Sans local (`--font-heading`, legacy). `app/preview/layout.tsx` adds **Bricolage Grotesque** (`--font-display`, class `.font-display`, weight 700, tight tracking) and **Instrument Serif italic** (`--font-accent`, class `.font-accent`, used for one accent word per heading).
+
+### CSS building blocks (class names)
+- `.recess`: the recessed "window" tile (rounded 22px, dark surface, `::after` overlay with inset shadows so media looks set into the page). `.sheet`: extra upward shadow for stacked sheets.
+- `.reveal`: tile entrance; inside `.screen` it is hidden until `[data-active="true"]`; staggered via `:nth-child` `--i` delays. `.screen[data-first]` variant plays on load from CSS (no JS needed).
+- `.words .word`: word-by-word heading entrance (see `AnimatedHeading`).
+- Text effects: `.text-extrude` (stacked hard shadows = 3D), `.text-sheen` (light-to-green gradient, static, with drop-shadow), `.text-shimmer` (animated green gradient; used only on the hero "AI"), `.text-accent-glow`, `.legible` (shadow for text on photos).
+- Performance layer: `.page-in` (fade), `.screen{content-visibility:auto; contain-intrinsic-size:auto 100svh}`, `@supports (animation-timeline: view())` blocks for `.screen-inner` (rise/scale/fade between screens) and `.parallax` (media drift). Firefox lacks scroll-driven CSS, so it simply skips the motion (progressive enhancement).
+- `prefers-reduced-motion` disables all of the above motion.
+- Chat helpers: `.wave-bar`, `.wave-paused`, `.wave-dot`. Accessibility: `:focus-visible`, `.skip-link`.
+- `.studio-scroll-hide`: hides scrollbars.
+
+### Components (`components/studio/`)
+| File | Type | Purpose |
+|---|---|---|
+| `tile.tsx` | server | Recessed tile. Props: `href?`, `media?` (`StudioMedia`: image `{src, position, zoom?}` or video `{src, poster}`), `alt`, `sizes`, `scrim`, `priority`, `className`. Media sits in a `.parallax` wrapper (CSS). Always has `reveal group block recess`. Renders `Link` if `href` else `section`. |
+| `lazy-video.tsx` | client | Muted looping clip. Lazy `<img>` poster; file requested only when wanted and the browser is idle; global cap **MAX_PLAYING = 2**; skipped for reduced-motion/save-data; optional `playing` prop to control from a parent (project strip). |
+| `scroller.tsx` | client | `Scroller`: `h-svh overflow-y-auto` snap container (`snap-proximity`, `lg:snap-mandatory`, proximity again when height < 760px), focus on mount for keyboard, **desktop wheel handler** (one gesture = exactly one section; needs `min-width:1024px and min-height:761px`; 750 ms lock; waits for a 140 ms pause so trackpad inertia can't skip), right-edge dot nav. `Screen`: full-screen section; IntersectionObserver with `rootMargin:-20% 0` sets `data-active`; `first` prop = visible in SSR. Context `useScrollerRef`. |
+| `chapter.tsx` | server | A home Screen: header (kicker, `AnimatedHeading` title, CTA button) + 12-col tile grid; `rows` prop e.g. `lg:grid-rows-[3fr_2fr]`. |
+| `animated-heading.tsx` | server | CSS word-by-word rise. `*asterisk*` words become serif accent. `wordClassName` is applied per word (gradient text + transforms don't mix on a parent). `delay` prop. |
+| `doc-preview.tsx` | server | Stylised paper/résumé page placeholder (`compact` variant). |
+| `experience-stack.tsx` | client (framer) | Sticky overlapping sheets (each `sticky`, `top = 4.5rem + i*3.4rem`); click expands via `layoutId` to a centered dialog over a `bg-black/80` dim layer; Escape; body scroll lock; focus management. Gallery uses 3 placeholder photos. |
+| `project-strip.tsx` | client (framer for the detail panel) | Pill cards in a horizontal scroller. **Focus lens**: active pill = the one under a point that travels from the first pill (scroll 0) to the last (scroll end), so pills fill the screen with no empty padding; clicking pill / arrows / arrow keys call `goTo` (inverse formula). Drag to scroll (mouse). Active pill plays its video; others greyed. Detail panel below. |
+| `lite-youtube.tsx` | client | YouTube facade: poster + play; loads the real `youtube-nocookie` iframe only on click and only if `youtubeId` matches `/^[\w-]{11}$/`; otherwise disabled "Coming soon". |
+| `chat.tsx` | client | Chat UI: streaming reader, 8-message history sent, abort/stop, prompts, dictation (Web Speech API `SpeechRecognition`), speech output (`speechSynthesis`), "speak next reply aloud if the question was dictated", error display, privacy note. |
+| `nav.tsx` | client | Floating pill nav: Home, Experience, Projects, Research, Ask, Platforms. Active state via `usePathname`. z-30 (so the experience dialog z-50 covers it). |
+
+### Design gotchas (learned the hard way)
+1. **Tailwind v3 silently drops opacity modifiers on CSS-variable colours.** `bg-[var(--green)]/80` generates NOTHING. Always use a hex for any class with a `/NN` opacity (`bg-[#2f7d50]/80`, `from-[#123a26]/70`). A regex pass converted 16 of these once; some `bg-[var(--surface-2)]` etc. without `/NN` still use vars on purpose.
+2. `background-clip:text` on a parent breaks when children have transforms (text vanishes). Hence per-word effect classes.
+3. Overflow-hidden masks clip text-shadows; the heading animation avoids masks.
+4. `framer-motion` `useScroll` default container is `window`; inside the custom scroller it would never fire (this is why scroll effects moved to CSS).
+5. The scroller means **the document itself does not scroll on the home page** (`docH == 900`); don't use `window.scrollTo` there in tests: scroll the element with `tabindex=-1`/use wheel events.
+6. `backdrop-filter`/blur on moving or video content was deliberately avoided (phone cost).
+
+---
+
+## 6. Pages (routes) and their current content
+
+All content is PLACEHOLDER unless noted. All in `/preview/...`. (`robots: noindex` is set in `app/preview/layout.tsx`; **remove when promoting to the real site**.)
+
+- **`/preview` (home).** `Scroller` with 6 screens; labels `["Home","Experience","Projects","Research","Ask","Contact"]`.
+  1. **Mosaic** (`<Screen first>`): hero tile (photo-3, `AnimatedHeading` name with `text-extrude`, "AI *Engineer*" shimmer, degrees line, role chips, 2 buttons), experience tile (photo-5, "4 roles"), projects tile (gym-a video), research list tile (links to `/preview/research`), ask tile (links to `/preview/ask`), latest-video tile (talk-a video), education tile (`grad-crop.jpg`).
+  2. **Experience chapter:** large "Company One" tile (photo-3), education tile, "Also" list (Data Scientist / Software Engineer / Football Analyst with placeholder company names).
+  3. **Projects chapter:** "Match Predictor" flagship (gym-b video), prototype-data fixture tile (**demo numbers**: 1.8 to 1.1 xG, 46/27/27), 3 mini project tiles.
+  4. **Research chapter** (rows `3fr_2fr`): featured paper + `DocPreview`, video tile, 3 social tiles linking to `/preview/platforms`.
+  5. **Ask chapter:** sample conversation (labelled "Sample"), prompts, waveform tile. CTA links to `/preview/ask`.
+  6. **Contact chapter:** large tile (photo-2) "Have a project, a role or a question?", email placeholder `hello@your-domain.com`, résumé `DocPreview`. **Contact/résumé buttons are not wired.**
+- **`/preview/experience`:** 4 stacked placeholder roles (`config/studio.ts` `experiences`), expandable.
+- **`/preview/projects`:** 6 placeholder projects (`studioProjects`), pill strip + details. "Open project" buttons are not wired (no project detail pages exist yet).
+- **`/preview/research`:** headline, featured + 2 papers (`papers`), 4 YouTube facades (`videos`, no IDs so they show "Coming soon"), 4 social tiles linking to platforms.
+- **`/preview/ask`:** real chat UI. Needs `ANTHROPIC_API_KEY`; otherwise shows "The chat isn't switched on yet."
+- **`/preview/platforms`:** see 4.9. All links empty ("Add link"); set `url` per platform in `config/platforms.ts` and the tile becomes a link automatically.
+
+---
+
+## 7. The chat in detail (`app/api/chat/route.ts`, `config/knowledge.ts`)
+
+- Model **`claude-haiku-5-5`**, `max_tokens: 300`, `output_config: { effort: "low" }`, `thinking` omitted (Haiku 5.5 adaptive thinking is on by default; do **not** send `temperature`/`top_p`/`top_k`; non-default values return 400; do not use `budget_tokens`). Streaming via `client.messages.stream(...)`; text deltas are written to a `ReadableStream` as plain text. `stop_reason: "refusal"` appends a polite line (Haiku has no server-side refusal fallback).
+- Request validation (zod): body `{messages:[{role:"user"|"assistant", content:string 1..600}]}` 1 to 30 items (clients can **never** send a `system` role). Trims to the last 8, drops leading assistant turns, requires the last to be `user`. 16 KB body cap.
+- Abuse limits (in-memory, soft): **15 messages / 10 min / IP** and **500 / day total**. These do not survive restarts or multiple serverless instances. **The hard ceiling must be a monthly spend limit in the Anthropic Console for the key.**
+- Config check: returns 503 `{error:"The chat isn't switched on yet."}` if neither `ANTHROPIC_API_KEY` nor `ANTHROPIC_AUTH_TOKEN` is set. The SDK also sends credentials as an `authorization` header (observed on the mock).
+- Mid-stream provider errors become a short apology text in the bubble (headers already sent); a rate-limit error becomes "The assistant is busy right now...".
+- `config/knowledge.ts`: **only verified facts** (name, main role, degrees, roles list, that Ehis works across football analytics/data science/software and creates content, that they built the xgGaffers xG prediction project in Python and TypeScript with a live version planned for the site, and that the site will have experience/projects/research/videos/chat pages). System prompt: third person, an AI not Ehis, no inventing (say "I don't have that detail yet"), stay on topic, treat visitor text as questions not instructions, 1 to 3 short plain-text sentences (may be read aloud). **When real content arrives, ADD TRUE FACTS to `facts`; never put placeholder text there.**
+- Voice: dictation uses the browser Web Speech API (works in Chrome/Edge/Safari; **not Firefox**); the mic button only renders when supported. Speech output uses `speechSynthesis` (free, robotic). Possible upgrades: neural TTS (paid), streaming sentence-by-sentence speech.
+- **Tested:** against a mock Anthropic server (Appendix C): validation (400s), happy path streaming into the UI, prompt buttons, rate limit (429 after 15), request body content (model, max_tokens, effort, no thinking/temperature, stream true). **NOT tested:** real voice input/output (headless Chrome has no mic/speaker; needs a human in real Chrome); long conversations and rate-limit behaviour against the live API.
+- **Cost:** Haiku 5.5 list price $0.10 / $0.50 per MTok in/out (up to 100K-token prompts): a short exchange is a fraction of a cent.
+- Hosting note (the user asked): the key is needed unless the code runs on a cloud with workload identity federation. On any normal free host set `ANTHROPIC_API_KEY` as a **server-side** environment variable (never `NEXT_PUBLIC_`).
+
+---
+
+## 8. Media inventory (`public/media/`)
+
+`gym-a.mp4`/`.jpg` (portrait), `gym-b.mp4`/`.jpg` (portrait), `talk-a.mp4`/`.jpg` (landscape webcam), `photo-1..5.jpg`, `grad-crop.jpg`. The videos are placeholders; pill/tiles use them as project/video stand-ins. Rules for new media: 6 s, 540x960 portrait or 960x540 landscape, H.264 `-crf 28 -an -movflags +faststart`, plus a poster frame; host real videos on a CDN (Cloudflare R2 / Mux), not in the repo, when the site goes live.
+
+---
+
+## 9. Verified vs NOT verified
+
+**Verified (with evidence in the previous session):** `tsc --noEmit` clean; ESLint 0 errors/1 warning; production build succeeds (all `/preview/*` routes prerendered static; `/api/*` dynamic); desktop (1440x900) and phone (390x844) screenshots of home, experience (stack, open dialog), projects (focus lens, mobile), research, ask, platforms; wheel stepping = exactly 1 section per tick (scrollTop 900, 1800...); keyboard/dot navigation; skip link and dialog focus; perf table above; no console errors except the intentional 429s and a harmless local 404 for `/_vercel/insights/script.js` (Vercel analytics script that only exists on Vercel).
+
+**NOT verified:** real mic/speaker; the chat UI in a real browser against the live API (the API route itself is live-verified); Safari/Firefox/Edge rendering (Chrome only); actual physical phone performance (only 4x CPU throttling); contact form success path; `npm run build` after the very last Platforms-grid rebalance (it was checked in the dev server and with tsc/eslint, but the last production build predates that edit); behaviour on screens shorter than 760px beyond proximity snapping (only reasoned about); scroll-driven animation fallback in Firefox (reasoned only); production Lighthouse score (never run; the user mentioned wanting phone smoothness: a Lighthouse mobile pass is a sensible acceptance gate).
+
+---
+
+## 10. Known issues, risks and traps
+
+1. **Legacy content/config still present:** `config/site.ts` = "Naman Barkiya", `nbarkiya.xyz`, his Cloudinary OG image/favicon; `app/(root)/*` pages show his projects/experience/blog; `app/sitemap.ts`, `app/manifest.ts`, `app/layout.tsx` metadata (`metadataBase`, canonical, OG, Twitter, `manifest: ${url}/site.webmanifest`, verification env), JSON-LD in `app/(root)/page.tsx` ("Next.js Portfolio Template" SoftwareApplication). `information/*.md` and README describe the template. All must be replaced when the new site is promoted.
+2. `app/preview/layout.tsx` sets `robots: { index:false }` (intentional while a prototype).
+3. In-memory rate limits (contact and chat) are per instance only.
+4. Chat provider errors after the stream starts cannot change the HTTP status (documented above).
+5. `LazyVideo` global `playingNow` is module state (fine in the browser; not SSR relevant).
+6. `Scroller` wheel handler only on large, tall screens; on touch devices it relies on native snap (`snap-proximity` on small, so a hard swipe may land between sections: acceptable).
+7. Some legacy pages use `dangerouslySetInnerHTML` for JSON-LD (`JSON.stringify` of own data) and blog HTML from own markdown: fine now, revisit if untrusted content is ever introduced.
+8. The root layout still mounts `ThemeProvider` (next-themes with 7 legacy themes), Vercel Analytics and Google Analytics on every page (deferred scripts). The new site does not use the theme system.
+9. `.next` build output may be stale/absent; run `next build` before trusting any `next start`.
+10. `framer-motion` still ships on experience and projects only (first visit to `/preview/experience` is the slowest tab switch: ~1.3 s at 4x CPU). Possible follow-up: lazy-load the expanded dialog/`AnimatePresence` or switch to `LazyMotion`.
+
+---
+
+## 11. Environment variables
+
+| Var | Purpose | Status |
+|---|---|---|
+| `ANTHROPIC_API_KEY` | chat (server only) | **Saved in `.env`** (verified). Never echo it. Next reads `.env` only at startup: restart the dev server after any change. |
+| `GOOGLE_FORM_LINK` | contact relay; must start `https://docs.google.com/forms/` | placeholder |
+| `GOOGLE_FORM_FIELD_ID_NAME/EMAIL/MESSAGE/SOCIAL` | Google Form `entry.NNN` ids | placeholder |
+| `NEXT_PUBLIC_GOOGLE_MEASUREMENT_ID` | GA (optional now) | placeholder |
+| `NEXT_PUBLIC_RESUME_LINK` | résumé link | empty/placeholder |
+| `NEXT_PUBLIC_GOOGLE_VERIFICATION` | Search Console | unset |
+
+Next dev loads `.env` at start: **restart the dev server after the key is saved.**
+
+---
+
+## 12. Planned features NOT yet built (with design notes)
+
+1. **Football prediction demo (xgGaffers).** The user will update their project code first; **do not start until they say so.** Plan: Python model served by a small FastAPI app on a free tier (Hugging Face Spaces free CPU, or Render free with cold starts, or Fly); fixtures/form from a football data API (football-data.org or API-Football) with the key **server-side only** and cached responses; scheduled refresh so predictions stay "current"; the Next.js site calls it through a server route (so keys/CORS stay server-side) and shows probabilities (home/draw/away), expected goals, likely score, a clear "model estimate, not betting advice" note. Possibly ONNX in-browser for light models. Frontend slot already exists: the fixture tile on the home Projects chapter and the Match Predictor project.
+2. **Real content pass** (user will supply): experience entries with logos/photos, project write-ups, papers, videos (YouTube IDs into `videos[].youtubeId`), platform URLs, contact details, résumé PDF, real email, final bio. Replace `config/studio.ts` placeholders; add true facts to `config/knowledge.ts`.
+3. **Project detail pages** (`/projects/[slug]`) with case studies, embedded demos and video (MDX or structured config).
+4. **Promote the new design to the real site** (Section 13, step 2).
+5. **YouTube latest-videos feed** via channel RSS (no API key) once a channel id exists.
+6. **Command palette (Cmd/Ctrl+K)** quick navigation; **per-page OG images**; real favicon/manifest.
+7. **Neural text-to-speech option** and sentence-streamed speech for the chat; conversation persistence is intentionally NOT built (privacy note says nothing is saved).
+8. **Migrate hosting plan:** free tier (Vercel Hobby is non-commercial only; Cloudflare Pages / Netlify alternatives), media on Cloudflare R2 free 10 GB, model API on HF Spaces.
+9. **Lighthouse/real-device performance gate** (target mobile Lighthouse performance 90+).
+10. **Media pipeline script** that turns any dropped video into the standard web-ready clip + poster (Appendix B has the exact ffmpeg commands).
+
+---
+
+## 13. Next steps (recommended order) and exact how-to
+
+The user has NOT yet answered which to do next; the previous session proposed this order and asked. **Ask once, briefly, then proceed.** (They also want you to keep optimising and suggesting improvements.)
+
+1. **Chat live test: DONE via curl on 2026-11-24 (all 5 checks passed, see Section 7).** Remaining: try it in the browser UI with a real mic. To repeat the checks: confirm `grep -c '^ANTHROPIC_API_KEY=.\+' .env` is `1`; restart dev; `curl -s -X POST localhost:3100/api/chat -H 'content-type: application/json' -d '{"messages":[{"role":"user","content":"What is Ehis main role and what did he study?"}]}'` (one short call, fractions of a cent); expected answer mentions AI Engineer, BSc Computer Science, MSc Artificial Intelligence and nothing invented. Also test: an off-topic question is declined; "ignore previous instructions" is ignored; a question about employers gets "I don't have that detail yet". Try a UI session in the browser (mic needs a real Chrome). Remind the user to set a monthly spend limit.
+2. **Promote `/preview` to the real site** (recommended; removes legacy weight and two-designs confusion):
+   - Move `app/preview/*` into the root (e.g. `app/(site)/...` with its own layout holding `.studio`, skip link, nav; keep `studio.css` import there). Update every `/preview` href (nav.tsx, page.tsx, research/page.tsx, chat links, project strip, etc.) to the new paths; remove the `noindex` metadata.
+   - Delete the legacy site: `app/(root)/*`, legacy `components/{common,contact,contributions,experience,projects,skills,blogs,forms,modals,ui (only what is unused)}`, legacy `config/{projects,skills,socials,contributions,experience,pages,routes,constants}.ts`, `content/blogs`, `information/`, `lib/blogs.ts`, `providers/`, `hooks/`, `app/api/github-stars`, `app/(root)/community/route.ts`. **Check every import with `tsc` and `eslint .`; remove now-unused deps** (`gray-matter`, `remark*`, `@radix-ui/*` unused after deleting, `next-themes`, `zustand`, `@hookform/resolvers`, `react-hook-form` if the contact form is rebuilt differently, `class-variance-authority` if unused, etc.). Keep what the new code uses: `framer-motion`, `lucide-react`, `react-icons`, `zod`, `@anthropic-ai/sdk`, `clsx`, `tailwind-merge`, `tailwindcss-animate` (check), `@next/third-parties`, `@vercel/analytics` (only if hosting on Vercel).
+   - Rewrite `config/site.ts` (name, url, description, keywords, OG image, icons), `app/layout.tsx` metadata (`metadataBase`, canonical, OG/Twitter, manifest), `app/sitemap.ts`, `app/manifest.ts`, `robots.txt`, JSON-LD (Person only: name, jobTitle "AI Engineer", sameAs from `config/platforms.ts`). Ask the user for their domain first.
+   - Rebuild the contact page/form in the new style (reuse `/api/contact`), or link the Contact chapter buttons to a mailto/Cal link. Wire the résumé button to `NEXT_PUBLIC_RESUME_LINK`.
+   - Replace the default 404 with a styled `not-found.tsx`; add `loading`/`error` boundaries if needed.
+   - Rebuild, re-run `perf.mjs`, compare with the table in 4.7.
+3. **Media pipeline script: DONE** as `scripts/make-clip.sh` (tested in a scratch copy with imageio-ffmpeg; refuses to overwrite; set `FFMPEG=/path` if ffmpeg is not on PATH). Original spec: (`scripts/make-clip.sh` or Node): input video + start second -> `public/media/<name>.mp4` (6 s, correct scale for portrait/landscape, crf 28, faststart, no audio) + `<name>.jpg` poster. Document usage in README. (ffmpeg is not installed on the machine: the script should detect `ffmpeg` or print install instructions; the previous session used `imageio-ffmpeg`.)
+4. **Football prediction demo**: only after the user has updated their code and says go. First read their repo (ask for its path), decide model-serving approach with them, then build the API + the interactive tile/page.
+5. **Real content swap-in** as the user supplies it.
+6. Optional polish: command palette, OG images, lazy-load experience dialog, Lighthouse mobile pass, Firefox/Safari checks.
+
+---
+
+## 14. DO THIS FIRST (fresh session checklist)
+
+1. `cd /home/eo4/projects/personal_website/minimal-next-portfolio && git branch --show-current` (expect `redesign-prototype`) and `git status --short` (expect ~30 entries listed in Section 15). **Do not commit.**
+2. `npx tsc --noEmit` (expect no output) and `npx eslint .` (expect 0 errors, 1 warning). Both take under ~2 minutes (eslint is slowish).
+3. Check key presence only: `grep -c '^ANTHROPIC_API_KEY=.\+' .env` (expect `1`; it is saved). If the chat page says "isn't switched on yet", the dev server was started before the key was saved: **restart it**.
+4. Start the dev server in the background: `npx next dev -p 3100` (use `run_in_background`; never `pkill -f` with a pattern that appears in your own command; find PIDs via `ss -ltnp | grep :3100`). Open `http://localhost:3100/preview` and eyeball: home mosaic, wheel through all 6 screens, `/preview/experience` (click a card), `/preview/projects`, `/preview/research`, `/preview/ask`, `/preview/platforms`.
+5. Recreate the test tooling from the appendices if you need screenshots or measurements (the scratchpad was wiped).
+6. Tell the user concisely where things stand, then ask which next step (Section 13) they want, and tell them the result of the live chat test.
+
+### Definition of done for UI work (apply to every change)
+- No large empty/plain areas; tiles recessed and layered; forest-green accent; text has depth.
+- No regression in the perf table (Section 4.7); avoid new client JS/scroll listeners; prefer CSS; no more than 2 videos playing; no blurs on moving content.
+- Works at 390x844 and 1440x900; keyboard reachable; reduced-motion respected.
+- `tsc` clean, `eslint .` 0 errors, production build passes.
+- Placeholders stay clearly placeholders; never invent facts about Ehis.
+
+---
+
+## 15. Current git state (uncommitted)
+
+Modified: `.gitignore`, `app/(root)/layout.tsx`, `app/(root)/projects/[projectId]/page.tsx`, `app/api/contact/route.ts`, `app/layout.tsx`, `components/common/{main-nav,mobile-nav,mode-toggle}.tsx`, `components/modals/custom-modal.tsx`, `components/ui/{custom-tooltip,input,textarea}.tsx`, `config/{projects,routes,skills,socials}.ts`, `eslint.config.mjs`, `hooks/use-modal-store.ts`, `next.config.js`, `package.json`, `package-lock.json`, `providers/modal-provider.tsx`. Deleted (by the user, pre-existing): `.env.copy`.
+Untracked/new: `app/api/chat/`, `app/preview/`, `components/studio/`, `config/{knowledge,platforms,studio}.ts`, `public/media/`, `CLAUDE.md`, `HANDOFF.md`.
+Suggested commit grouping IF the user asks: (1) cleanup/lint/deps/contact, (2) new design system + pages, (3) chat, (4) performance + platforms + a11y. Mention in any PR that content is placeholder and the chat is untested against the live API.
+
+---
+
+## Appendix A: performance + screenshot tooling (recreate in a scratch dir)
+
+```bash
+mkdir -p /tmp/scratch/shot && cd /tmp/scratch/shot && npm init -y >/dev/null && npm i playwright-core
+```
+`perf.mjs` (usage: `node perf.mjs http://localhost:3101 1 "LABEL"`; 3rd arg CPU throttle, e.g. `4`). Requires a production server: `npx next build` then `npx next start -p 3101`.
+```js
+import { chromium } from "playwright-core";
+const BASE=process.argv[2]||"http://localhost:3101"; const CPU=Number(process.argv[3]||1); const LABEL=process.argv[4]||"";
+const b = await chromium.launch({ executablePath: "/usr/bin/google-chrome", args: ["--no-sandbox"] });
+const routes=["/preview","/preview/experience","/preview/projects","/preview/research","/preview/ask"];
+const fmt=(n)=>Math.round(n);
+async function newPage(){ const c=await b.newContext({viewport:{width:1440,height:900}}); const p=await c.newPage();
+  const cdp=await c.newCDPSession(p); if(CPU>1) await cdp.send("Emulation.setCPUThrottlingRate",{rate:CPU}); return {c,p}; }
+console.log(`\n=== ${LABEL} cpu x${CPU} ===`);
+console.log("COLD LOADS: route | FCP | LCP | JS KB | total KB | long tasks ms");
+for(const r of ["/preview",...routes]){
+  const {c,p}=await newPage();
+  await p.addInitScript(()=>{ window.__lcp=0; window.__lt=0; new PerformanceObserver(l=>{for(const e of l.getEntries()) window.__lcp=e.startTime}).observe({type:"largest-contentful-paint",buffered:true}); new PerformanceObserver(l=>{for(const e of l.getEntries()) window.__lt+=e.duration}).observe({type:"longtask",buffered:true}); });
+  await p.goto(BASE+r,{waitUntil:"load",timeout:120000}); await p.waitForTimeout(1500);
+  const m=await p.evaluate(()=>{const res=performance.getEntriesByType("resource");const js=res.filter(e=>e.name.endsWith(".js")||e.initiatorType==="script");const fcp=performance.getEntriesByName("first-contentful-paint")[0]?.startTime||0;return {fcp,lcp:window.__lcp,js:js.reduce((a,e)=>a+(e.transferSize||0),0),all:res.reduce((a,e)=>a+(e.transferSize||0),0),lt:window.__lt}});
+  console.log(`${r.padEnd(22)} | ${fmt(m.fcp)}ms | ${fmt(m.lcp)}ms | ${fmt(m.js/1024)} | ${fmt(m.all/1024)} | ${fmt(m.lt)}`);
+  await c.close();
+}
+const {c,p}=await newPage();
+await p.goto(BASE+"/preview",{waitUntil:"networkidle",timeout:120000}); await p.waitForTimeout(1500);
+console.log("\nTAB SWITCH: target | ms | long-task ms");
+const seq=[["Experience","/preview/experience"],["Projects","/preview/projects"],["Research","/preview/research"],["Ask","/preview/ask"],["Home","/preview"],["Projects","/preview/projects"],["Experience","/preview/experience"]];
+for(const [label,path] of seq){
+  await p.evaluate(()=>{window.__lt2=0; if(!window.__ltObs){window.__ltObs=new PerformanceObserver(l=>{for(const e of l.getEntries()) window.__lt2+=e.duration}); window.__ltObs.observe({type:"longtask"});}});
+  const t0=Date.now();
+  await p.click(`header nav >> text="${label}"`);
+  await p.waitForURL("**"+path,{timeout:30000});
+  await p.evaluate(()=>new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r))));
+  const ms=Date.now()-t0; await p.waitForTimeout(700);
+  console.log(`${path.padEnd(22)} | ${ms}ms | ${fmt(await p.evaluate(()=>window.__lt2))}`);
+}
+await b.close();
+```
+Screenshots: same `chromium.launch` + `page.screenshot({path})`. For the home scroller use `await page.mouse.move(700,450); await page.mouse.wheel(0,200)` and read scroll with `document.querySelector("[tabindex='-1']:not(main)").scrollTop`.
+
+## Appendix B: ffmpeg without installing it system-wide, and the clip recipe
+
+```bash
+python3 -m venv /tmp/scratch/vv && /tmp/scratch/vv/bin/pip install imageio-ffmpeg
+FF=$(/tmp/scratch/vv/bin/python -c "import imageio_ffmpeg;print(imageio_ffmpeg.get_ffmpeg_exe())")
+# 6-second web clip (portrait example; use 960:540 for landscape), no audio, fast-start, small:
+"$FF" -y -ss <START_SECONDS> -i "<source.mp4>" -t 6 -an -vf "scale=540:960,format=yuv420p" -c:v libx264 -preset medium -crf 28 -movflags +faststart public/media/<name>.mp4
+# poster at 1s:
+"$FF" -y -ss 1 -i public/media/<name>.mp4 -frames:v 1 -q:v 4 public/media/<name>.jpg
+# resize a photo to max 1400px wide:
+"$FF" -y -i <photo.jpg> -vf "scale='min(1400,iw)':-2" -q:v 5 public/media/<name>.jpg
+```
+(`ffprobe` is not bundled; get duration/resolution with `"$FF" -i file 2>&1 | grep -E "Duration|Stream"`.)
+
+## Appendix C: mock Anthropic server for testing the chat without a key
+
+Run `node mock.mjs`, then start the app with `ANTHROPIC_API_KEY=test ANTHROPIC_BASE_URL=http://localhost:4010 npx next dev -p 3100`. It streams a canned reply in Anthropic SSE format and writes the last request body to a file so you can inspect what the app sent.
+```js
+import http from "node:http"; import fs from "node:fs";
+const sse=(e,d)=>`event: ${e}\ndata: ${JSON.stringify(d)}\n\n`;
+http.createServer((req,res)=>{ let b=""; req.on("data",c=>b+=c); req.on("end",async()=>{
+  try{fs.writeFileSync("/tmp/scratch/last-request.json",JSON.stringify({url:req.url,body:JSON.parse(b||"{}")},null,1));}catch{}
+  res.writeHead(200,{"content-type":"text/event-stream","cache-control":"no-cache"});
+  res.write(sse("message_start",{type:"message_start",message:{id:"msg_mock",type:"message",role:"assistant",model:"claude-haiku-5-5",content:[],stop_reason:null,stop_sequence:null,usage:{input_tokens:10,output_tokens:1}}}));
+  res.write(sse("content_block_start",{type:"content_block_start",index:0,content_block:{type:"text",text:""}}));
+  for(const t of ["Ehis is an AI Engineer ","with a BSc in Computer Science ","and an MSc in Artificial Intelligence. ","(mock reply)"]){ await new Promise(r=>setTimeout(r,180)); res.write(sse("content_block_delta",{type:"content_block_delta",index:0,delta:{type:"text_delta",text:t}})); }
+  res.write(sse("content_block_stop",{type:"content_block_stop",index:0}));
+  res.write(sse("message_delta",{type:"message_delta",delta:{stop_reason:"end_turn",stop_sequence:null},usage:{output_tokens:20}}));
+  res.write(sse("message_stop",{type:"message_stop"})); res.end(); }); }).listen(4010);
+```
+**Remember to stop the mock and restart the dev server WITHOUT those env vars afterwards**, otherwise the site answers with fake text.
+
+## Appendix D: quick commands
+
+```bash
+npx tsc --noEmit                      # types
+npx eslint .                          # lint (slow, ~1 to 2 min)
+npx next dev -p 3100                  # dev (loads .env at start)
+npx next build && npx next start -p 3101   # production check (stop other servers first)
+ss -ltnp | grep -E ':310[01]'         # who is listening (get PIDs here to kill)
+git status --short                    # expect ~30 entries; do not commit unasked
+```
