@@ -6,6 +6,11 @@
 
 ---
 
+> ## UPDATE 2026-11-24 (first deploy). Newest note.
+> - **Deployed by the user** to `https://ehisoghina.ehisoghina.workers.dev` (Worker `ehisoghina`, secret `ANTHROPIC_API_KEY` set). Verified live: 6 pages, 404, sitemap, icon, video all OK and the chat answers from the real key.
+> - **Bug found and fixed:** the custom-domain `routes` were only in a comment in `wrangler.jsonc`, so `ehisoghina.com` was not attached ("no workers connected"). Now real routes for `ehisoghina.com` and `www.ehisoghina.com`, plus `workers_dev: true` and `preview_urls: false`. Config validated with `wrangler deploy --dry-run`. The user must run `npm run deploy:cf` once more to attach the domain.
+> - Open: `ehisoghina.com` did not resolve from this machine before the route existed; re-check after the redeploy. If the deploy errors that the zone is not active, the nameserver change at the registrar is not complete yet.
+
 > ## UPDATE 2026-11-24 (Cloudflare Workers). Newest note.
 > - **Pushed** `redesign-prototype` to `origin` (github.com/ehis04/personal-website). The user authorised future commits+pushes without asking when tsc/eslint/build pass, the message follows rule 9, and `.gitignore` covers secrets (see memory `feedback-push-rules`).
 > - **Cloudflare Workers set up** with `@opennextjs/cloudflare` + `wrangler` (`wrangler.jsonc`, `open-next.config.ts`, scripts `build:cf`, `preview:cf`, `deploy:cf`). Installing the adapter also upgraded **Next to 16.4.6**; build, tsc and eslint all pass on it. Removed the stale Tailwind `safelist` that warned.

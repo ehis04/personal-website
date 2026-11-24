@@ -9,8 +9,14 @@
     "binding": "ASSETS"
   },
   "services": [{ "binding": "WORKER_SELF_REFERENCE", "service": "ehisoghina" }],
-  "observability": { "enabled": true }
-  // Custom domain: once ehisoghina.com is a zone on your Cloudflare account, add
-  //   "routes": [{ "pattern": "ehisoghina.com", "custom_domain": true }]
+  "observability": { "enabled": true },
+  "workers_dev": true,
+  "preview_urls": false,
+  // Custom domains (the ehisoghina.com zone must be active on this Cloudflare account).
+  // Cloudflare creates the DNS records for these automatically on deploy.
+  "routes": [
+    { "pattern": "ehisoghina.com", "custom_domain": true },
+    { "pattern": "www.ehisoghina.com", "custom_domain": true }
+  ]
   // Secrets are NOT set here. Use: npx wrangler secret put ANTHROPIC_API_KEY
 }
