@@ -1,7 +1,7 @@
 import Link from "next/link";
 
 import { platforms } from "@/config/platforms";
-import { navLinks } from "@/config/site";
+import { contactEmail, navLinks } from "@/config/site";
 import { profile } from "@/config/studio";
 
 const github = platforms.find((p) => p.id === "github")?.url;
@@ -31,6 +31,11 @@ export function SiteFooter({ compact = false }: { compact?: boolean }) {
           {github && (
             <a href={github} target="_blank" rel="noopener noreferrer" className={linkClass}>
               GitHub
+            </a>
+          )}
+          {contactEmail && (
+            <a href={`mailto:${contactEmail}`} className={linkClass}>
+              Email
             </a>
           )}
         </nav>
@@ -63,6 +68,13 @@ export function SiteFooter({ compact = false }: { compact?: boolean }) {
           <div>
             <p className="text-[11px] uppercase tracking-[0.22em] text-[var(--green-glow)]">Elsewhere</p>
             <ul className="mt-3 space-y-2 text-sm">
+              {contactEmail && (
+                <li>
+                  <a href={`mailto:${contactEmail}`} className={linkClass}>
+                    Email me
+                  </a>
+                </li>
+              )}
               {github && (
                 <li>
                   <a href={github} target="_blank" rel="noopener noreferrer" className={linkClass}>

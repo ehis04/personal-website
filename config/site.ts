@@ -4,6 +4,10 @@ import { profile } from "@/config/studio";
 // Override with NEXT_PUBLIC_SITE_URL (no trailing slash) for staging or previews.
 const url = (process.env.NEXT_PUBLIC_SITE_URL || "https://ehisoghina.com").replace(/\/+$/, "");
 
+// Public contact email. Set NEXT_PUBLIC_CONTACT_EMAIL in .env (git-ignored, so it never
+// lands in the public repo). Unset = no email is shown and the site points to /platforms.
+export const contactEmail = (process.env.NEXT_PUBLIC_CONTACT_EMAIL ?? "").trim();
+
 export const siteConfig = {
   name: `${profile.name} | ${profile.mainRole}`,
   authorName: profile.name,
@@ -13,8 +17,8 @@ export const siteConfig = {
     .join(", ")
     .toLowerCase()}. Experience, projects, research and an assistant that answers questions about Ehis.`,
   url,
-  // Placeholder social card: swap for a purpose-made 1200x630 image later.
-  ogImage: "/media/photo-3.jpg",
+  // Social share card, 1200x630 (cropped from the DSC portrait).
+  ogImage: "/og.jpg",
   keywords: [profile.name, profile.mainRole, ...profile.otherRoles, ...profile.education],
 };
 
@@ -24,6 +28,7 @@ export const navLinks = [
   { href: "/experience", label: "Experience" },
   { href: "/projects", label: "Projects" },
   { href: "/research", label: "Research" },
+  { href: "/cv", label: "CV" },
   { href: "/ask", label: "Ask" },
   { href: "/platforms", label: "Platforms" },
 ] as const;

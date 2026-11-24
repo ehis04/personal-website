@@ -1,7 +1,7 @@
 import { AnimatedHeading } from "@/components/studio/animated-heading";
 import { Chat } from "@/components/studio/chat";
 
-export const metadata = { title: "Ask" };
+export const metadata = { title: "Ask", alternates: { canonical: "/ask" } };
 
 export default function AskPage() {
   return (
