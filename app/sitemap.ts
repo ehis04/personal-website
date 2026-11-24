@@ -7,6 +7,7 @@ const pages: { path: string; priority: number }[] = [
   { path: "/experience", priority: 0.8 },
   { path: "/projects", priority: 0.8 },
   { path: "/research", priority: 0.7 },
+  { path: "/cv", priority: 0.8 },
   { path: "/ask", priority: 0.6 },
   { path: "/platforms", priority: 0.6 },
 ];

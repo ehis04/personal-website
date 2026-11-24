@@ -12,6 +12,7 @@ export const profile = {
 };
 
 export interface Degree {
+  id: string;
   degree: string;
   school: string;
   city: string;
@@ -22,18 +23,34 @@ export interface Degree {
 // Most recent first.
 export const degrees: Degree[] = [
   {
+    id: "msc",
     degree: "MSc Artificial Intelligence",
     school: "University of Birmingham",
     city: "Birmingham",
     period: "Sep 2026 – Sep 2027",
   },
   {
+    id: "bsc",
     degree: "BSc (Honours) Computer Science",
     school: "Dublin City University",
     city: "Dublin",
     period: "Aug 2022 – May 2026",
     note: "Key modules: Artificial Intelligence, Advanced Algorithms, Probability & Statistics, Linear Algebra.",
   },
+];
+
+// Technical skills, as listed on the CV.
+export const skillGroups: { group: string; items: string[] }[] = [
+  {
+    group: "ML & Data Science",
+    items: ["Scikit-learn", "Pandas", "NumPy", "Matplotlib", "Seaborn", "LLMs (AWS Bedrock, OpenAI API)", "Data cleaning", "Fuzzy matching (RapidFuzz)"],
+  },
+  { group: "Languages", items: ["Python", "Java", "C/C++", "JavaScript", "TypeScript", "SQL", "R", "HTML/CSS"] },
+  {
+    group: "Frameworks & Cloud",
+    items: ["Django", "React", "Flask", "Dash", "Docker", "AWS (Lambda, Bedrock)", "Snowflake", "PostgreSQL", "Databricks", "GCP"],
+  },
+  { group: "Tools & Testing", items: ["Git", "GitHub", "Postman", "Pytest", "Selenium", "Jira", "Linux"] },
 ];
 
 export interface Experience {
@@ -162,8 +179,10 @@ export interface StudioProject {
   status: string;
   tags: string[];
   media: StudioMedia;
-  /** Public GitHub repo, when one exists. No project is hosted yet, so there is no demo link. */
+  /** Public GitHub repo, when one exists. */
   repo?: string;
+  /** Link to the live interactive demo. Leave unset until it is hosted: a placeholder panel is shown instead. */
+  demoUrl?: string;
 }
 
 // The first project is the flagship. Media is placeholder (the user's own clips and photos).

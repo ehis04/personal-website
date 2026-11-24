@@ -1,7 +1,7 @@
 "use client";
 
 import { AnimatePresence, motion } from "framer-motion";
-import { ArrowUpRight, ChevronLeft, ChevronRight, X } from "lucide-react";
+import { ArrowUpRight, ChevronLeft, ChevronRight, Play, X } from "lucide-react";
 import Image from "next/image";
 import { useCallback, useEffect, useRef, useState } from "react";
 
@@ -342,13 +342,41 @@ function Expanded({ project: p, onClose }: { project: StudioProject; onClose: ()
             </div>
           )}
 
+          {!p.demoUrl && (
+            <div className="mt-8 flex items-center gap-4 rounded-2xl border border-dashed border-white/15 bg-black/20 p-4">
+              <span className="grid h-12 w-12 shrink-0 place-items-center rounded-full bg-[#2f7d50]/25 text-[var(--green-glow)]">
+                <Play className="h-5 w-5 fill-current" />
+              </span>
+              <div>
+                <p className="font-display text-lg leading-tight">Interactive demo coming soon</p>
+                <p className="mt-1 text-xs text-white/60">
+                  A hands-on version of this project will appear here once it is hosted.
+                </p>
+              </div>
+            </div>
+          )}
+
           <div className="mt-auto flex flex-wrap items-center gap-3 pt-8">
+            {p.demoUrl && (
+              <a
+                href={p.demoUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 rounded-full bg-[var(--green)] px-5 py-2.5 text-sm font-medium transition-colors hover:bg-[var(--green-glow)]"
+              >
+                Launch live demo <ArrowUpRight className="h-4 w-4" />
+              </a>
+            )}
             {p.repo ? (
               <a
                 href={p.repo}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 rounded-full bg-[var(--green)] px-5 py-2.5 text-sm font-medium transition-colors hover:bg-[var(--green-glow)]"
+                className={
+                  p.demoUrl
+                    ? "inline-flex items-center gap-2 rounded-full px-5 py-2.5 text-sm ring-1 ring-white/25 transition-colors hover:bg-white/10"
+                    : "inline-flex items-center gap-2 rounded-full bg-[var(--green)] px-5 py-2.5 text-sm font-medium transition-colors hover:bg-[var(--green-glow)]"
+                }
               >
                 View on GitHub <ArrowUpRight className="h-4 w-4" />
               </a>
@@ -357,9 +385,6 @@ function Expanded({ project: p, onClose }: { project: StudioProject; onClose: ()
                 Code not public yet
               </span>
             )}
-            <span className="rounded-full px-4 py-2 text-xs text-white/60 ring-1 ring-white/10">
-              Live demo coming soon
-            </span>
           </div>
         </motion.div>
       </div>

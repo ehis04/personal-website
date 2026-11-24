@@ -36,7 +36,7 @@ export const metadata: Metadata = {
     title: siteConfig.name,
     description: siteConfig.description,
     siteName: profile.name,
-    images: [{ url: siteConfig.ogImage, alt: profile.name }],
+    images: [{ url: siteConfig.ogImage, width: 1200, height: 630, alt: profile.name }],
   },
   twitter: {
     card: "summary_large_image",
@@ -44,7 +44,6 @@ export const metadata: Metadata = {
     description: siteConfig.description,
     images: [siteConfig.ogImage],
   },
-  alternates: { canonical: "/" },
   robots: {
     index: true,
     follow: true,

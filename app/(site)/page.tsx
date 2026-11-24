@@ -1,4 +1,5 @@
 import { ArrowUp, ArrowUpRight, Github, Linkedin, Mic, Play, Volume2, Youtube } from "lucide-react";
+import Image from "next/image";
 import Link from "next/link";
 
 import { AnimatedHeading } from "@/components/studio/animated-heading";
@@ -7,7 +8,10 @@ import { DocPreview } from "@/components/studio/doc-preview";
 import { Scroller, Screen } from "@/components/studio/scroller";
 import { SiteFooter } from "@/components/studio/site-footer";
 import { Tile } from "@/components/studio/tile";
+import { contactEmail } from "@/config/site";
 import { degrees, experiences, profile, studioProjects } from "@/config/studio";
+
+export const metadata = { alternates: { canonical: "/" } };
 
 const eyebrow = "legible text-[11px] uppercase tracking-[0.22em] text-[var(--green-glow)]";
 const title = "legible font-display text-2xl leading-tight md:text-3xl";
@@ -15,11 +19,6 @@ const arrow =
   "h-5 w-5 transition-transform group-hover:-translate-y-1 group-hover:translate-x-1";
 const chip = "rounded-full bg-black/40 px-3 py-1.5 text-xs text-white/85 ring-1 ring-white/10";
 const mobileMin = "min-h-[240px] lg:min-h-0";
-
-// Only a real https link wires the button; the template placeholder stays inert.
-const resumeUrl = process.env.NEXT_PUBLIC_RESUME_LINK?.startsWith("https://")
-  ? process.env.NEXT_PUBLIC_RESUME_LINK
-  : undefined;
 
 export default function PreviewHome() {
   return (
@@ -446,33 +445,47 @@ export default function PreviewHome() {
                 Have a project, a role or a <span className="font-accent text-accent-glow">question?</span>
               </p>
               <p className="mt-4 max-w-md text-sm text-white/85">
-                Placeholder: availability, what you are open to, and how quickly you reply.
+                Get in touch about projects, roles or research.
               </p>
             </div>
           </Tile>
-          <Tile className={`col-span-12 bg-[var(--surface-2)] md:col-span-6 lg:col-span-4 ${mobileMin}`}>
+          <Tile
+            href={contactEmail ? `mailto:${contactEmail}` : "/platforms"}
+            className={`col-span-12 bg-[var(--surface-2)] md:col-span-6 lg:col-span-4 ${mobileMin}`}
+          >
             <div className="flex h-full flex-col justify-between p-5">
-              <p className={eyebrow}>Email</p>
+              <p className={eyebrow}>{contactEmail ? "Email" : "Get in touch"}</p>
               <div>
-                <p className="font-display text-2xl md:text-3xl">hello@your-domain.com</p>
-                <p className="mt-2 text-sm text-white/70">Placeholder: usually replies within a couple of days.</p>
+                <p className={`font-display text-2xl md:text-3xl ${contactEmail ? "break-all" : ""}`}>
+                  {contactEmail || "Find me on LinkedIn, GitHub and more"}
+                </p>
+                <p className="mt-2 text-sm text-white/70">
+                  {contactEmail ? "The best way to reach me." : "Every place I can be reached is on the platforms page."}
+                </p>
               </div>
               <span className="inline-flex w-fit items-center gap-2 rounded-full bg-[var(--green)] px-5 py-2.5 text-sm font-medium">
-                Send a message <ArrowUpRight className="h-4 w-4" />
+                {contactEmail ? "Send an email" : "See all platforms"} <ArrowUpRight className="h-4 w-4" />
               </span>
             </div>
           </Tile>
-          <Tile href={resumeUrl} className={`col-span-12 bg-gradient-to-br from-[#123a26]/70 to-[var(--surface-2)] md:col-span-6 lg:col-span-4 ${mobileMin}`}>
+          <Tile href="/cv" className={`col-span-12 bg-gradient-to-br from-[#123a26]/70 to-[var(--surface-2)] md:col-span-6 lg:col-span-4 ${mobileMin}`}>
             <div className="flex h-full flex-col p-5">
               <div className="flex items-start justify-between">
                 <div>
-                  <p className={eyebrow}>Download</p>
-                  <p className="font-display text-2xl">Résumé (PDF)</p>
+                  <p className={eyebrow}>Interactive</p>
+                  <p className="font-display text-2xl">My CV</p>
                 </div>
-                <ArrowUpRight className="h-5 w-5" />
+                <ArrowUpRight className={arrow} />
               </div>
-              <div className="flex flex-1 items-center py-3">
-                <DocPreview className="w-[min(46%,170px)]" />
+              <div className="relative mt-3 min-h-[120px] flex-1 overflow-hidden rounded-xl bg-white ring-1 ring-white/10">
+                <Image
+                  src="/cv/thumb.webp"
+                  alt="Preview of the CV"
+                  fill
+                  unoptimized
+                  sizes="(min-width: 1024px) 25vw, 100vw"
+                  className="object-cover object-top"
+                />
               </div>
             </div>
           </Tile>
