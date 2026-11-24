@@ -6,6 +6,11 @@
 
 ---
 
+> ## UPDATE 2026-11-24 (LIVE). Newest note.
+> - **The site is live at https://ehisoghina.com** (and www.ehisoghina.com, which serves the same pages; canonical URLs point at the apex). After the redeploy both domains show under Connected Workers. Verified from here: valid TLS, HTTP 200, sitemap and canonical use `https://ehisoghina.com`. The user's own browser initially failed on the apex only because of a stale local DNS cache (public resolvers 1.1.1.1 and 8.8.8.8 already returned Cloudflare IPs).
+> - The user set the monthly spend limit in the Anthropic Console (confirmed 2026-11-24).
+> - **Next ideas:** redirect www to the apex (Cloudflare Redirect Rule), submit the sitemap in Google Search Console, optional Upstash for global rate limits, real photos/clips, videos, social links, contact email, résumé link, xgGaffer demo, Lighthouse on the live URL.
+
 > ## UPDATE 2026-11-24 (first deploy). Newest note.
 > - **Deployed by the user** to `https://ehisoghina.ehisoghina.workers.dev` (Worker `ehisoghina`, secret `ANTHROPIC_API_KEY` set). Verified live: 6 pages, 404, sitemap, icon, video all OK and the chat answers from the real key.
 > - **Bug found and fixed:** the custom-domain `routes` were only in a comment in `wrangler.jsonc`, so `ehisoghina.com` was not attached ("no workers connected"). Now real routes for `ehisoghina.com` and `www.ehisoghina.com`, plus `workers_dev: true` and `preview_urls: false`. Config validated with `wrangler deploy --dry-run`. The user must run `npm run deploy:cf` once more to attach the domain.
