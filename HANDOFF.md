@@ -6,6 +6,13 @@
 
 ---
 
+> ## UPDATE 2026-11-24 (hardening pass, NOT yet redeployed). Newest note.
+> - **Added:** `public/_headers` (immutable 1-year cache for `/_next/static/*`, 1-day + SWR for `/media/*`; live site previously sent `max-age=0, must-revalidate`) and baseline security headers in `next.config.js` (nosniff, SAMEORIGIN, referrer policy, Permissions-Policy with `microphone=(self)` so dictation still works). Verified on the local Workers runtime. No CSP yet (risk of breaking the JSON-LD/GA inline scripts).
+> - **Security:** upgraded `zod` 3 to 4.6.7 (high advisory: memory exhaustion on oversized arrays). Chat and contact validation re-tested on workerd: all expected 400/503 results unchanged. `npm audit fix` applied; 3 moderate advisories remain, all `glob`/`minimatch` inside `@opennextjs/cloudflare` build tooling (never shipped to visitors; the offered fix is a breaking downgrade).
+> - **Found, not fixed:** `next/image` does no resizing on Workers (the live `/_next/image?...w=640` returned the original 124,464 B file). Photos are ~125 KB each so it is acceptable now; when real photos arrive, export them at about 1600 px wide and under 200 KB, or enable the Cloudflare Images binding.
+> - **The user must run `npm run deploy:cf` again** for these changes to go live.
+> - All 5 CV projects are on the live Projects page (verified in the live HTML); the 5th pill sits off the right edge of the strip on wide screens until you scroll or press the arrow.
+
 > ## UPDATE 2026-11-24 (LIVE). Newest note.
 > - **The site is live at https://ehisoghina.com** (and www.ehisoghina.com, which serves the same pages; canonical URLs point at the apex). After the redeploy both domains show under Connected Workers. Verified from here: valid TLS, HTTP 200, sitemap and canonical use `https://ehisoghina.com`. The user's own browser initially failed on the apex only because of a stale local DNS cache (public resolvers 1.1.1.1 and 8.8.8.8 already returned Cloudflare IPs).
 > - The user set the monthly spend limit in the Anthropic Console (confirmed 2026-11-24).
