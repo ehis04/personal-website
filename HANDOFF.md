@@ -37,7 +37,7 @@
 - **The task:** turn a cloned open-source template portfolio (Naman Barkiya's `minimal-next-portfolio`) into a rich, fast, beautiful multimedia personal website for **Ehis Oghina** (AI Engineer; football analyst; creator; builder).
 - **Where it stands:** a working, performance-tuned prototype lives under the route **`/preview`** (home, experience, projects, research, ask/chat, platforms). The old template pages still exist under `app/(root)` and are untouched except for lint/type fixes.
 - **Everything is placeholder content except the user's identity facts** (name, roles, degrees, platforms they named, and the existence of the xgGaffers project). The user has **not** prepared real content yet and said to leave placeholders for now.
-- **Nothing is committed.** 30 files are modified/untracked on branch `redesign-prototype`. Do not commit unless the user asks.
+- **Committed locally (2026-11-24)** on branch `redesign-prototype`: `feat: implemented redesigned portfolio site and removed template` and `docs: rewrote README and added handoff notes and clip script`. NOT pushed. The user now allows committing when work is verified (messages per CLAUDE.md rule 9); still ask before pushing.
 - **Blocked on user:** (a) ~~saving `ANTHROPIC_API_KEY`~~ **DONE: the key is now saved in `.env` (line 14, format verified 2026-11-24: correct name, `sk-ant-` prefix, no quotes/spaces). Restart the dev server to load it, then run the live chat test (Section 13.1).** (b) the user updating their xgGaffers project code before the football-prediction demo is built, (c) real content, (d) a decision on the next step (Section 13).
 
 ---
