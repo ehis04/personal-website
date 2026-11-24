@@ -1,3 +1,4 @@
+import { allow, clientIp } from "@/lib/rate-limit";
 import Anthropic from "@anthropic-ai/sdk";
 import { NextResponse } from "next/server";
 import { z } from "zod";
@@ -25,29 +26,20 @@ const bodySchema = z.object({
     .max(30),
 });
 
-// Soft abuse limits, kept in memory: they slow casual abuse on a single server
-// instance but are not a hard guarantee on serverless hosts. The real spending
-// ceiling is the monthly limit set in the Anthropic Console for the API key.
-const WINDOW_MS = 10 * 60 * 1000;
+// Abuse limits (see lib/rate-limit.ts): per visitor and across all visitors per UTC day.
+// The real spending ceiling is the monthly limit set in the Anthropic Console for the key.
+const WINDOW_SEC = 10 * 60;
 const MAX_PER_IP = 15; // messages per IP per window
 const MAX_PER_DAY = 500; // messages across all visitors per UTC day
-const hits = new Map<string, number[]>();
-const daily = { day: "", count: 0 };
 
-function limited(ip: string): string | null {
-  const now = Date.now();
-  const today = new Date(now).toISOString().slice(0, 10);
-  if (daily.day !== today) {
-    daily.day = today;
-    daily.count = 0;
+async function limited(ip: string): Promise<string | null> {
+  const today = new Date().toISOString().slice(0, 10);
+  if (!(await allow(`chat:day:${today}`, MAX_PER_DAY, 86400))) {
+    return "The assistant has reached its daily limit. Please try again tomorrow.";
   }
-  if (daily.count >= MAX_PER_DAY) return "The assistant has reached its daily limit. Please try again tomorrow.";
-  const recent = (hits.get(ip) ?? []).filter((t) => now - t < WINDOW_MS);
-  if (recent.length >= MAX_PER_IP) return "You're sending messages quickly. Please wait a few minutes.";
-  recent.push(now);
-  hits.set(ip, recent);
-  daily.count += 1;
-  if (hits.size > 5000) hits.clear();
+  if (!(await allow(`chat:ip:${ip}`, MAX_PER_IP, WINDOW_SEC))) {
+    return "You're sending messages quickly. Please wait a few minutes.";
+  }
   return null;
 }
 
@@ -79,8 +71,7 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "Invalid conversation." }, { status: 400 });
   }
 
-  const ip = req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ?? "unknown";
-  const blocked = limited(ip);
+  const blocked = await limited(clientIp(req));
   if (blocked) return NextResponse.json({ error: blocked }, { status: 429 });
 
   const client = new Anthropic(); // reads ANTHROPIC_API_KEY from the environment

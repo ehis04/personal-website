@@ -6,11 +6,15 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "build:cf": "opennextjs-cloudflare build",
+    "preview:cf": "opennextjs-cloudflare build && opennextjs-cloudflare preview",
+    "deploy:cf": "opennextjs-cloudflare build && opennextjs-cloudflare deploy"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^1.12.0",
     "@next/third-parties": "16.0.6",
+    "@opennextjs/cloudflare": "^1.20.18",
     "autoprefixer": "^10.4.27",
     "clsx": "^2.1.1",
     "framer-motion": "^12.5.0",
@@ -37,6 +41,7 @@
     "eslint-plugin-react-hooks": "^7.0.1",
     "prettier": "^3.4.2",
     "prettier-plugin-organize-imports": "^4.1.0",
-    "typescript": "^5"
+    "typescript": "^5",
+    "wrangler": "^4.167.0"
   }
 }
