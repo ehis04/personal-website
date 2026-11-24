@@ -6,6 +6,14 @@
 
 ---
 
+> ## UPDATE 2026-11-24 (Cloudflare Workers). Newest note.
+> - **Pushed** `redesign-prototype` to `origin` (github.com/ehis04/personal-website). The user authorised future commits+pushes without asking when tsc/eslint/build pass, the message follows rule 9, and `.gitignore` covers secrets (see memory `feedback-push-rules`).
+> - **Cloudflare Workers set up** with `@opennextjs/cloudflare` + `wrangler` (`wrangler.jsonc`, `open-next.config.ts`, scripts `build:cf`, `preview:cf`, `deploy:cf`). Installing the adapter also upgraded **Next to 16.4.6**; build, tsc and eslint all pass on it. Removed the stale Tailwind `safelist` that warned.
+> - **Verified on the local Workers runtime (workerd):** all pages 200, 404 page, robots, sitemap, manifest, icon, images, video, chat streamed a real Haiku answer, bad body 400, rate limit 429 after 15 messages.
+> - **Rate limiting** moved to `lib/rate-limit.ts`: optional Upstash Redis over plain `fetch` (`UPSTASH_REDIS_REST_URL/TOKEN`), memory fallback, uses `cf-connecting-ip`. Chat and contact routes use it.
+> - **NOT deployed.** `wrangler whoami` says not authenticated; `wrangler login` needs the user's browser. A `wrangler deploy --temporary` attempt was blocked by the auto-mode classifier and was not retried or worked around. Remaining one-time steps are in README "First deploy": `wrangler login`, `wrangler secret put ANTHROPIC_API_KEY`, `npm run deploy:cf`, then add the ehisoghina.com zone and route.
+> - `.dev.vars` (contains the API key for local Worker testing) is git-ignored; never commit it.
+
 > ## UPDATE 2026-11-24 (research + metrics pass). Newest note.
 > - **Chat verified live** against the CV facts (5 questions): correct answers for xgGaffer, 2025 roles, Birmingham research; declined the phone number; correctly said nothing is hosted. The model uses he/him, which the user approved.
 > - **Experience dialog:** the scaffold "00 / Metric one..." tiles are gone. `Experience.metrics?` holds real CV numbers (Optum: 7 hrs, 70%, 56%; DCU Soccer: 500+ members) and the block is hidden when a role has none.

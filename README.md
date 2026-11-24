@@ -42,6 +42,7 @@ npx eslint .                 # lint
 | Variable | Purpose |
 |---|---|
 | `ANTHROPIC_API_KEY` | Powers `/ask`. Server-side only: never prefix it with `NEXT_PUBLIC_`. Set a monthly spend limit for the key in the Anthropic Console. |
+| `UPSTASH_REDIS_REST_URL`, `UPSTASH_REDIS_REST_TOKEN` | Optional. Makes the API rate limits global (recommended on Workers). |
 | `NEXT_PUBLIC_SITE_URL` | Optional. Overrides the default `https://ehisoghina.com` for canonical links, the sitemap and Open Graph. |
 | `NEXT_PUBLIC_RESUME_LINK` | Optional `https://` link that activates the résumé tile. |
 | `NEXT_PUBLIC_GOOGLE_MEASUREMENT_ID` | Optional Google Analytics id. |
@@ -82,24 +83,36 @@ public/media/    photos and clips
 scripts/         make-clip.sh
 ```
 
-## Hosting
+## Hosting: Cloudflare Workers
 
-Nothing is deployed yet. Recommendation, checked against current docs:
+The site is set up for **Cloudflare Workers via the OpenNext adapter** (`wrangler.jsonc`, `open-next.config.ts`). The free plan allows 100,000 requests per day and 10 ms of CPU per request ([limits](https://developers.cloudflare.com/workers/platform/limits)); waiting on network calls is not CPU time, and every page is prerendered, so the streaming chat fits. Vercel Hobby is restricted to non-commercial use ([policy](https://vercel.com/docs/platform/fair-use-policy)), which is why it is not the first pick. Cloudflare now points brand-new Next.js apps at its own `vinext` ([guide](https://developers.cloudflare.com/workers/framework-guides/web-apps/opennext/)); OpenNext is what Social Olympics already uses, so it was kept here.
 
-**Cloudflare Workers via the OpenNext adapter, with the domain on Cloudflare DNS.**
+Checked locally on the Workers runtime (`workerd`): all six pages, the 404, sitemap, robots, manifest, icon, images and video served correctly, the chat streamed a real answer, and the chat rate limit returned 429 after 15 messages.
 
-- The free plan allows 100,000 requests per day and 10 ms of CPU per request ([limits](https://developers.cloudflare.com/workers/platform/limits)). Waiting on network calls does not count as CPU, so the streaming chat is fine. Every page here is prerendered static, so CPU use is tiny.
-- Ehis already deploys Social Olympics this way, so the tooling is familiar.
-- **Vercel Hobby** is the easiest for Next.js but is restricted to non-commercial personal use ([fair use policy](https://vercel.com/docs/platform/fair-use-policy)). A portfolio used to find paid work sits in a grey area, so it is not the first pick.
-- Next.js 16 is supported by the adapter, but Cloudflare now points brand-new Next.js apps at its own `vinext` ([docs](https://developers.cloudflare.com/workers/framework-guides/web-apps/opennext/)), so check the current guidance when you set it up.
+```bash
+npm run build:cf     # build the Worker bundle into .open-next/
+npm run preview:cf   # run it locally on the Workers runtime
+npm run deploy:cf    # build and deploy to Cloudflare
+```
 
-Things to do when deploying:
+### First deploy (one-time)
 
-1. Set `ANTHROPIC_API_KEY` as a server-side secret, and a monthly spend cap in the Anthropic Console.
-2. The chat and contact rate limits are in-memory, which resets per instance and does not hold across Workers. Move them to Upstash Redis (already used by Social Olympics) or Cloudflare's rate limiting.
-3. Put large videos on Cloudflare R2 (free tier) rather than in `public/`.
-4. The football prediction demo needs a small Python service. Free options: Hugging Face Spaces (CPU) or Render's free tier (cold starts). The site would call it through a server route so keys stay server-side.
-5. Swap the placeholder social image (`/media/photo-3.jpg`) for a 1200×630 card.
+1. `npx wrangler login` (opens a browser to sign in to Cloudflare).
+2. Set the chat key as a Worker secret (it never goes in git):
+   `npx wrangler secret put ANTHROPIC_API_KEY`
+3. `npm run deploy:cf`. The site appears at `https://ehisoghina.<your-subdomain>.workers.dev`.
+4. Add `ehisoghina.com` as a zone in Cloudflare (change the domain's nameservers), then add this to `wrangler.jsonc` and redeploy:
+   `"routes": [{ "pattern": "ehisoghina.com", "custom_domain": true }]`
+5. Optional: create a free Upstash Redis database and set `UPSTASH_REDIS_REST_URL` and `UPSTASH_REDIS_REST_TOKEN` as secrets. The rate limits then hold across every Worker instance; without them they fall back to per-instance memory (`lib/rate-limit.ts`).
+6. Set a monthly spend limit on the API key in the Anthropic Console. This is the real ceiling.
+
+For local Worker testing, put secrets in `.dev.vars` (git-ignored).
+
+### Later
+
+- Put large videos on Cloudflare R2 (free tier) rather than in `public/`.
+- The football prediction demo needs a small Python service. Free options: Hugging Face Spaces (CPU) or Render's free tier (cold starts). The site would call it through a server route so keys stay server-side.
+- Swap the placeholder social image (`/media/photo-3.jpg`) for a 1200×630 card.
 
 ## Status
 
