@@ -6,6 +6,11 @@
 
 ---
 
+> ## UPDATE 2026-11-24 (redeployed and verified live). Newest note.
+> - **Redeployed by the user** (version d849e199). Verified on the live domain: all 6 pages 200, 404 page, sitemap/robots, new project cards + footer + `site-bar` present, security headers present, static JS `immutable` 1-year cache, media 1-day cache, chat answers from the CV facts.
+> - **www redirect works in production:** `https://www.ehisoghina.com/research?a=1` returns 308 to `https://ehisoghina.com/research?a=1` (path and query kept). No Cloudflare Redirect Rule needed.
+> - Remaining work is mostly the user's material: real photos/clips, videos, social links, contact email, résumé link, xgGaffer demo, a 1200x630 social image, then re-submit the sitemap in Search Console in 1 to 2 days.
+
 > ## UPDATE 2026-11-24 (projects expand view, footer, fading header). Newest note.
 > - **Projects page redesigned** (`components/studio/project-strip.tsx`): every card shows a short overview (`summary`) plus dates; clicking opens a full-screen dialog (layoutId morph, dimmed background, same technique as Experience) with the full explanation (`highlights` from the CV), tags, real metrics, GitHub button and "Live demo coming soon". The old below-strip detail panel is gone. From ~1340px wide all 5 cards fit with no cut-off; below that it is a swipeable strip with the focus lens. Hover sets the active card when nothing scrolls. `StudioProject` now has `summary`, `highlights`, `metrics?` (no `description`).
 > - **Smoothness safeguards:** the card unmounts while its dialog is open (no video behind the animation), the dialog shows the poster first and starts the clip after 800 ms, no new scroll listeners, no blur, no new dependencies. Measured on the Workers build: opening a project card is in the same range as opening an Experience card (machine was loaded, load avg 4.5 to 5.4, so treat as indicative; check on a real phone).
