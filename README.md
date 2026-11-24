@@ -18,6 +18,7 @@ Performance is a hard requirement: scroll and entrance effects are plain CSS (sc
 | `/experience` | Stacked role cards that expand into a full-screen detail view |
 | `/projects` | Horizontal pill strip with a focus lens and a detail panel |
 | `/research` | Research, video previews (YouTube facades) and social links |
+| `/cv` | Interactive CV: hover a section to highlight it, click to expand the detail |
 | `/ask` | Chat assistant with typed or dictated questions and spoken answers |
 | `/platforms` | Everywhere Ehis can be found |
 | `/api/chat` | Streaming chat endpoint (server-side API key, rate limited) |
@@ -44,7 +45,7 @@ npx eslint .                 # lint
 | `ANTHROPIC_API_KEY` | Powers `/ask`. Server-side only: never prefix it with `NEXT_PUBLIC_`. Set a monthly spend limit for the key in the Anthropic Console. |
 | `UPSTASH_REDIS_REST_URL`, `UPSTASH_REDIS_REST_TOKEN` | Optional. Makes the API rate limits global (recommended on Workers). |
 | `NEXT_PUBLIC_SITE_URL` | Optional. Overrides the default `https://ehisoghina.com` for canonical links, the sitemap and Open Graph. |
-| `NEXT_PUBLIC_RESUME_LINK` | Optional `https://` link that activates the résumé tile. |
+| `NEXT_PUBLIC_CONTACT_EMAIL` | Optional public contact email, shown on the Contact tile and in the footer. Kept in `.env` so it never lands in the public repo. Unset = no email is shown. |
 | `NEXT_PUBLIC_GOOGLE_MEASUREMENT_ID` | Optional Google Analytics id. |
 | `NEXT_PUBLIC_GOOGLE_VERIFICATION` | Optional Search Console verification token. |
 | `GOOGLE_FORM_LINK`, `GOOGLE_FORM_FIELD_ID_NAME/EMAIL/MESSAGE/SOCIAL` | Only for `/api/contact`. |

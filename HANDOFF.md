@@ -6,6 +6,17 @@
 
 ---
 
+> ## UPDATE 2026-11-24 (CV tab, share image, demo placeholders, canonical fix). Newest note.
+> - **Interactive CV tab `/cv`:** `components/studio/cv-viewer.tsx` + `config/cv.ts`. Two CV page images (`public/cv/page-1.webp`, `page-2.webp`, `thumb.webp`) with 13 hotspots positioned from the PDF's text coordinates (percent rects). Hover highlights, click opens a morphing dialog whose content comes from `config/studio.ts` (experiences, projects, degrees, `skillGroups`) plus related links (`cvLinks`). Added "CV" to the nav (`navLinks`), sitemap and footer; the home résumé tile is now an interactive-CV tile with a real page thumbnail. `NEXT_PUBLIC_RESUME_LINK` is retired.
+> - **PRIVACY DECISION (revisit if the user wants):** the published CV (`public/cv/Ehis-Oghina-CV.pdf` and the page images) has the phone number and email REMOVED from the PDF text (verified, not just covered) and replaced by `ehisoghina.com`. The original is only in the git-ignored `ideas/CV1126.pdf`. To publish the full version, regenerate from the original without the redaction step.
+> - **Contact email:** `contactEmail` in `config/site.ts` reads `NEXT_PUBLIC_CONTACT_EMAIL` from `.env` (git-ignored; the repo is public). Unset = the Contact tile says "Find me on LinkedIn, GitHub and more" and links to /platforms, the footer shows no email. The user must add the line to `.env` and redeploy.
+> - **Share image:** `public/og.jpg` is 1200x630, cropped from `ideas/_DSC1803 (2).jpg` (which is 5472x3648, 3:2, so it needed a crop). `og:image` width/height set.
+> - **Demo placeholders:** `StudioProject.demoUrl?`. Without it the expanded project view shows a dashed "Interactive demo coming soon" panel; with it, a "Launch live demo" button. xgGaffer and the other projects' repos are still linked on GitHub; remove `repo` from a project in `config/studio.ts` to hide its link.
+> - **SEO BUG FIXED:** the root layout set `canonical: "/"` so EVERY subpage declared the homepage as its canonical (confirmed on the live site). Removed it; each page now sets its own canonical. Needs redeploy; then request re-indexing for /projects, /experience etc. in Search Console.
+> - **Platforms page:** now five main tiles (LinkedIn, YouTube, GitHub, Substack, X, ids in `mainIds` inside `platforms/page.tsx`) and a "More places" section for the rest; tiles without a `url` show a "Username" chip (for example Discord). The dashed "Suggested" styling is gone.
+> - **BLOCKED: `config/platforms.ts` was NOT updated.** The user says they added all their links but the file on disk was last saved at 09:55 and still has placeholder handles and no URLs except GitHub: their edits are unsaved in the editor. I did not touch the file to avoid overwriting them. Still to do after they save (Ctrl+S): change every blurb from "your" to "my" wording, mark Discord as username-only (no `url`), and verify every URL.
+> - **Sitemap:** the user confirmed Search Console now shows Success.
+
 > ## UPDATE 2026-11-24 (redeployed and verified live). Newest note.
 > - **Redeployed by the user** (version d849e199). Verified on the live domain: all 6 pages 200, 404 page, sitemap/robots, new project cards + footer + `site-bar` present, security headers present, static JS `immutable` 1-year cache, media 1-day cache, chat answers from the CV facts.
 > - **www redirect works in production:** `https://www.ehisoghina.com/research?a=1` returns 308 to `https://ehisoghina.com/research?a=1` (path and query kept). No Cloudflare Redirect Rule needed.
