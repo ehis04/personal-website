@@ -6,6 +6,13 @@
 
 ---
 
+> ## UPDATE 2026-11-24 (platform links + email). Newest note.
+> - **Deployed state:** the user redeployed; live `/cv` is 200 and live subpages now have their own canonical URLs. The user requested indexing for `/`, `/projects` and `/cv` in Search Console (base page indexed OK).
+> - **`config/platforms.ts` rewritten** from the handles the user saved (they gave handles, not URLs). Built each `url` from the handle using each site's standard pattern; `status` removed from the type; `handleOnly` added (Discord shows the username as a "Username" chip, no link); tiles without a url and not handleOnly show a "Link soon" chip. Blurbs changed from "your" to "my". Main five (LinkedIn, YouTube, GitHub, Substack, X) are `mainIds` in `platforms/page.tsx`. JSON-LD `sameAs` is built from every platform with a url (20 now).
+> - **Unverified links** (the site blocks automated checks, so a human must click them): LinkedIn (999), Facebook (400), LeetCode, Medium, ResearchGate (403). A 200 from other sites does not prove the profile exists (several return 200 for any name), so ALL links should be clicked once. **Stack Overflow and Google Scholar have no url**: their links need a numeric id, so the user must paste the real profile links into `url`.
+> - **Blurb claims to confirm with the user:** Hugging Face "Models and demos I have published", Scholar "Papers and citation counts", Kaggle/HackerRank ("competition rankings", "skill badges and certifications"), TikTok "Short-form football and AI clips". These describe content that may not exist yet.
+> - **Contact email:** `NEXT_PUBLIC_CONTACT_EMAIL` is set in `.env`; verified on the local Workers build that the Contact tile and footer show a mailto link (3 on home, 1 on /cv). Needs `npm run deploy:cf` to go live. Never print or commit the address.
+
 > ## UPDATE 2026-11-24 (CV tab, share image, demo placeholders, canonical fix). Newest note.
 > - **Interactive CV tab `/cv`:** `components/studio/cv-viewer.tsx` + `config/cv.ts`. Two CV page images (`public/cv/page-1.webp`, `page-2.webp`, `thumb.webp`) with 13 hotspots positioned from the PDF's text coordinates (percent rects). Hover highlights, click opens a morphing dialog whose content comes from `config/studio.ts` (experiences, projects, degrees, `skillGroups`) plus related links (`cvLinks`). Added "CV" to the nav (`navLinks`), sitemap and footer; the home résumé tile is now an interactive-CV tile with a real page thumbnail. `NEXT_PUBLIC_RESUME_LINK` is retired.
 > - **PRIVACY DECISION (revisit if the user wants):** the published CV (`public/cv/Ehis-Oghina-CV.pdf` and the page images) has the phone number and email REMOVED from the PDF text (verified, not just covered) and replaced by `ehisoghina.com`. The original is only in the git-ignored `ideas/CV1126.pdf`. To publish the full version, regenerate from the original without the redaction step.
@@ -14,7 +21,7 @@
 > - **Demo placeholders:** `StudioProject.demoUrl?`. Without it the expanded project view shows a dashed "Interactive demo coming soon" panel; with it, a "Launch live demo" button. xgGaffer and the other projects' repos are still linked on GitHub; remove `repo` from a project in `config/studio.ts` to hide its link.
 > - **SEO BUG FIXED:** the root layout set `canonical: "/"` so EVERY subpage declared the homepage as its canonical (confirmed on the live site). Removed it; each page now sets its own canonical. Needs redeploy; then request re-indexing for /projects, /experience etc. in Search Console.
 > - **Platforms page:** now five main tiles (LinkedIn, YouTube, GitHub, Substack, X, ids in `mainIds` inside `platforms/page.tsx`) and a "More places" section for the rest; tiles without a `url` show a "Username" chip (for example Discord). The dashed "Suggested" styling is gone.
-> - **BLOCKED: `config/platforms.ts` was NOT updated.** The user says they added all their links but the file on disk was last saved at 09:55 and still has placeholder handles and no URLs except GitHub: their edits are unsaved in the editor. I did not touch the file to avoid overwriting them. Still to do after they save (Ctrl+S): change every blurb from "your" to "my" wording, mark Discord as username-only (no `url`), and verify every URL.
+> - **(resolved, see the newer note above)** platforms.ts was unsaved at that time.
 > - **Sitemap:** the user confirmed Search Console now shows Success.
 
 > ## UPDATE 2026-11-24 (redeployed and verified live). Newest note.

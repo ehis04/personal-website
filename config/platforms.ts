@@ -1,8 +1,9 @@
-// Every place Ehis can be found. Handles and links are placeholders until filled in.
+// Every place Ehis can be found.
 //
-// status "yours"     = a platform you told me you are on (shown large).
-// status "suggested" = a platform that would strengthen your profile; delete any
-//                      you don't use, and give the ones you do a `url`.
+// The five MAIN places (LinkedIn, YouTube, GitHub, Substack, X) are picked in
+// app/(site)/platforms/page.tsx; everything else appears under "More places".
+// `handle` is what visitors see; `url` makes the tile a link. A tile with no `url`
+// shows the handle only (set `handleOnly` for a username such as Discord).
 
 export type PlatformCategory =
   | "Professional"
@@ -18,41 +19,42 @@ export interface Platform {
   /** Key into the icon map on the Platforms page. */
   icon: string;
   category: PlatformCategory;
-  status: "yours" | "suggested";
   handle: string;
   /** What a visitor will find there. */
   blurb: string;
-  /** Leave empty until the real profile link exists. */
+  /** The profile link. Leave unset when there is none yet. */
   url?: string;
+  /** True when the handle is a username to copy (for example Discord), not a link. */
+  handleOnly?: boolean;
 }
 
 export const platforms: Platform[] = [
-  // ───────── Confirmed ─────────
-  { id: "linkedin", name: "LinkedIn", icon: "linkedin", category: "Professional", status: "yours", handle: "your-name", blurb: "Career history, roles and professional updates." },
-  { id: "x", name: "X", icon: "x", category: "Video & social", status: "yours", handle: "@your-handle", blurb: "Quick takes on AI, football analytics and builds." },
-  { id: "substack", name: "Substack", icon: "substack", category: "Writing", status: "yours", handle: "your-newsletter", blurb: "Longer writing and the newsletter." },
-  { id: "facebook", name: "Facebook", icon: "facebook", category: "Video & social", status: "yours", handle: "your.name", blurb: "Personal updates and community." },
-  { id: "leetcode", name: "LeetCode", icon: "leetcode", category: "Code & competitions", status: "yours", handle: "your-username", blurb: "Problem-solving practice and contest history." },
+  { id: "linkedin", name: "LinkedIn", icon: "linkedin", category: "Professional", handle: "ehisoghina", url: "https://www.linkedin.com/in/ehisoghina", blurb: "Career history, roles and professional updates." },
+  { id: "x", name: "X", icon: "x", category: "Video & social", handle: "@ehis_oghina", url: "https://x.com/ehis_oghina", blurb: "Quick takes on AI, football analytics and builds." },
+  { id: "substack", name: "Substack", icon: "substack", category: "Writing", handle: "ehisoghina", url: "https://ehisoghina.substack.com", blurb: "Longer writing and the newsletter." },
+  { id: "github", name: "GitHub", icon: "github", category: "Professional", handle: "ehis04", url: "https://github.com/ehis04", blurb: "Code, models and open-source work." },
+  { id: "youtube", name: "YouTube", icon: "youtube", category: "Video & social", handle: "@manehis21", url: "https://www.youtube.com/@manehis21", blurb: "Football analytics, builds and explainers." },
 
-  // ───────── Suggested placeholders ─────────
-  { id: "github", name: "GitHub", icon: "github", category: "Professional", status: "suggested", handle: "ehis04", url: "https://github.com/ehis04", blurb: "Code, models and open-source work." },
-  { id: "calendly", name: "Booking", icon: "calendly", category: "Professional", status: "suggested", handle: "cal link", blurb: "Book a call or intro chat." },
-  { id: "medium", name: "Medium", icon: "medium", category: "Writing", status: "suggested", handle: "@your-handle", blurb: "Articles cross-posted for a wider audience." },
-  { id: "youtube", name: "YouTube", icon: "youtube", category: "Video & social", status: "suggested", handle: "Channel name", blurb: "Football analytics, builds and explainers." },
-  { id: "instagram", name: "Instagram", icon: "instagram", category: "Video & social", status: "suggested", handle: "@your-handle", blurb: "Photos, clips and behind-the-scenes." },
-  { id: "tiktok", name: "TikTok", icon: "tiktok", category: "Video & social", status: "suggested", handle: "@your-handle", blurb: "Short-form football and AI clips." },
-  { id: "threads", name: "Threads", icon: "threads", category: "Video & social", status: "suggested", handle: "@your-handle", blurb: "Conversations alongside Instagram." },
-  { id: "bluesky", name: "Bluesky", icon: "bluesky", category: "Video & social", status: "suggested", handle: "you.bsky.social", blurb: "Where much of the AI and research crowd now posts." },
-  { id: "kaggle", name: "Kaggle", icon: "kaggle", category: "Code & competitions", status: "suggested", handle: "your-username", blurb: "Notebooks, datasets and competition rankings." },
-  { id: "huggingface", name: "Hugging Face", icon: "huggingface", category: "Code & competitions", status: "suggested", handle: "your-username", blurb: "Models and demos you have published." },
-  { id: "stackoverflow", name: "Stack Overflow", icon: "stackoverflow", category: "Code & competitions", status: "suggested", handle: "your-profile", blurb: "Answers and reputation as a developer." },
-  { id: "hackerrank", name: "HackerRank", icon: "hackerrank", category: "Code & competitions", status: "suggested", handle: "your-username", blurb: "Skill badges and certifications." },
-  { id: "devpost", name: "Devpost", icon: "devpost", category: "Code & competitions", status: "suggested", handle: "your-username", blurb: "Hackathon projects, including the datathon." },
-  { id: "scholar", name: "Google Scholar", icon: "scholar", category: "Research", status: "suggested", handle: "Your profile", blurb: "Papers and citation counts." },
-  { id: "orcid", name: "ORCID", icon: "orcid", category: "Research", status: "suggested", handle: "0000-0000-0000-0000", blurb: "A permanent researcher ID linking your work." },
-  { id: "researchgate", name: "ResearchGate", icon: "researchgate", category: "Research", status: "suggested", handle: "Your-Name", blurb: "Preprints and research updates." },
-  { id: "discord", name: "Discord", icon: "discord", category: "Community", status: "suggested", handle: "your-server", blurb: "A community for your channel or project." },
-  { id: "spotify", name: "Spotify", icon: "spotify", category: "Community", status: "suggested", handle: "Show name", blurb: "A podcast or audio version of your videos." },
+  { id: "facebook", name: "Facebook", icon: "facebook", category: "Video & social", handle: "ehis.oghina.71", url: "https://www.facebook.com/ehis.oghina.71", blurb: "Personal updates and community." },
+  { id: "leetcode", name: "LeetCode", icon: "leetcode", category: "Code & competitions", handle: "eo4", url: "https://leetcode.com/u/eo4/", blurb: "Problem-solving practice and contest history." },
+  { id: "calendly", name: "Booking", icon: "calendly", category: "Professional", handle: "calendly.com/ehisoghina", url: "https://calendly.com/ehisoghina", blurb: "Book a call or intro chat." },
+  { id: "medium", name: "Medium", icon: "medium", category: "Writing", handle: "@ehisoghina", url: "https://medium.com/@ehisoghina", blurb: "Articles cross-posted for a wider audience." },
+  { id: "instagram", name: "Instagram", icon: "instagram", category: "Video & social", handle: "@manehis21", url: "https://www.instagram.com/manehis21/", blurb: "Photos, clips and behind-the-scenes." },
+  { id: "tiktok", name: "TikTok", icon: "tiktok", category: "Video & social", handle: "@manehis21", url: "https://www.tiktok.com/@manehis21", blurb: "Short-form football and AI clips." },
+  { id: "threads", name: "Threads", icon: "threads", category: "Video & social", handle: "@manehis21", url: "https://www.threads.com/@manehis21", blurb: "Conversations alongside Instagram." },
+  { id: "bluesky", name: "Bluesky", icon: "bluesky", category: "Video & social", handle: "ehisoghina.bsky.social", url: "https://bsky.app/profile/ehisoghina.bsky.social", blurb: "Where much of the AI and research crowd now posts." },
+  { id: "kaggle", name: "Kaggle", icon: "kaggle", category: "Code & competitions", handle: "ehisoghina", url: "https://www.kaggle.com/ehisoghina", blurb: "Notebooks, datasets and competition rankings." },
+  { id: "huggingface", name: "Hugging Face", icon: "huggingface", category: "Code & competitions", handle: "ehisoghina", url: "https://huggingface.co/ehisoghina", blurb: "Models and demos I have published." },
+  // No url yet: Stack Overflow and Google Scholar profile links contain a numeric id
+  // that cannot be built from a username. Paste the real profile link into `url`.
+  { id: "stackoverflow", name: "Stack Overflow", icon: "stackoverflow", category: "Code & competitions", handle: "ehis-oghina", blurb: "Answers and reputation as a developer." },
+  { id: "hackerrank", name: "HackerRank", icon: "hackerrank", category: "Code & competitions", handle: "ehisoghina", url: "https://www.hackerrank.com/profile/ehisoghina", blurb: "Skill badges and certifications." },
+  { id: "devpost", name: "Devpost", icon: "devpost", category: "Code & competitions", handle: "ehisoghina", url: "https://devpost.com/ehisoghina", blurb: "Hackathon projects, including the datathon." },
+  { id: "scholar", name: "Google Scholar", icon: "scholar", category: "Research", handle: "ehisoghina", blurb: "Papers and citation counts." },
+  { id: "orcid", name: "ORCID", icon: "orcid", category: "Research", handle: "0009-0007-8250-3339", url: "https://orcid.org/0009-0007-8250-3339", blurb: "A permanent researcher ID linking my work." },
+  { id: "researchgate", name: "ResearchGate", icon: "researchgate", category: "Research", handle: "Ehis-Oghina", url: "https://www.researchgate.net/profile/Ehis-Oghina", blurb: "Preprints and research updates." },
+  { id: "discord", name: "Discord", icon: "discord", category: "Community", handle: "ehis_73189", handleOnly: true, blurb: "Add me on Discord using my username." },
+  { id: "spotify", name: "Spotify", icon: "spotify", category: "Community", handle: "ehismode", url: "https://open.spotify.com/user/ehismode", blurb: "A podcast or audio version of my videos." },
 ];
 
 export const categoryOrder: PlatformCategory[] = [
