@@ -1,23 +1,19 @@
-import nextPlugin from "@next/eslint-plugin-next";
-import reactPlugin from "eslint-plugin-react";
-import hooksPlugin from "eslint-plugin-react-hooks";
+import nextVitals from "eslint-config-next/core-web-vitals";
+import nextTs from "eslint-config-next/typescript";
 
-export default [
+// The previous config had no `files` pattern, so ESLint silently skipped every
+// .ts/.tsx file. These presets include the TypeScript parser and cover them.
+const config = [
+  ...nextVitals,
+  ...nextTs,
   {
-    plugins: {
-      "@next/next": nextPlugin,
-      react: reactPlugin,
-      "react-hooks": hooksPlugin,
-    },
-    rules: {
-      ...nextPlugin.configs.recommended.rules,
-      ...nextPlugin.configs["core-web-vitals"].rules,
-      ...reactPlugin.configs.recommended.rules,
-      ...hooksPlugin.configs.recommended.rules,
-      "react/react-in-jsx-scope": "off",
-      "react/prop-types": "off",
-    },
-    settings: { react: { version: "detect" } },
+    // Tooling config files are CommonJS by design.
+    files: ["**/*.config.js"],
+    rules: { "@typescript-eslint/no-require-imports": "off" },
   },
-  { ignores: [".next/*", "node_modules/*"] },
+  {
+    ignores: [".next/**", "node_modules/**", "ideas/**", ".venv/**", "next-env.d.ts"],
+  },
 ];
+
+export default config;

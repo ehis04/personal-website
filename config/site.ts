@@ -1,40 +1,19 @@
+import { profile } from "@/config/studio";
+
+// Feeds canonical links, Open Graph, the sitemap and robots.txt.
+// Override with NEXT_PUBLIC_SITE_URL (no trailing slash) for staging or previews.
+const url = (process.env.NEXT_PUBLIC_SITE_URL || "https://ehisoghina.com").replace(/\/+$/, "");
+
 export const siteConfig = {
-  name: "Naman Barkiya - Applied AI Engineer",
-  authorName: "Naman Barkiya",
-  username: "namanbarkiya",
-  description:
-    "Naman Barkiya - Applied AI Engineer working at the intersection of AI, data, and scalable software systems. Explore my projects, experience, and contributions in software development and AI.",
-  url: "https://nbarkiya.xyz",
-  links: {
-    twitter: "https://x.com/namanbarkiya",
-    github: "https://github.com/namanbarkiya",
-    templateRepo: "https://github.com/namanbarkiya/minimal-next-portfolio",
-  },
-  ogImage:
-    "https://res.cloudinary.com/dvt5vkfwz/image/upload/v1767384721/naman_portfolio_og_image.png",
-  iconIco:
-    "https://res.cloudinary.com/dbfvcn3f6/image/upload/v1692357384/assets/naman-favicon.ico",
-  logoIcon:
-    "https://res.cloudinary.com/dbfvcn3f6/image/upload/v1692357294/assets/naman-logo.png",
-  keywords: [
-    "Naman Barkiya",
-    "Applied AI Engineer",
-    "AI Engineer",
-    "Software Engineer",
-    "Full Stack Developer",
-    "Machine Learning",
-    "Data Engineering",
-    "UBS",
-    "Python Developer",
-    "React Developer",
-    "Next.js Developer",
-    "TypeScript",
-    "Databricks",
-    "AI Startups",
-    "Software Development",
-    "Web Developer",
-    "Backend Developer",
-    "Frontend Developer",
-    "Tech Portfolio",
-  ],
+  name: `${profile.name} | ${profile.mainRole}`,
+  authorName: profile.name,
+  // Only verified facts: name, roles and degrees.
+  description: `${profile.name} is an ${profile.mainRole} (${profile.education.join(", ")}) who also works as a ${profile.otherRoles
+    .slice(0, 3)
+    .join(", ")
+    .toLowerCase()}. Experience, projects, research and an assistant that answers questions about Ehis.`,
+  url,
+  // Placeholder social card: swap for a purpose-made 1200x630 image later.
+  ogImage: "/media/photo-3.jpg",
+  keywords: [profile.name, profile.mainRole, ...profile.otherRoles, ...profile.education],
 };

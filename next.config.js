@@ -1,24 +1,14 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  async headers() {
-    return [
-      {
-        source: "/api/sb-contact",
-        headers: [
-          { key: "Access-Control-Allow-Credentials", value: "true" },
-          {
-            key: "Access-Control-Allow-Methods",
-            value: "GET,DELETE,PATCH,POST,PUT",
-          },
-          {
-            key: "Access-Control-Allow-Headers",
-            value:
-              "X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version",
-          },
-        ],
-      },
-    ];
+  images: {
+    formats: ["image/avif", "image/webp"],
+    minimumCacheTTL: 60 * 60 * 24 * 30,
   },
+  turbopack: {
+    root: __dirname,
+  },
+  // Removed: a permissive CORS block for /api/sb-contact, a route that does not
+  // exist (left over from the Supabase contact variant of the template).
 };
 
 module.exports = nextConfig;
