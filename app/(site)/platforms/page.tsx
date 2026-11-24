@@ -82,7 +82,7 @@ function Card({ p, big, span }: { p: Platform; big?: boolean; span: string }) {
           ) : (
             // A handle without a link (for example a Discord username).
             <span className="rounded-full bg-black/40 px-2.5 py-1 text-[10px] uppercase tracking-[0.14em] text-[#8c9a91] ring-1 ring-white/10">
-              Username
+              {p.handleOnly ? "Username" : "Link soon"}
             </span>
           )}
         </div>
