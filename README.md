@@ -1,149 +1,112 @@
-<a href="https://buymeachai.ezee.li/namanbarkiya" target="_blank" rel="noopener noreferrer"><img src="https://res.cloudinary.com/dvt5vkfwz/image/upload/v1767625332/buy_chai_naman.png" alt="Buy Me A Chai" width="200"></a>
+# Ehis Oghina: personal website
 
-# Next.js 16 Developer Portfolio Template
+The personal website of **Ehis Oghina**, an AI Engineer (BSc Computer Science, Dublin City University; MSc Artificial Intelligence, University of Birmingham) who also works as a data scientist, software engineer and football analyst, and builds and creates content. Live at **https://ehisoghina.com** once deployed.
 
-A modern, responsive, and SEO-optimized **Next.js 16 portfolio template** designed for developers, designers, and professionals. This open-source project helps you showcase your skills, experience, and projects with an elegant interface that stands out. Built with server-side rendering, TypeScript, and the latest web standards for optimal performance.
+It is a dark, forest-green, tile-based multimedia site: a full-screen snapped home page, expandable experience cards, a project strip, research and platform pages, and a chat assistant that answers questions about Ehis.
 
-## ✨ Key Features
+## Stack
 
-- **Professional Experience Timeline**: Showcase your career journey with a visually appealing timeline
-- **Project Showcase**: Display your technical projects with detailed information and live demos
-- **Multiple Themes**: Dark, Light, Retro, Cyberpunk, Aurora, Synthwave, and Paper themes
-- **Responsive Design**: Optimized for all devices (mobile, tablet, desktop)
-- **100% Performance Score**: Fully optimized for speed and Core Web Vitals
-- **SEO-Ready**: Structured data, meta tags, and optimized content
-- **Modern Tech Stack**: Next.js 16, React 19, TypeScript, Tailwind CSS, and shadcn/ui
-- **Easy Customization**: Well-organized code structure with minimal effort required
-- **Animations**: Subtle animations for engaging user experience
-- **Analytics Integration**: Ready for Google Analytics tracking
-- **Contact Form**: Functional contact form with validation
-- **Open Source**: Free to use and modify for your personal portfolio
+Next.js 16 (App Router) · React 19 · TypeScript · Tailwind CSS v3 · framer-motion (experience and projects only) · Anthropic SDK (`claude-haiku-5-5` for the chat).
 
-## 🚀 Demo
+Performance is a hard requirement: scroll and entrance effects are plain CSS (scroll-driven animations), most components are server components, at most two videos play at once, and nothing blurs moving content.
 
-View the live demo at [https://nbarkiya.xyz/](https://nbarkiya.xyz)
+## Pages
 
-https://github.com/namanbarkiya/minimal-next-portfolio/assets/82203888/f93bf5ca-c2bd-4fe5-a413-1050ebf6cf78
+| Route | What it is |
+|---|---|
+| `/` | Home: six full-screen sections (mosaic, experience, projects, research, ask, contact) |
+| `/experience` | Stacked role cards that expand into a full-screen detail view |
+| `/projects` | Horizontal pill strip with a focus lens and a detail panel |
+| `/research` | Research, video previews (YouTube facades) and social links |
+| `/ask` | Chat assistant with typed or dictated questions and spoken answers |
+| `/platforms` | Everywhere Ehis can be found |
+| `/api/chat` | Streaming chat endpoint (server-side API key, rate limited) |
+| `/api/contact` | Contact relay to a Google Form (no page uses it yet) |
 
-## Ranks #1 on AI Search (top-notch AEO/GEO)
+## Run it
 
-https://github.com/user-attachments/assets/fc071310-9d1c-4832-877f-23f9569893d7
+```bash
+npm install
+cp .env.example .env     # if you have one; otherwise create .env (see below)
+npm run dev              # http://localhost:3000
+```
 
-## 🛠️ Tech Stack
+```bash
+npm run build && npm start   # production check
+npx tsc --noEmit             # types
+npx eslint .                 # lint
+```
 
-- **Framework**: [Next.js 16](https://nextjs.org/) with Turbopack
-- **Language**: [TypeScript](https://www.typescriptlang.org/)
-- **UI Library**: [React 19](https://react.dev/)
-- **Styling**: [Tailwind CSS](https://tailwindcss.com/) + [shadcn/ui](https://ui.shadcn.com/)
-- **Animations**: [Framer Motion](https://www.framer.com/motion/)
-- **Form Handling**: Server actions with validation
-- **Analytics**: Google Analytics + Vercel Analytics
-- **Deployment**: [Vercel](https://vercel.com)
+### Environment variables
 
-## 🔧 Getting Started
+| Variable | Purpose |
+|---|---|
+| `ANTHROPIC_API_KEY` | Powers `/ask`. Server-side only: never prefix it with `NEXT_PUBLIC_`. Set a monthly spend limit for the key in the Anthropic Console. |
+| `NEXT_PUBLIC_SITE_URL` | Optional. Overrides the default `https://ehisoghina.com` for canonical links, the sitemap and Open Graph. |
+| `NEXT_PUBLIC_RESUME_LINK` | Optional `https://` link that activates the résumé tile. |
+| `NEXT_PUBLIC_GOOGLE_MEASUREMENT_ID` | Optional Google Analytics id. |
+| `NEXT_PUBLIC_GOOGLE_VERIFICATION` | Optional Search Console verification token. |
+| `GOOGLE_FORM_LINK`, `GOOGLE_FORM_FIELD_ID_NAME/EMAIL/MESSAGE/SOCIAL` | Only for `/api/contact`. |
 
-To get started with your own portfolio website:
+`.env` is git-ignored. The `ideas/` folder (references and raw media) is git-ignored too and is never committed.
 
-1. Clone this repository:
+## Where the content lives
 
-   ```bash
-   git clone https://github.com/namanbarkiya/minimal-next-portfolio.git my-portfolio
-   cd my-portfolio
-   ```
+| File | Holds |
+|---|---|
+| `config/studio.ts` | Degrees, experience, projects (from Ehis's CV), plus placeholder papers, videos and socials |
+| `config/platforms.ts` | Every platform Ehis can be found on; add a `url` and the tile becomes a link |
+| `config/knowledge.ts` | The **verified facts** the chat assistant may use. Only add true facts here, never placeholders |
+| `config/site.ts` | Site name, description, domain, social image |
+| `public/media/` | Web-ready photos and short clips |
 
-2. Copy the contents of `.env.copy` to a new `.env` file and fill in the required information.
+Photos and clips on the site are currently Ehis's own pictures used as placeholders. Projects are not hosted yet, so their pages link to GitHub where a public repo exists and say "Live demo coming soon".
 
-3. Install dependencies:
+### Adding a video clip
 
-   ```bash
-   npm install
-   # or
-   yarn install
-   # or
-   pnpm install
-   ```
+```bash
+scripts/make-clip.sh <source-video> <name> [start-seconds] [portrait|landscape]
+```
 
-4. Start the development server:
+Makes a 6-second, silent, compressed clip and a poster in `public/media/`. Needs `ffmpeg` (or set `FFMPEG=/path/to/ffmpeg`). Host long videos on a CDN, not in the repo.
 
-   ```bash
-   npm run dev
-   # or
-   yarn dev
-   # or
-   pnpm dev
-   ```
+## Project layout
 
-5. Open [http://localhost:3000](http://localhost:3000) in your web browser to see the website.
+```
+app/
+  (site)/        the pages above, the .studio layout, nav and studio.css (all styling)
+  api/           chat and contact routes
+components/studio/   tiles, scroller, experience stack, project strip, chat ...
+config/          content and site settings
+public/media/    photos and clips
+scripts/         make-clip.sh
+```
 
-## 🎨 Customization
+## Hosting
 
-Easily personalize your portfolio using the configuration files below:
+Nothing is deployed yet. Recommendation, checked against current docs:
 
-| Section            | How to Customize                                       | File Location             |
-| ------------------ | ------------------------------------------------------ | ------------------------- |
-| **Personal Info**  | Edit your name, bio, and social links                  | `config/site.ts`          |
-| **Skills**         | Add or modify the technologies and skills you showcase | `config/skills.ts`        |
-| **Projects**       | Highlight your technical projects                      | `config/projects.ts`      |
-| **Experience**     | Add your work and professional experience              | `config/experience.ts`    |
-| **Contributions**  | Display open-source/community contributions            | `config/contributions.ts` |
-| **Colors & Theme** | Customize color palette and themes                     | `tailwind.config.js`      |
+**Cloudflare Workers via the OpenNext adapter, with the domain on Cloudflare DNS.**
 
-All configuration files are well-organized and documented for a smooth customization process.
+- The free plan allows 100,000 requests per day and 10 ms of CPU per request ([limits](https://developers.cloudflare.com/workers/platform/limits)). Waiting on network calls does not count as CPU, so the streaming chat is fine. Every page here is prerendered static, so CPU use is tiny.
+- Ehis already deploys Social Olympics this way, so the tooling is familiar.
+- **Vercel Hobby** is the easiest for Next.js but is restricted to non-commercial personal use ([fair use policy](https://vercel.com/docs/platform/fair-use-policy)). A portfolio used to find paid work sits in a grey area, so it is not the first pick.
+- Next.js 16 is supported by the adapter, but Cloudflare now points brand-new Next.js apps at its own `vinext` ([docs](https://developers.cloudflare.com/workers/framework-guides/web-apps/opennext/)), so check the current guidance when you set it up.
 
-## 🌟 Features In Detail
+Things to do when deploying:
 
-### Professional Experience Timeline
+1. Set `ANTHROPIC_API_KEY` as a server-side secret, and a monthly spend cap in the Anthropic Console.
+2. The chat and contact rate limits are in-memory, which resets per instance and does not hold across Workers. Move them to Upstash Redis (already used by Social Olympics) or Cloudflare's rate limiting.
+3. Put large videos on Cloudflare R2 (free tier) rather than in `public/`.
+4. The football prediction demo needs a small Python service. Free options: Hugging Face Spaces (CPU) or Render's free tier (cold starts). The site would call it through a server route so keys stay server-side.
+5. Swap the placeholder social image (`/media/photo-3.jpg`) for a 1200×630 card.
 
-An interactive, animated timeline that showcases your career journey with expandable sections for details about each position and company.
+## Status
 
-### Project Showcase
+- Real content: education, experience and projects, from Ehis's CV.
+- Placeholder: papers, videos, social handles, the contact email, the résumé link, and all photos and clips used as images.
+- Not hosted: none of the projects have live demos yet.
 
-Display your technical projects with detailed information, technologies used, live demo links, and comprehensive project descriptions.
+## Licence
 
-### Skills Showcase
-
-Visually represent your technical and soft skills with customizable ratings and categories.
-
-### Contact Form Integration
-
-A ready-to-use contact form that can connect to various backend services.
-
-### SEO Optimization
-
-Built-in SEO features with proper meta tags, structured data, and semantic HTML.
-
-## 📱 Performance and Responsiveness
-
-![best-portfolio-website-score](https://github.com/namanbarkiya/minimal-next-portfolio/assets/82203888/3fb9c94d-9d99-4e98-92ea-14aadc91b568)
-![100-score-vercel](https://github.com/namanbarkiya/minimal-next-portfolio/assets/82203888/7cfe28cc-b619-4199-9dab-1cf16723b86d)
-
-This template is optimized for:
-
-- 100% Lighthouse score
-- Excellent Core Web Vitals metrics
-- Responsive design across all device sizes
-- Fast loading times with proper image optimization
-
-## 📄 License
-
-This project is open source and available under the [MIT License](LICENSE).
-
-## 🙏 Acknowledgements
-
-- Design inspired by modern portfolio best practices
-- Built by [Naman Barkiya](https://github.com/namanbarkiya)
-- Icons from [Lucide](https://lucide.dev/)
-
-## 💻 Deploy on Vercel
-
-The easiest way to deploy your portfolio is using [Vercel](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme), the platform from the creators of Next.js.
-
-Check out the [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
-
-## 🌟 Star History
-
-[![Star History Chart](https://api.star-history.com/svg?repos=namanbarkiya/minimal-next-portfolio&type=Date)](https://star-history.com/#namanbarkiya/minimal-next-portfolio&Date)
-
----
-
-**Built with ❤️ by [Naman Barkiya](https://github.com/namanbarkiya)**
+MIT. The project started from the open-source `minimal-next-portfolio` template by Naman Barkiya, whose copyright notice is kept in [LICENSE](LICENSE). The design, pages, components and content here are new.

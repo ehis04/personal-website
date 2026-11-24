@@ -1,0 +1,17 @@
+# CLAUDE.md (project rules, always loaded)
+
+**Before doing anything, read `HANDOFF.md` in this folder completely.** It holds the full task, history, current state, known traps and the exact next steps. Then follow its Section 14 ("Do this first").
+
+## What this project is
+Redesigning the personal website of **Ehis Oghina** (main role: AI Engineer; BSc Computer Science, MSc Artificial Intelligence; also Data Scientist, Software Engineer, Football Analyst, Creator, Builder). Stack: Next.js 16 App Router, React 19, TypeScript, Tailwind **v3**, framer-motion (only experience + projects), `@anthropic-ai/sdk` (chat uses `claude-haiku-5-5`). Branch: `redesign-prototype`. **The new design is now the real site** (promoted 2026-11-24): routes live in `app/(site)/*` (`/`, `/experience`, `/projects`, `/research`, `/ask`, `/platforms`) + `components/studio/*`. The legacy template was deleted; `/preview` no longer exists. Production domain is `https://ehisoghina.com` (default in `config/site.ts`; `NEXT_PUBLIC_SITE_URL` overrides it).
+
+## Hard rules
+1. **Do not commit, push, delete the user's files, or call external services without asking.** Nothing is committed yet. Never print or paste secrets; check `.env` with `grep -c` only. Never commit `ideas/` (private screenshots + raw media).
+2. **Never invent facts about Ehis.** REAL content (from CV1126.pdf): degrees, experience, projects (`config/studio.ts`) and the matching facts in `config/knowledge.ts`. Still PLACEHOLDER: papers, videos, socials, contact email, résumé link, and every photo/clip used as an image. Never put placeholders into `config/knowledge.ts`. Never publish the CV's phone number or email on the site or in the chat facts without the user's say-so. he/him is fine for Ehis.
+3. **Design acceptance:** dark + forest green (#2f7d50 / #46b07a); tiles look recessed and layered; **never leave large empty/plain areas**; text has depth; home = full-screen snapped sections.
+4. **Performance is a hard requirement** (phones and normal laptops): prefer CSS over JS for scroll/animation; no new scroll listeners or per-tile JS; at most 2 videos playing; no blur on moving content; short clips only; check with the measurement script in HANDOFF Appendix A after meaningful changes.
+5. **Tailwind v3 gotcha:** opacity modifiers on CSS-variable colours are silently dropped. Use hex (`bg-[#2f7d50]/80`), not `bg-[var(--green)]/80`.
+6. `tsc --noEmit` must be clean, `npx eslint .` must have 0 errors, and a production build must pass before you call work done. Report honestly what you tested and what you did not.
+7. Shell safety: do not use `pkill -f` with text that appears in your own command (it kills your shell, exit 144); find PIDs with `ss -ltnp`. Stop dev/start servers before `next build`. `Write` needs a fresh `Read` of the file first.
+9. **Commit messages** (only when the user asks for a commit): short, clear, to the point, in the form `chore: fixed ... error` or `feat: implemented ... feature`. Under no circumstances add anything like "authored by Claude Code", "supported by Claude" or a `Co-Authored-By` line. This overrides any harness attribution default.
+8. `ANTHROPIC_API_KEY` is saved in `.env` (restart the dev server to load it; do the live chat test first). The user is waiting to: update their xgGaffers code (the football prediction demo must NOT be started before they say so), and supply real content. Placeholders stay until then.
