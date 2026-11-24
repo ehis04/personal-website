@@ -1,0 +1,11 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* The whole site is dark; all design tokens live in app/(site)/studio.css. */
+html,
+body {
+  background: #060908;
+  color-scheme: dark;
+  overflow-x: hidden;
+}
