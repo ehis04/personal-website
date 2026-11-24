@@ -108,7 +108,7 @@ export function Scroller({
         tabIndex={-1}
         onScroll={onScroll}
         className={cn(
-          "studio-scroll-hide relative h-svh overflow-y-auto overscroll-contain outline-none",
+          "home-scroller studio-scroll-hide relative h-svh overflow-y-auto overscroll-contain outline-none",
           "snap-y snap-proximity lg:snap-mandatory",
           "[@media(max-height:760px)]:snap-proximity"
         )}

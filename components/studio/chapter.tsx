@@ -13,6 +13,8 @@ interface ChapterProps {
   cta: string;
   /** Tailwind grid-rows class for desktop, e.g. "lg:grid-rows-[3fr_2fr]". */
   rows?: string;
+  /** Optional slim row under the tiles (used by the last screen for the footer). */
+  footer?: React.ReactNode;
   children: React.ReactNode;
 }
 
@@ -24,6 +26,7 @@ export function Chapter({
   href,
   cta,
   rows = "lg:grid-rows-2",
+  footer,
   children,
 }: ChapterProps) {
   return (
@@ -53,6 +56,7 @@ export function Chapter({
             </Link>
           </header>
           <div className={`grid min-h-0 flex-1 grid-cols-12 gap-3 ${rows}`}>{children}</div>
+          {footer}
         </div>
       </div>
     </Screen>

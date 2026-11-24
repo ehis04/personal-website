@@ -3,17 +3,10 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
+import { navLinks as links } from "@/config/site";
 import { profile } from "@/config/studio";
 import { cn } from "@/lib/utils";
 
-const links = [
-  { href: "/", label: "Home" },
-  { href: "/experience", label: "Experience" },
-  { href: "/projects", label: "Projects" },
-  { href: "/research", label: "Research" },
-  { href: "/ask", label: "Ask" },
-  { href: "/platforms", label: "Platforms" },
-];
 
 export function StudioNav() {
   const pathname = usePathname();
@@ -21,7 +14,7 @@ export function StudioNav() {
     "pointer-events-auto rounded-full bg-black/65 ring-1 ring-white/10 shadow-lg shadow-black/40";
 
   return (
-    <header className="pointer-events-none fixed inset-x-3 top-3 z-30 flex items-center justify-between gap-3">
+    <header className="site-bar pointer-events-none fixed inset-x-3 top-3 z-30 flex items-center justify-between gap-3">
       <Link
         href="/"
         className={cn(pill, "hidden px-4 py-2 font-display text-sm tracking-wide sm:block")}
