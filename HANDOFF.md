@@ -6,6 +6,10 @@
 
 ---
 
+> ## UPDATE 2026-11-24 (Discord linked). Newest note.
+> - **Discord** now links to the profile `https://discord.com/users/<numeric id>` (id supplied by the user); handle `ehis_73189` shown. `handleOnly` is no longer used by any platform but remains supported.
+> - **Google Scholar still has no url.** The user cannot create the profile yet and has an article ready. Advice given: Scholar does not accept uploads; it indexes papers that are public as PDFs. arXiv is reliably indexed (first-time authors need an endorsement; a university email helps); Zenodo gives an instant DOI but its Google Scholar indexing is reported as unreliable; a university repository also works. A Scholar profile must be public and have a verified UNIVERSITY email (Gmail does not count) to appear in Scholar search. Once the profile exists, set `url` to `https://scholar.google.com/citations?user=XXXX`, and add the paper to `papers` in `config/studio.ts` with its link.
+
 > ## UPDATE 2026-11-24 (auto-deploy permission, Stack Overflow link). Newest note.
 > - **Deploy permission:** the user asked for hands-off deploys. Added `Bash(npm run deploy:cf)`, `Bash(npx wrangler deploy)` and `Bash(npx wrangler deploy --dry-run)` to `/home/eo4/projects/personal_website/.claude/settings.local.json` (outside the git repo, never committed). Earlier the auto-mode classifier had blocked `wrangler deploy --temporary`. Flow now: tsc + eslint + `build:cf` pass, commit, push, `npm run deploy:cf`, verify live with curl.
 > - **Alternative (not set up):** Cloudflare "Workers Builds" (dashboard: Workers & Pages > ehisoghina > Settings > Builds > connect GitHub) would deploy on every push, but `.env` is not in git so `NEXT_PUBLIC_CONTACT_EMAIL` must be added as a build variable there.
