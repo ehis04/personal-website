@@ -152,8 +152,13 @@ export interface StudioProject {
   id: string;
   title: string;
   kicker: string;
-  description: string;
-  /** Shown in the detail panel as the project's status line. */
+  /** One short sentence shown on the project card. */
+  summary: string;
+  /** The full explanation, shown when the card is expanded (from the CV). */
+  highlights: string[];
+  /** Up to three headline numbers (from the CV and the public repos). */
+  metrics?: { value: string; label: string }[];
+  /** Shown on the card and in the expanded view. */
   status: string;
   tags: string[];
   media: StudioMedia;
@@ -168,8 +173,19 @@ export const studioProjects: StudioProject[] = [
     id: "xggaffer",
     title: "xgGaffer",
     kicker: "Sports analytics platform",
-    description:
-      "A football analytics platform across five European leagues, built on an ML pipeline that scraped 43,000+ matches and 64,000+ player records. 86+ engineered features feed seven models covering match outcomes, scorelines, season simulation, injury risk, tactics and lineups. A deterministic natural-language query pipeline classifies 16 intent types and routes them to the ML engines, with Claude Haiku used only as a grounded formatter. Includes role-based tools for coaches, referees, players and fans.",
+    summary:
+      "A football analytics platform: 43,000+ matches, seven ML models and a grounded natural-language query layer.",
+    highlights: [
+      "Built a football analytics platform across five European leagues on an ML pipeline that scraped 43,000+ matches and 64,000+ player records, with 86+ engineered features.",
+      "Trained seven models covering match outcomes, scorelines, season simulation, injury risk, tactics and lineups.",
+      "Engineered a deterministic five-layer natural-language query pipeline that classifies 16 intent types (TF-IDF and Logistic Regression) and routes them to the ML engines. The Claude Haiku API is used only as a grounded formatter, to prevent hallucination.",
+      "Delivered role-based tools for coaches, referees, players and fans, including a referee education module built by parsing the FIFA Laws of the Game with Gemini 2.5 Flash Lite.",
+    ],
+    metrics: [
+      { value: "43,000+", label: "Matches scraped" },
+      { value: "86+", label: "Features" },
+      { value: "7", label: "Models" },
+    ],
     status: "Aug 2025 – May 2026",
     tags: ["Python", "Django", "React", "TypeScript", "PostgreSQL", "Scikit-learn"],
     media: { kind: "video", src: "/media/gym-a.mp4", poster: "/media/gym-a.jpg" },
@@ -179,8 +195,19 @@ export const studioProjects: StudioProject[] = [
     id: "trivium",
     title: "Trivium",
     kicker: "Tournament analytics",
-    description:
-      "A football analytics pipeline on match event and tracking data from the FIFA U-17 World Cups 2025 (men's and women's). Three team scores (dominance, efficiency, resourcefulness) are standardised within each tournament and measured against a pre-tournament Elo expectation, to find which tactical profiles take teams further than their strength predicts. A Streamlit dashboard offers team reports, match reviews and a coach scouting view, with a natural-language query box that sends only aggregated results to the Claude API.",
+    summary:
+      "Which tactical profiles take FIFA U-17 World Cup teams further than their strength predicts?",
+    highlights: [
+      "Built a football analytics pipeline on match event and tracking data from the FIFA U-17 World Cups 2025, men's and women's.",
+      "Defined three team scores (dominance, efficiency and resourcefulness), standardised within each tournament and measured against a pre-tournament Elo expectation, to find which tactical profiles take teams further than their strength predicts.",
+      "Delivered a Streamlit dashboard with team reports, match reviews and a coach scouting view, backed by a natural-language query box that sends only aggregated results to the Claude API and falls back to offline RapidFuzz matching.",
+      "Validated findings with out-of-sample, robustness and sensitivity tests, and reported team-level results only.",
+    ],
+    metrics: [
+      { value: "3", label: "Team scores" },
+      { value: "8", label: "Tactical profiles" },
+      { value: "2", label: "Tournaments" },
+    ],
     status: "Sep 2026 – Nov 2026",
     tags: ["Python", "Pandas", "DuckDB", "Scikit-learn", "Statsmodels", "Streamlit", "Plotly"],
     media: { kind: "video", src: "/media/talk-a.mp4", poster: "/media/talk-a.jpg" },
@@ -190,8 +217,18 @@ export const studioProjects: StudioProject[] = [
     id: "social-olympics",
     title: "Social Olympics",
     kicker: "Competition platform",
-    description:
-      "A cross-platform web and mobile app for running custom Olympic-style competitions. Types, validation, scoring logic and UI packages are shared between Next.js and React Native (Expo) clients in a Turborepo monorepo on a Supabase backend. A configurable scoring engine covers a 52-event library in 16 categories, with tiered placement points, event weight multipliers (0.5× to 3×), best-of-N selection, MVP bonuses, multi-stage tiebreakers and snake-draft team balancing from peer-voted strength ratings.",
+    summary:
+      "A web and mobile app for running your own Olympic-style competitions, with a 52-event library.",
+    highlights: [
+      "Built a cross-platform web and mobile app for running custom Olympic-style competitions.",
+      "Shared types, validation, scoring logic and UI packages between Next.js and React Native (Expo) clients, using a Turborepo monorepo on a Supabase backend.",
+      "Designed a configurable scoring engine across a 52-event library in 16 categories: tiered placement points, event weight multipliers (0.5× to 3×), best-of-N selection, MVP bonuses, multi-stage tiebreakers and snake-draft team balancing from peer-voted strength ratings.",
+    ],
+    metrics: [
+      { value: "52", label: "Events" },
+      { value: "16", label: "Categories" },
+      { value: "0.5–3×", label: "Weight multipliers" },
+    ],
     status: "Jun 2026 – Oct 2026",
     tags: ["TypeScript", "Next.js", "React Native", "Expo", "Supabase", "PostgreSQL"],
     media: { kind: "video", src: "/media/gym-b.mp4", poster: "/media/gym-b.jpg" },
@@ -201,8 +238,14 @@ export const studioProjects: StudioProject[] = [
     id: "little-by-little",
     title: "Little by Little",
     kicker: "Grocery optimisation",
-    description:
-      "A full-stack web app, in progress, that helps Irish households decide where and how to do their weekly grocery shop. It compares single-store and split-shop plans across major supermarkets while accounting for loyalty vouchers, travel cost and time, and returns the Cheapest, Fastest and most Balanced options with a store-by-store checklist. A deterministic optimisation engine handles pricing, voucher eligibility and product matching; an LLM only parses shopping lists and explains recommendations in plain language.",
+    summary:
+      "Helps Irish households plan the cheapest, fastest or most balanced weekly grocery shop. In progress.",
+    highlights: [
+      "Building a full-stack web app that helps Irish households decide where and how to do their weekly grocery shop.",
+      "Compares single-store and split-shop plans across major supermarkets while accounting for loyalty vouchers, travel cost and time, and returns the Cheapest, Fastest and most Balanced options with a store-by-store checklist.",
+      "Designing a deterministic optimisation engine for pricing, voucher eligibility and product matching, using an LLM only to parse shopping lists and explain recommendations in plain language.",
+    ],
+    metrics: [{ value: "3", label: "Plan options" }],
     status: "Oct 2026 – Present",
     tags: ["Python", "FastAPI", "PostgreSQL", "OR-Tools", "TypeScript", "React", "LLM API"],
     media: { kind: "image", src: "/media/photo-3.jpg", position: "50% 22%" },
@@ -211,8 +254,17 @@ export const studioProjects: StudioProject[] = [
     id: "financial-risk-dashboard",
     title: "Financial Risk Dashboard",
     kicker: "Risk analytics",
-    description:
-      "A Django application that cleans historical market data with Pandas and NumPy and computes portfolio-level risk metrics, presenting risk trends and portfolio performance through interactive Matplotlib and Seaborn visualisations. Scikit-learn models were trained to predict Value at Risk (VaR) and volatility patterns, reaching 82% accuracy across a 5-year historical dataset.",
+    summary:
+      "A Django app that computes portfolio risk metrics, with models predicting VaR and volatility at 82% accuracy.",
+    highlights: [
+      "Developed a Django application that cleans historical market data with Pandas and NumPy and computes portfolio-level risk metrics.",
+      "Presented risk trends and portfolio performance through interactive Matplotlib and Seaborn visualisations.",
+      "Trained Scikit-learn models to predict Value at Risk (VaR) and volatility patterns, achieving 82% accuracy across a 5-year historical dataset.",
+    ],
+    metrics: [
+      { value: "82%", label: "Accuracy" },
+      { value: "5 yrs", label: "Historical data" },
+    ],
     status: "Nov 2024 – Feb 2025",
     tags: ["Python", "Django", "Pandas", "NumPy", "Matplotlib", "Seaborn", "Scikit-learn"],
     media: { kind: "image", src: "/media/photo-2.jpg", position: "50% 35%" },

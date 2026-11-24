@@ -3,6 +3,7 @@ import "./studio.css";
 import { Bricolage_Grotesque, Instrument_Serif } from "next/font/google";
 
 import { StudioNav } from "@/components/studio/nav";
+import { SiteFooter } from "@/components/studio/site-footer";
 
 const display = Bricolage_Grotesque({
   subsets: ["latin"],
@@ -26,6 +27,7 @@ export default function SiteLayout({ children }: { children: React.ReactNode }) 
       </a>
       <StudioNav />
       {children}
+      <SiteFooter />
     </div>
   );
 }

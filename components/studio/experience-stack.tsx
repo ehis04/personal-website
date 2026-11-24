@@ -40,15 +40,17 @@ export function ExperienceStack() {
     window.addEventListener("keydown", onKey);
     const prev = document.body.style.overflow;
     document.body.style.overflow = "hidden";
+    document.body.dataset.dialog = "open"; // hides the top bars (see studio.css)
     return () => {
       window.removeEventListener("keydown", onKey);
       document.body.style.overflow = prev;
+      delete document.body.dataset.dialog;
     };
   }, [openId, close]);
 
   return (
     <>
-      <div className="mx-auto max-w-6xl px-3 pb-[20svh] pt-24">
+      <div className="mx-auto max-w-6xl px-3 pb-[4svh] pt-24">
         <div className="mb-6 flex items-end justify-between px-1">
           <h1 className="font-display text-5xl leading-none md:text-7xl">Experience</h1>
           <p className="hidden text-xs uppercase tracking-[0.2em] text-[var(--ink-dim)] sm:block">
@@ -207,7 +209,10 @@ function Expanded({ exp, onClose }: { exp: Experience; onClose: () => void }) {
           </div>
 
           {exp.metrics && exp.metrics.length > 0 && (
-            <div className="mt-8 grid grid-cols-3 gap-3 text-center">
+            <div
+              className="mt-8 grid gap-3 text-center"
+              style={{ gridTemplateColumns: `repeat(${exp.metrics.length}, minmax(0, 1fr))` }}
+            >
               {exp.metrics.map((m) => (
                 <div key={m.label} className="rounded-2xl bg-[var(--surface-2)] px-3 py-4 ring-1 ring-white/5">
                   <p className="font-display text-2xl text-[var(--green-glow)]">{m.value}</p>

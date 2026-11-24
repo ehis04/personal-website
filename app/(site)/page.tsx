@@ -5,6 +5,7 @@ import { AnimatedHeading } from "@/components/studio/animated-heading";
 import { Chapter } from "@/components/studio/chapter";
 import { DocPreview } from "@/components/studio/doc-preview";
 import { Scroller, Screen } from "@/components/studio/scroller";
+import { SiteFooter } from "@/components/studio/site-footer";
 import { Tile } from "@/components/studio/tile";
 import { degrees, experiences, profile, studioProjects } from "@/config/studio";
 
@@ -435,7 +436,7 @@ export default function PreviewHome() {
         </Chapter>
 
         {/* 05 Contact */}
-        <Chapter index={5} kicker="Contact" title="Let's work *together*" href="/platforms" cta="Find me online">
+        <Chapter index={5} kicker="Contact" title="Let's work *together*" href="/platforms" cta="Find me online" footer={<SiteFooter compact />}>
           <Tile
             media={{ kind: "image", src: "/media/photo-2.jpg", position: "50% 35%" }}
             className={`col-span-12 lg:col-span-8 lg:row-span-2 ${mobileMin}`}

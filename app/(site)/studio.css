@@ -281,3 +281,68 @@
   transition: top 0.2s;
 }
 .studio .skip-link:focus { top: 12px; }
+
+/* ───────── Projects strip: card width ─────────
+   Small screens: a swipeable strip. From ~1340px up all five cards share the width
+   (min 248px, max 400px) so nothing is cut off and there is no empty gutter. */
+.studio .proj-strip {
+  --pw: min(72vw, 300px);
+}
+@media (min-width: 1024px) {
+  .studio .proj-strip {
+    --pw: clamp(248px, calc((100vw - 6rem) / 5), 400px);
+    justify-content: center;
+  }
+}
+
+/* ───────── Header bars fade while reading, return on hover ─────────
+   Pure CSS scroll-driven animation: no scroll listener, no JavaScript.
+   - Only where a real hover exists (mouse/trackpad). Touch devices keep the bars,
+     because a faded bar there could not be "hovered" back before a tap.
+   - Document-scrolling pages use the page scroll; the home page scrolls inside its
+     own container (.home-scroller), which exposes a named timeline.
+   - Browsers without scroll-driven animations simply keep the bars visible. */
+@keyframes bar-fade {
+  to {
+    opacity: 0.1;
+  }
+}
+@supports (animation-timeline: scroll()) {
+  @media (hover: hover) and (prefers-reduced-motion: no-preference) {
+    .studio .site-bar {
+      animation: bar-fade linear both;
+      animation-timeline: scroll(root block);
+      animation-range: 0px 140px;
+      transition: opacity 0.25s ease;
+    }
+    .studio .site-bar:hover,
+    .studio .site-bar:focus-within {
+      animation: none;
+      opacity: 1;
+    }
+  }
+}
+@supports (timeline-scope: --pg) {
+  .studio {
+    timeline-scope: --pg;
+  }
+  .studio .home-scroller {
+    scroll-timeline: --pg block;
+  }
+  @media (hover: hover) and (prefers-reduced-motion: no-preference) {
+    .studio:has(.home-scroller) .site-bar {
+      animation-timeline: --pg;
+    }
+  }
+}
+
+/* ───────── Footer ───────── */
+/* The home page is a fixed-height scroller; its footer lives inside the last screen. */
+.studio:has(.home-scroller) .site-footer {
+  display: none;
+}
+
+/* While a project or experience dialog is open, the top bars would sit on top of it. */
+body[data-dialog] .studio .site-bar {
+  visibility: hidden;
+}
