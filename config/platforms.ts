@@ -45,11 +45,12 @@ export const platforms: Platform[] = [
   { id: "bluesky", name: "Bluesky", icon: "bluesky", category: "Video & social", handle: "ehisoghina.bsky.social", url: "https://bsky.app/profile/ehisoghina.bsky.social", blurb: "Where much of the AI and research crowd now posts." },
   { id: "kaggle", name: "Kaggle", icon: "kaggle", category: "Code & competitions", handle: "ehisoghina", url: "https://www.kaggle.com/ehisoghina", blurb: "Notebooks, datasets and competition rankings." },
   { id: "huggingface", name: "Hugging Face", icon: "huggingface", category: "Code & competitions", handle: "ehisoghina", url: "https://huggingface.co/ehisoghina", blurb: "Models and demos I have published." },
-  // No url yet: Stack Overflow and Google Scholar profile links contain a numeric id
-  // that cannot be built from a username. Paste the real profile link into `url`.
-  { id: "stackoverflow", name: "Stack Overflow", icon: "stackoverflow", category: "Code & competitions", handle: "ehis-oghina", blurb: "Answers and reputation as a developer." },
+  { id: "stackoverflow", name: "Stack Overflow", icon: "stackoverflow", category: "Code & competitions", handle: "ehis-oghina", url: "https://stackoverflow.com/users/33337372/ehis-oghina", blurb: "Answers and reputation as a developer." },
   { id: "hackerrank", name: "HackerRank", icon: "hackerrank", category: "Code & competitions", handle: "ehisoghina", url: "https://www.hackerrank.com/profile/ehisoghina", blurb: "Skill badges and certifications." },
   { id: "devpost", name: "Devpost", icon: "devpost", category: "Code & competitions", handle: "ehisoghina", url: "https://devpost.com/ehisoghina", blurb: "Hackathon projects, including the datathon." },
+  // No url yet: a Scholar profile link looks like https://scholar.google.com/citations?user=XXXX
+  // and only exists after the profile is created. Discord: a profile link needs the numeric
+  // user id (https://discord.com/users/<id>); until then the username is shown.
   { id: "scholar", name: "Google Scholar", icon: "scholar", category: "Research", handle: "ehisoghina", blurb: "Papers and citation counts." },
   { id: "orcid", name: "ORCID", icon: "orcid", category: "Research", handle: "0009-0007-8250-3339", url: "https://orcid.org/0009-0007-8250-3339", blurb: "A permanent researcher ID linking my work." },
   { id: "researchgate", name: "ResearchGate", icon: "researchgate", category: "Research", handle: "Ehis-Oghina", url: "https://www.researchgate.net/profile/Ehis-Oghina", blurb: "Preprints and research updates." },

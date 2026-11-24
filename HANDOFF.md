@@ -6,6 +6,11 @@
 
 ---
 
+> ## UPDATE 2026-11-24 (auto-deploy permission, Stack Overflow link). Newest note.
+> - **Deploy permission:** the user asked for hands-off deploys. Added `Bash(npm run deploy:cf)`, `Bash(npx wrangler deploy)` and `Bash(npx wrangler deploy --dry-run)` to `/home/eo4/projects/personal_website/.claude/settings.local.json` (outside the git repo, never committed). Earlier the auto-mode classifier had blocked `wrangler deploy --temporary`. Flow now: tsc + eslint + `build:cf` pass, commit, push, `npm run deploy:cf`, verify live with curl.
+> - **Alternative (not set up):** Cloudflare "Workers Builds" (dashboard: Workers & Pages > ehisoghina > Settings > Builds > connect GitHub) would deploy on every push, but `.env` is not in git so `NEXT_PUBLIC_CONTACT_EMAIL` must be added as a build variable there.
+> - **Platforms:** Stack Overflow url set (`stackoverflow.com/users/33337372/ehis-oghina`). Google Scholar: the user's link was the profile CREATION page (`...citations?view_op=new_profile`), not a public profile; a real one looks like `scholar.google.com/citations?user=XXXX` and exists only after the profile is created. Discord: a profile link needs the numeric user id (`https://discord.com/users/<id>`); a username alone cannot be linked. Both stay without `url` until the user supplies them.
+
 > ## UPDATE 2026-11-24 (platform links + email). Newest note.
 > - **Deployed state:** the user redeployed; live `/cv` is 200 and live subpages now have their own canonical URLs. The user requested indexing for `/`, `/projects` and `/cv` in Search Console (base page indexed OK).
 > - **`config/platforms.ts` rewritten** from the handles the user saved (they gave handles, not URLs). Built each `url` from the handle using each site's standard pattern; `status` removed from the type; `handleOnly` added (Discord shows the username as a "Username" chip, no link); tiles without a url and not handleOnly show a "Link soon" chip. Blurbs changed from "your" to "my". Main five (LinkedIn, YouTube, GitHub, Substack, X) are `mainIds` in `platforms/page.tsx`. JSON-LD `sameAs` is built from every platform with a url (20 now).
