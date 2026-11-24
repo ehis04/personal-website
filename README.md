@@ -101,8 +101,7 @@ npm run deploy:cf    # build and deploy to Cloudflare
 2. Set the chat key as a Worker secret (it never goes in git):
    `npx wrangler secret put ANTHROPIC_API_KEY`
 3. `npm run deploy:cf`. The site appears at `https://ehisoghina.<your-subdomain>.workers.dev`.
-4. Add `ehisoghina.com` as a zone in Cloudflare (change the domain's nameservers), then add this to `wrangler.jsonc` and redeploy:
-   `"routes": [{ "pattern": "ehisoghina.com", "custom_domain": true }]`
+4. Add `ehisoghina.com` as a zone in Cloudflare (change the domain's nameservers). `wrangler.jsonc` already lists the custom-domain routes for `ehisoghina.com` and `www.ehisoghina.com`; once the zone is active, `npm run deploy:cf` attaches them and creates the DNS records automatically. Check Workers & Pages → ehisoghina → Settings → Domains & Routes.
 5. Optional: create a free Upstash Redis database and set `UPSTASH_REDIS_REST_URL` and `UPSTASH_REDIS_REST_TOKEN` as secrets. The rate limits then hold across every Worker instance; without them they fall back to per-instance memory (`lib/rate-limit.ts`).
 6. Set a monthly spend limit on the API key in the Anthropic Console. This is the real ceiling.
 
