@@ -49,12 +49,12 @@ export const platforms: Platform[] = [
   { id: "hackerrank", name: "HackerRank", icon: "hackerrank", category: "Code & competitions", handle: "ehisoghina", url: "https://www.hackerrank.com/profile/ehisoghina", blurb: "Skill badges and certifications." },
   { id: "devpost", name: "Devpost", icon: "devpost", category: "Code & competitions", handle: "ehisoghina", url: "https://devpost.com/ehisoghina", blurb: "Hackathon projects, including the datathon." },
   // No url yet: a Scholar profile link looks like https://scholar.google.com/citations?user=XXXX
-  // and only exists after the profile is created. Discord: a profile link needs the numeric
-  // user id (https://discord.com/users/<id>); until then the username is shown.
+  // and only exists after the profile is created (it also needs a verified university email to
+  // appear in Scholar search).
   { id: "scholar", name: "Google Scholar", icon: "scholar", category: "Research", handle: "ehisoghina", blurb: "Papers and citation counts." },
   { id: "orcid", name: "ORCID", icon: "orcid", category: "Research", handle: "0009-0007-8250-3339", url: "https://orcid.org/0009-0007-8250-3339", blurb: "A permanent researcher ID linking my work." },
   { id: "researchgate", name: "ResearchGate", icon: "researchgate", category: "Research", handle: "Ehis-Oghina", url: "https://www.researchgate.net/profile/Ehis-Oghina", blurb: "Preprints and research updates." },
-  { id: "discord", name: "Discord", icon: "discord", category: "Community", handle: "ehis_73189", handleOnly: true, blurb: "Add me on Discord using my username." },
+  { id: "discord", name: "Discord", icon: "discord", category: "Community", handle: "ehis_73189", url: "https://discord.com/users/1548391032788361308", blurb: "Follow me and say hi on Discord." },
   { id: "spotify", name: "Spotify", icon: "spotify", category: "Community", handle: "ehismode", url: "https://open.spotify.com/user/ehismode", blurb: "A podcast or audio version of my videos." },
 ];
 
