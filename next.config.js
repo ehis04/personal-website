@@ -7,6 +7,21 @@ const nextConfig = {
   turbopack: {
     root: __dirname,
   },
+  // Baseline security headers for every page and API response. The microphone is
+  // allowed for this site only, because the chat page offers dictation.
+  async headers() {
+    return [
+      {
+        source: "/:path*",
+        headers: [
+          { key: "X-Content-Type-Options", value: "nosniff" },
+          { key: "X-Frame-Options", value: "SAMEORIGIN" },
+          { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
+          { key: "Permissions-Policy", value: "camera=(), geolocation=(), microphone=(self)" },
+        ],
+      },
+    ];
+  },
   // Removed: a permissive CORS block for /api/sb-contact, a route that does not
   // exist (left over from the Supabase contact variant of the template).
 };
