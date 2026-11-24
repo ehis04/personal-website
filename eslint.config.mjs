@@ -12,7 +12,7 @@ const config = [
     rules: { "@typescript-eslint/no-require-imports": "off" },
   },
   {
-    ignores: [".next/**", "node_modules/**", "ideas/**", ".venv/**", "next-env.d.ts"],
+    ignores: [".next/**", ".open-next/**", ".wrangler/**", "node_modules/**", "ideas/**", ".venv/**", "next-env.d.ts"],
   },
 ];
 
