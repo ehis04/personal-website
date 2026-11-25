@@ -13,10 +13,14 @@ export function StudioNav() {
   const pathname = usePathname();
   const navRef = useRef<HTMLElement>(null);
 
-  // On a narrow phone the tabs scroll sideways: bring the current page's tab into view.
+  // On a narrow phone the tabs scroll sideways: centre the current page's tab. This sets
+  // scrollLeft directly. scrollIntoView() must not be used here: Chrome then starts keyboard
+  // Tab navigation from that tab and skips the "Skip to content" link and Home.
   useEffect(() => {
-    const active = navRef.current?.querySelector<HTMLElement>('[aria-current="page"]');
-    active?.scrollIntoView({ inline: "center", block: "nearest" });
+    const nav = navRef.current;
+    const active = nav?.querySelector<HTMLElement>('[aria-current="page"]');
+    if (!nav || !active || nav.scrollWidth <= nav.clientWidth) return;
+    nav.scrollLeft = active.offsetLeft - (nav.clientWidth - active.offsetWidth) / 2;
   }, [pathname]);
   const pill =
     "pointer-events-auto rounded-full bg-black/65 ring-1 ring-white/10 shadow-lg shadow-black/40";
