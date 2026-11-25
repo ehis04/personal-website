@@ -1,9 +1,12 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  // Next.js cannot resize images on Cloudflare Workers, so images are pre-sized by
+  // scripts/make-image-variants.mjs and picked by this loader.
   images: {
-    formats: ["image/avif", "image/webp"],
-    minimumCacheTTL: 60 * 60 * 24 * 30,
+    loader: "custom",
+    loaderFile: "./lib/image-loader.ts",
   },
+
   turbopack: {
     root: __dirname,
   },
