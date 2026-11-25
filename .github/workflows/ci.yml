@@ -1,0 +1,25 @@
+name: Checks
+
+# Runs the same checks I run before every deploy, on every push and pull request.
+# It needs no secrets: the build does not call any external service.
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  checks:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - name: Type check
+        run: npx tsc --noEmit
+      - name: Lint
+        run: npx eslint .
+      - name: Build
+        run: npm run build

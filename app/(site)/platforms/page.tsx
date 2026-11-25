@@ -76,7 +76,7 @@ function Card({ p, big, span }: { p: Platform; big?: boolean; span: string }) {
     >
       <div className={cn("flex h-full flex-col justify-between", big ? "min-h-[210px] p-6" : "min-h-[175px] p-4")}>
         <div className="flex items-start justify-between">
-          {Icon && <Icon className={cn("text-[#46b07a]", big ? "h-11 w-11" : "h-7 w-7")} />}
+          {Icon && <Icon aria-hidden="true" className={cn("text-[#46b07a]", big ? "h-11 w-11" : "h-7 w-7")} />}
           {p.url ? (
             <ArrowUpRight className="h-5 w-5 transition-transform group-hover:-translate-y-1 group-hover:translate-x-1" />
           ) : (

@@ -98,7 +98,6 @@ function Card({ exp, onOpen, first }: { exp: Experience; onOpen: () => void; fir
       layoutId={`card-${exp.id}`}
       transition={spring}
       onClick={onOpen}
-      aria-label={`Open ${exp.company}`}
       data-card={exp.id}
       className="recess sheet group relative h-full w-full text-left"
       style={{ borderRadius: 26 }}

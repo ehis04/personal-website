@@ -38,6 +38,9 @@ export function SiteFooter({ compact = false }: { compact?: boolean }) {
               Email
             </a>
           )}
+          <Link href="/privacy" className={linkClass}>
+            Privacy
+          </Link>
         </nav>
       </footer>
     );
@@ -99,7 +102,12 @@ export function SiteFooter({ compact = false }: { compact?: boolean }) {
           <p>
             © {year} {profile.name}
           </p>
-          <p>Built with Next.js · Hosted on Cloudflare</p>
+          <p>
+            <Link href="/privacy" className={linkClass}>
+              Privacy
+            </Link>
+            {" · "}Built with Next.js · Hosted on Cloudflare
+          </p>
         </div>
       </div>
     </footer>

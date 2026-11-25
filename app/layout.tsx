@@ -63,7 +63,11 @@ const personJsonLd = {
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
-  const GA_ID = process.env.NEXT_PUBLIC_GOOGLE_MEASUREMENT_ID;
+  // Only a real-looking Google Analytics id turns analytics on. A template placeholder such as
+  // G-XXXXXXXXXX is ignored, so no tracking script loads by accident. If analytics is ever
+  // enabled, update the Privacy page too.
+  const rawGa = process.env.NEXT_PUBLIC_GOOGLE_MEASUREMENT_ID?.trim();
+  const GA_ID = rawGa && /^G-[A-Z0-9]{6,}$/.test(rawGa) && !/X{4,}/.test(rawGa) ? rawGa : undefined;
 
   return (
     <html lang="en" className="dark">

@@ -26,9 +26,12 @@ export function AnimatedHeading({
   delay = 0,
 }: AnimatedHeadingProps) {
   const words = text.split(" ");
+  // On real headings the words are hidden from screen readers and the whole text is
+  // announced once; a plain <p> may not carry aria-label, so its words are read as normal text.
+  const isHeading = Tag !== "p";
   return (
     <Tag
-      aria-label={text.replace(/\*/g, "")}
+      aria-label={isHeading ? text.replace(/\*/g, "") : undefined}
       className={cn("words", className)}
       style={{ ["--delay" as string]: `${delay}s` }}
     >
@@ -37,7 +40,7 @@ export function AnimatedHeading({
         return (
           <span
             key={`${word}-${i}`}
-            aria-hidden="true"
+            aria-hidden={isHeading ? "true" : undefined}
             className={cn("word", accent ? "font-accent text-accent-glow pr-[0.08em]" : wordClassName)}
             style={{ ["--i" as string]: i }}
           >
