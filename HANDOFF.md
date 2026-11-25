@@ -6,6 +6,9 @@
 
 ---
 
+> ## UPDATE 2026-11-25 (Cloudflare edge settings done). Newest note.
+> - The user set, and I verified live: Redirect Rule "Redirect from WWW to root" (301, path and query kept), **Always Use HTTPS** on (http -> https 301), **HSTS** on with max-age 15552000 (6 months), no includeSubDomains, no preload. Security headers from `public/_headers` appear once each. Site, assets and chat unaffected. Consider raising HSTS to 1 year after a few quiet weeks. The "still open for the user" item (1) and (2) in the previous note are now DONE; remaining: re-read Web Analytics in a few days, and the four content items in memory.
+
 > ## UPDATE 2026-11-25 (final numbers after the static rebuild). Newest note.
 > - **Live phone test (390x844, 4x CPU, 1.6 Mbps/150 ms), LCP before -> after:** Home 4.5 -> 1.9 s, Experience 4.6 -> 2.1 s, Projects 3.1 -> 1.6 s, Research 1.3 s, CV 5.0 -> 2.6 s, Ask 1.2 s, Platforms 1.4 s, paper page 1.3 s. CLS 0.000 everywhere. Desktop LCP 0.3 to 0.64 s. Server wait (TTFB minus TLS) median ~60 ms (was 159 ms uncached, worst 762 ms).
 > - **Regression caught and fixed:** my nav fix used `scrollIntoView`, which made Chrome start Tab navigation after the active tab (first Tab skipped "Skip to content" and Home). Replaced by setting `scrollLeft` directly; verified live: Tab order = Skip to content > Ehis Oghina > Home > Experience.
