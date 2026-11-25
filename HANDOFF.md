@@ -6,6 +6,9 @@
 
 ---
 
+> ## UPDATE 2026-11-25 (professional email live). Newest note.
+> - **`hello@ehisoghina.com` is live** via Cloudflare Email Routing (forwards to the user's Gmail). Verified by an SMTP RCPT probe against `route1/2.mx.cloudflare.net`: `hello@` accepted (250), a made-up address rejected (550). `.env` has `NEXT_PUBLIC_CONTACT_EMAIL=hello@ehisoghina.com` (replaced the personal Gmail); redeployed. Forwarding only: replies go out from the user's Gmail unless they set up Gmail "Send mail as".
+
 > ## UPDATE 2026-11-25 (merged to main). Newest note.
 > - **GitHub default branch is `main` and it now holds the new site.** `origin/main` used to be a single unrelated "Initial commit" (a 2-line README); the real history grew from `master`. Merged with `git merge -s ours --allow-unrelated-histories origin/main` (tree unchanged) and pushed to `main` as a normal fast-forward, no force. Work on `main` from now on. `redesign-prototype` (identical, can be deleted on GitHub) and the old `master` (old template) still exist. Verified on GitHub: README shows the new project; `.env`, `ideas/` and `public/papers/` are not in the repo.
 > - **Professional email:** the user is setting up Cloudflare Email Routing (hello@ehisoghina.com forwarding to Gmail). When they give the address: put it in `.env` as `NEXT_PUBLIC_CONTACT_EMAIL`, then `npm run deploy:cf`. Note Email Routing only forwards incoming mail; replying FROM that address needs Gmail "Send mail as" (SMTP) or a paid mailbox.
