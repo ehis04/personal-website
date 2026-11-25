@@ -114,7 +114,8 @@ export function CvViewer() {
               alt={`Curriculum vitae, page ${i + 1} of ${cvPages.length}`}
               fill
               priority={i === 0}
-              sizes="(min-width: 1024px) 50vw, 100vw"
+              fetchPriority={i === 0 ? "high" : "low"}
+              sizes="(min-width: 1024px) 50vw, 94vw"
               className="select-none object-contain"
               draggable={false}
             />
