@@ -31,7 +31,12 @@ import { Tile } from "@/components/studio/tile";
 import { Platform, platforms } from "@/config/platforms";
 import { cn } from "@/lib/utils";
 
-export const metadata = { title: "Platforms", alternates: { canonical: "/platforms" } };
+export const metadata = {
+  title: "Platforms",
+  description:
+    "Find Ehis Oghina on LinkedIn, GitHub, YouTube, Substack, X and more.",
+  alternates: { canonical: "/platforms" },
+};
 
 const icons: Record<string, IconType> = {
   linkedin: SiLinkedin,

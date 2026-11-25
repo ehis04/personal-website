@@ -9,7 +9,12 @@ import { Tile } from "@/components/studio/tile";
 import { platforms } from "@/config/platforms";
 import { papers, videos } from "@/config/studio";
 
-export const metadata = { title: "Research & videos", alternates: { canonical: "/research" } };
+export const metadata = {
+  title: "Research & videos",
+  description:
+    "Research by Ehis Oghina: NLP and language-model steering at the University of Birmingham, football tournament analytics, a published literature review on remote and hybrid work in software engineering.",
+  alternates: { canonical: "/research" },
+};
 
 const eyebrow = "legible text-[11px] uppercase tracking-[0.22em] text-[#46b07a]";
 const chip = "rounded-full bg-black/40 px-3 py-1.5 text-xs text-white/85 ring-1 ring-white/10";

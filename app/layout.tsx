@@ -40,6 +40,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
+    creator: "@ehis_oghina",
     title: siteConfig.name,
     description: siteConfig.description,
     images: [siteConfig.ogImage],
@@ -52,14 +53,44 @@ export const metadata: Metadata = {
   verification: { google: process.env.NEXT_PUBLIC_GOOGLE_VERIFICATION },
 };
 
-// Person data built only from verified facts; sameAs lists platforms that have a real link.
+// Structured data (schema.org) so search engines can tie the name, site and profiles together.
+// Built only from verified facts (CV); sameAs lists the profiles that have a real link.
+const sameAs = platforms.filter((p) => p.url).map((p) => p.url);
 const personJsonLd = {
   "@context": "https://schema.org",
-  "@type": "Person",
-  name: profile.name,
-  jobTitle: profile.mainRole,
-  url: siteConfig.url,
-  sameAs: platforms.filter((p) => p.url).map((p) => p.url),
+  "@graph": [
+    {
+      "@type": "Person",
+      "@id": `${siteConfig.url}/#person`,
+      name: profile.name,
+      alternateName: ["E. Oghina", "Ehis Oghina"],
+      jobTitle: profile.mainRole,
+      description: siteConfig.description,
+      url: siteConfig.url,
+      image: `${siteConfig.url}${siteConfig.ogImage}`,
+      sameAs,
+      alumniOf: { "@type": "CollegeOrUniversity", name: "Dublin City University" },
+      affiliation: { "@type": "CollegeOrUniversity", name: "University of Birmingham" },
+      worksFor: { "@type": "Organization", name: "R.V. Uncovered" },
+      knowsAbout: [
+        "Artificial intelligence",
+        "Machine learning",
+        "Natural language processing",
+        "Football analytics",
+        "Data science",
+        "Software engineering",
+      ],
+    },
+    {
+      "@type": "WebSite",
+      "@id": `${siteConfig.url}/#website`,
+      url: siteConfig.url,
+      name: profile.name,
+      alternateName: [`${profile.name} | ${profile.mainRole}`],
+      inLanguage: "en",
+      publisher: { "@id": `${siteConfig.url}/#person` },
+    },
+  ],
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

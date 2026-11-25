@@ -1,7 +1,12 @@
 import { AnimatedHeading } from "@/components/studio/animated-heading";
 import { Chat } from "@/components/studio/chat";
 
-export const metadata = { title: "Ask", alternates: { canonical: "/ask" } };
+export const metadata = {
+  title: "Ask",
+  description:
+    "Ask an AI assistant about Ehis Oghina's background, roles, projects and research. Type a question or speak it, and hear the answer read aloud.",
+  alternates: { canonical: "/ask" },
+};
 
 export default function AskPage() {
   return (

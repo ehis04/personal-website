@@ -64,6 +64,8 @@ export interface Experience {
   tags: string[];
   image: string;
   imagePosition: string;
+  /** Optional looping clip used as the cover. It plays; a still frame is never used as a cover, so give a real photo in `image` instead when there is no clip. */
+  video?: { src: string; poster: string };
   /** Up to three headline numbers, taken from the CV. Omit when the CV has none. */
   metrics?: { value: string; label: string }[];
 }
@@ -139,8 +141,8 @@ export const experiences: Experience[] = [
       "Supported testing, documentation and prototype refinement in agile workflows to improve reliability and maintainability.",
     ],
     tags: ["Python", "Raspberry Pi", "IoT", "Pandas", "Dash"],
-    image: "/media/talk-a.jpg",
-    imagePosition: "50% 30%",
+    image: "/media/grad-crop.jpg", // already cropped around the graduate
+    imagePosition: "50% 38%",
   },
   {
     id: "dcu-soccer",

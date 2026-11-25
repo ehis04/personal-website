@@ -9,7 +9,8 @@ import { Scroller, Screen } from "@/components/studio/scroller";
 import { SiteFooter } from "@/components/studio/site-footer";
 import { Tile } from "@/components/studio/tile";
 import { platforms } from "@/config/platforms";
-import { contactEmail } from "@/config/site";
+import { ContactTile, EmailText } from "@/components/studio/email-link";
+import { contactEmailEncoded, contactEmailFallback, siteConfig } from "@/config/site";
 import { degrees, experiences, profile, studioProjects } from "@/config/studio";
 
 export const metadata = { alternates: { canonical: "/" } };
@@ -23,6 +24,19 @@ const mobileMin = "min-h-[240px] lg:min-h-0";
 
 export default function PreviewHome() {
   return (
+    <>
+    <script
+      type="application/ld+json"
+      dangerouslySetInnerHTML={{
+        __html: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "ProfilePage",
+          url: siteConfig.url,
+          name: siteConfig.name,
+          mainEntity: { "@id": `${siteConfig.url}/#person` },
+        }),
+      }}
+    />
     <Scroller labels={["Home", "Experience", "Projects", "Research", "Ask", "Contact"]}>
       {/* ───────── Screen 1: the mosaic ───────── */}
       <Screen first>
@@ -374,9 +388,9 @@ export default function PreviewHome() {
           <Tile className={`col-span-12 bg-[var(--surface-2)] lg:col-span-8 lg:row-span-2 ${mobileMin}`}>
             <div className="flex h-full flex-col gap-3 p-5 md:p-6">
               {[
-                ["What is xgGaffer?", "xgGaffer is a football analytics platform Ehis built as his final-year project at DCU, covering five European leagues with seven ML models and role-based tools for coaches, referees, players and fans."],
-                ["Which roles have you held?", "Ehis is an NLP Researcher at the University of Birmingham and founder of R.V. Uncovered. Earlier roles include Optum, EPAM Systems and DCU Soccer."],
-                ["What are you researching?", "Ehis is part of a University of Birmingham NLP team taking part in SemEval 2027, studying cross-lingual alignment and activation steering for large language models."],
+                ["What is xgGaffer?", "xgGaffer is a football analytics platform I built as my final-year project at DCU, covering five European leagues with seven ML models and role-based tools for coaches, referees, players and fans."],
+                ["Which roles have you held?", "I'm an NLP Researcher at the University of Birmingham and the founder of R.V. Uncovered. Earlier roles include Optum, EPAM Systems and DCU Soccer."],
+                ["What are you researching?", "I'm part of a University of Birmingham NLP team taking part in SemEval 2027, studying cross-lingual alignment and activation steering for large language models."],
               ].map(([q, a]) => (
                 <div key={q} className="flex flex-col gap-3">
                   <div className="ml-auto max-w-[80%] rounded-2xl rounded-br-sm bg-[var(--green)] px-4 py-3 text-sm">{q}</div>
@@ -447,25 +461,41 @@ export default function PreviewHome() {
               </p>
             </div>
           </Tile>
-          <Tile
-            href={contactEmail ? `mailto:${contactEmail}` : "/platforms"}
-            className={`col-span-12 bg-[var(--surface-2)] md:col-span-6 lg:col-span-4 ${mobileMin}`}
-          >
-            <div className="flex h-full flex-col justify-between p-5">
-              <p className={eyebrow}>{contactEmail ? "Email" : "Get in touch"}</p>
-              <div>
-                <p className={`font-display text-2xl md:text-3xl ${contactEmail ? "break-all" : ""}`}>
-                  {contactEmail || "Find me on LinkedIn, GitHub and more"}
-                </p>
-                <p className="mt-2 text-sm text-white/70">
-                  {contactEmail ? "The best way to reach me." : "Every place I can be reached is on the platforms page."}
-                </p>
+          {contactEmailEncoded ? (
+            <ContactTile
+              encoded={contactEmailEncoded}
+              className={`col-span-12 bg-[var(--surface-2)] md:col-span-6 lg:col-span-4 ${mobileMin}`}
+            >
+              <div className="flex h-full flex-col justify-between p-5">
+                <p className={eyebrow}>Email</p>
+                <div>
+                  <p className="font-display break-all text-2xl md:text-3xl">
+                    <EmailText encoded={contactEmailEncoded} fallback={contactEmailFallback} />
+                  </p>
+                  <p className="mt-2 text-sm text-white/70">The best way to reach me.</p>
+                </div>
+                <span className="inline-flex w-fit items-center gap-2 rounded-full bg-[var(--green)] px-5 py-2.5 text-sm font-medium">
+                  Send an email <ArrowUpRight className="h-4 w-4" />
+                </span>
               </div>
-              <span className="inline-flex w-fit items-center gap-2 rounded-full bg-[var(--green)] px-5 py-2.5 text-sm font-medium">
-                {contactEmail ? "Send an email" : "See all platforms"} <ArrowUpRight className="h-4 w-4" />
-              </span>
-            </div>
-          </Tile>
+            </ContactTile>
+          ) : (
+            <Tile
+              href="/platforms"
+              className={`col-span-12 bg-[var(--surface-2)] md:col-span-6 lg:col-span-4 ${mobileMin}`}
+            >
+              <div className="flex h-full flex-col justify-between p-5">
+                <p className={eyebrow}>Get in touch</p>
+                <div>
+                  <p className="font-display text-2xl md:text-3xl">Find me on LinkedIn, GitHub and more</p>
+                  <p className="mt-2 text-sm text-white/70">Every place I can be reached is on the platforms page.</p>
+                </div>
+                <span className="inline-flex w-fit items-center gap-2 rounded-full bg-[var(--green)] px-5 py-2.5 text-sm font-medium">
+                  See all platforms <ArrowUpRight className="h-4 w-4" />
+                </span>
+              </div>
+            </Tile>
+          )}
           <Tile href="/cv" className={`col-span-12 bg-gradient-to-br from-[#123a26]/70 to-[var(--surface-2)] md:col-span-6 lg:col-span-4 ${mobileMin}`}>
             <div className="flex h-full flex-col p-5">
               <div className="flex items-start justify-between">
@@ -490,5 +520,6 @@ export default function PreviewHome() {
         </Chapter>
       </>
     </Scroller>
+    </>
   );
 }

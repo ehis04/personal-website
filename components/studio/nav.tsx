@@ -4,7 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef } from "react";
 
-import { navLinks as links } from "@/config/site";
+import { navLinks as links } from "@/config/nav";
 import { profile } from "@/config/studio";
 import { cn } from "@/lib/utils";
 

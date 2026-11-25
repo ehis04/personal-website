@@ -1,0 +1,16 @@
+# Keeps dependencies (and the checks that guard them) up to date. Each update arrives as a pull
+# request, and the "Checks" workflow tells you whether it still builds before you merge it.
+version: 2
+updates:
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: weekly
+    open-pull-requests-limit: 5
+    groups:
+      minor-and-patch:
+        update-types: [minor, patch]
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: monthly

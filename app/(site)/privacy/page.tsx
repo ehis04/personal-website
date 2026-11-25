@@ -1,5 +1,6 @@
 import { AnimatedHeading } from "@/components/studio/animated-heading";
-import { contactEmail } from "@/config/site";
+import { EmailLink, EmailText } from "@/components/studio/email-link";
+import { contactEmailEncoded, contactEmailFallback } from "@/config/site";
 
 export const metadata = {
   title: "Privacy",
@@ -65,7 +66,13 @@ const sections: { title: string; body: React.ReactNode }[] = [
     title: "Email",
     body: (
       <p>
-        If you email {contactEmail ? <a href={`mailto:${contactEmail}`}>{contactEmail}</a> : "me"}, it is forwarded
+        If you email {contactEmailEncoded ? (
+          <EmailLink encoded={contactEmailEncoded}>
+            <EmailText encoded={contactEmailEncoded} fallback={contactEmailFallback} />
+          </EmailLink>
+        ) : (
+          "me"
+        )}, it is forwarded
         through Cloudflare Email Routing to my inbox. I use your address only to reply.
       </p>
     ),
@@ -84,7 +91,13 @@ const sections: { title: string; body: React.ReactNode }[] = [
     body: (
       <p>
         If you want to ask what I hold about you, or to have an email you sent me deleted, write to{" "}
-        {contactEmail ? <a href={`mailto:${contactEmail}`}>{contactEmail}</a> : "me"}.
+        {contactEmailEncoded ? (
+          <EmailLink encoded={contactEmailEncoded}>
+            <EmailText encoded={contactEmailEncoded} fallback={contactEmailFallback} />
+          </EmailLink>
+        ) : (
+          "me"
+        )}.
       </p>
     ),
   },
