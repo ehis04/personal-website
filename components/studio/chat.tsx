@@ -346,7 +346,7 @@ export function Chat() {
                 aria-pressed={listening}
                 className={cn(
                   "grid h-10 w-10 shrink-0 place-items-center rounded-full ring-1 transition-colors",
-                  listening ? "animate-pulse bg-[#2f7d50] ring-[#46b07a]" : "ring-white/15 hover:bg-white/10"
+                  listening ? "animate-pulse bg-[#2f7d50] ring-[#46b07a] text-white" : "ring-white/15 hover:bg-white/10"
                 )}
               >
                 <Mic className="h-4 w-4" />
@@ -366,7 +366,7 @@ export function Chat() {
                 type="submit"
                 disabled={!input.trim()}
                 aria-label="Send"
-                className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-[#2f7d50] transition-colors enabled:hover:bg-[#46b07a] disabled:opacity-40"
+                className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-[#2f7d50] transition-colors enabled:hover:bg-[#46b07a] disabled:opacity-40 text-white"
               >
                 <ArrowUp className="h-4 w-4" />
               </button>
@@ -395,7 +395,7 @@ export function Chat() {
                   aria-pressed={speakReplies}
                   className={cn(
                     "inline-flex items-center gap-2 rounded-full px-3 py-1.5 text-xs ring-1 transition-colors",
-                    speakReplies ? "bg-[#2f7d50] ring-[#46b07a]" : "ring-white/20 hover:bg-white/10"
+                    speakReplies ? "bg-[#2f7d50] ring-[#46b07a] text-white" : "ring-white/20 hover:bg-white/10"
                   )}
                 >
                   {speakReplies ? <Volume2 className="h-4 w-4" /> : <VolumeX className="h-4 w-4" />}

@@ -153,7 +153,7 @@ export default function PreviewHome() {
               <span className="grid h-9 w-9 place-items-center rounded-full ring-1 ring-white/15">
                 <Mic className="h-4 w-4" />
               </span>
-              <span className="grid h-9 w-9 place-items-center rounded-full bg-[var(--green)]">
+              <span className="grid h-9 w-9 place-items-center rounded-full bg-[var(--green)] text-white">
                 <ArrowUp className="h-4 w-4" />
               </span>
             </div>
@@ -166,7 +166,7 @@ export default function PreviewHome() {
           className="col-span-12 md:col-span-6 lg:col-span-4"
         >
           <div className="mt-auto flex items-center gap-3 p-5">
-            <span className="grid h-11 w-11 place-items-center rounded-full bg-[var(--green)]">
+            <span className="grid h-11 w-11 place-items-center rounded-full bg-[var(--green)] text-white">
               <Play className="h-4 w-4 fill-current" />
             </span>
             <div>
@@ -251,7 +251,7 @@ export default function PreviewHome() {
                   A football analytics platform: 43,000+ matches, 86+ features and seven ML models, with a grounded natural-language query layer.
                 </p>
               </div>
-              <span className="hidden rounded-full bg-[var(--green)] px-4 py-2 text-xs sm:block">
+              <span className="hidden rounded-full bg-[var(--green)] px-4 py-2 text-xs sm:block text-white">
                 Live demo planned
               </span>
             </div>
@@ -344,7 +344,7 @@ export default function PreviewHome() {
               <div className="flex flex-1 items-center py-6">
                 <DocPreview />
               </div>
-              <span className="inline-flex w-fit items-center gap-2 rounded-full bg-[var(--green)] px-5 py-2.5 text-sm font-medium">
+              <span className="inline-flex w-fit items-center gap-2 rounded-full bg-[var(--green)] px-5 py-2.5 text-sm font-medium text-white">
                 In progress
               </span>
             </div>
@@ -354,7 +354,7 @@ export default function PreviewHome() {
             className={`col-span-12 lg:col-span-7 ${mobileMin}`}
           >
             <div className="mt-auto flex items-center gap-4 p-6">
-              <span className="grid h-14 w-14 place-items-center rounded-full bg-[var(--green)]">
+              <span className="grid h-14 w-14 place-items-center rounded-full bg-[var(--green)] text-white">
                 <Play className="h-5 w-5 fill-current" />
               </span>
               <div>
@@ -393,7 +393,7 @@ export default function PreviewHome() {
                 ["What are you researching?", "I'm part of a University of Birmingham NLP team taking part in SemEval 2027, studying cross-lingual alignment and activation steering for large language models."],
               ].map(([q, a]) => (
                 <div key={q} className="flex flex-col gap-3">
-                  <div className="ml-auto max-w-[80%] rounded-2xl rounded-br-sm bg-[var(--green)] px-4 py-3 text-sm">{q}</div>
+                  <div className="ml-auto max-w-[80%] rounded-2xl rounded-br-sm bg-[var(--green)] px-4 py-3 text-sm text-white">{q}</div>
                   <div className="max-w-[88%] rounded-2xl rounded-bl-sm bg-black/40 px-4 py-3.5 text-[15px] text-white/85 ring-1 ring-white/10">
                     <p className="mb-1 text-[10px] uppercase tracking-[0.18em] text-[var(--green-glow)]">Example answer</p>
                     {a}
@@ -410,7 +410,7 @@ export default function PreviewHome() {
                 <span className="grid h-10 w-10 place-items-center rounded-full ring-1 ring-white/15">
                   <Mic className="h-4 w-4" />
                 </span>
-                <span className="grid h-10 w-10 place-items-center rounded-full bg-[var(--green)]">
+                <span className="grid h-10 w-10 place-items-center rounded-full bg-[var(--green)] text-white">
                   <ArrowUp className="h-4 w-4" />
                 </span>
               </div>
@@ -474,7 +474,7 @@ export default function PreviewHome() {
                   </p>
                   <p className="mt-2 text-sm text-white/70">The best way to reach me.</p>
                 </div>
-                <span className="inline-flex w-fit items-center gap-2 rounded-full bg-[var(--green)] px-5 py-2.5 text-sm font-medium">
+                <span className="inline-flex w-fit items-center gap-2 rounded-full bg-[var(--green)] px-5 py-2.5 text-sm font-medium text-white">
                   Send an email <ArrowUpRight className="h-4 w-4" />
                 </span>
               </div>
@@ -490,7 +490,7 @@ export default function PreviewHome() {
                   <p className="font-display text-2xl md:text-3xl">Find me on LinkedIn, GitHub and more</p>
                   <p className="mt-2 text-sm text-white/70">Every place I can be reached is on the platforms page.</p>
                 </div>
-                <span className="inline-flex w-fit items-center gap-2 rounded-full bg-[var(--green)] px-5 py-2.5 text-sm font-medium">
+                <span className="inline-flex w-fit items-center gap-2 rounded-full bg-[var(--green)] px-5 py-2.5 text-sm font-medium text-white">
                   See all platforms <ArrowUpRight className="h-4 w-4" />
                 </span>
               </div>

@@ -424,7 +424,7 @@ function Expanded({ project: p, onClose }: { project: StudioProject; onClose: ()
                 href={p.demoUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 rounded-full bg-[var(--green)] px-5 py-2.5 text-sm font-medium transition-colors hover:bg-[var(--green-glow)]"
+                className="inline-flex items-center gap-2 rounded-full bg-[var(--green)] px-5 py-2.5 text-sm font-medium transition-colors hover:bg-[var(--green-glow)] text-white"
               >
                 Launch live demo <ArrowUpRight className="h-4 w-4" />
               </a>
@@ -437,7 +437,7 @@ function Expanded({ project: p, onClose }: { project: StudioProject; onClose: ()
                 className={
                   p.demoUrl
                     ? "inline-flex items-center gap-2 rounded-full px-5 py-2.5 text-sm ring-1 ring-white/25 transition-colors hover:bg-white/10"
-                    : "inline-flex items-center gap-2 rounded-full bg-[var(--green)] px-5 py-2.5 text-sm font-medium transition-colors hover:bg-[var(--green-glow)]"
+                    : "inline-flex items-center gap-2 rounded-full bg-[var(--green)] px-5 py-2.5 text-sm font-medium transition-colors hover:bg-[var(--green-glow)] text-white"
                 }
               >
                 View on GitHub <ArrowUpRight className="h-4 w-4" />
