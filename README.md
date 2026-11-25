@@ -1,6 +1,6 @@
 # Ehis Oghina: personal website
 
-The personal website of **Ehis Oghina**, an AI Engineer (BSc Computer Science, Dublin City University; MSc Artificial Intelligence, University of Birmingham) who also works as a data scientist, software engineer and football analyst, and builds and creates content. Live at **https://ehisoghina.com** once deployed.
+The personal website of **Ehis Oghina**, an AI Engineer (BSc Computer Science, Dublin City University; MSc Artificial Intelligence, University of Birmingham) who also works as a data scientist, software engineer and football analyst, and builds and creates content. Live at **https://ehisoghina.com**.
 
 It is a dark, forest-green, tile-based multimedia site: a full-screen snapped home page, expandable experience cards, a project strip, research and platform pages, and a chat assistant that answers questions about Ehis.
 
