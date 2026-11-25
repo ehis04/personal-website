@@ -6,6 +6,12 @@
 
 ---
 
+> ## UPDATE 2026-11-25 (Web Analytics report + edge cache + font diet). Newest note.
+> - **Report read** (`ideas/Web analytics ... .pdf`, Cloudflare Web Analytics, 24 h, tiny sample of ~11 real page views): LCP 64% good / 9% needs improvement / 27% poor; P50 1.7 s, P75 4.4 s, P90 4.9 s. P75 sub-parts: TTFB 916 ms, resource load delay 144 ms, resource load duration 262 ms, element render delay 2,764 ms; LCP element was `img.object-cover` loaded via the OLD `/_next/image` path (so partly measured before the image fix). CLS 100% good. INP: no data yet.
+> - **Findings:** (1) cold-start TTFB: each new Worker isolate boots the whole Next server (lab 0.9 s cold vs 0.16 s warm); (2) on a slow link three font files (~100 KB), the hero image and ~160 KB JS all download at once.
+> - **Fixes:** `worker.ts` is now the Worker entry (`wrangler.jsonc` "main"): it wraps the OpenNext handler and caches the finished HTML of the static pages in the edge Cache API (key = URL path + BUILD_ID fetched once from ASSETS; TTL 24 h; only plain GET text/html with no query string, no RSC/prefetch/range headers; redirects/404s/api never cached; response header `x-edge-cache: HIT` on hits). The Cache API does NOT run on *.workers.dev, only on the custom domain. `tsconfig.json` excludes `worker.ts` and `.open-next`. Bricolage Grotesque now loads only weight 700 (single static file instead of the full variable font).
+> - **Rollback if the cache ever misbehaves:** set `"main": ".open-next/worker.js"` back in `wrangler.jsonc` and `npm run deploy:cf`.
+
 > ## UPDATE 2026-11-25 (accessibility, privacy page, error pages, CI, analytics placeholder bug). Newest note.
 > - **BUG FOUND AND FIXED:** `.env` still held the template placeholder `NEXT_PUBLIC_GOOGLE_MEASUREMENT_ID=G-XXXXXXXXXX`, so the LIVE site was loading Google's gtag script for a fake id (privacy + weight). Blanked the value and `app/layout.tsx` now only enables Google Analytics for a real-looking id (placeholders like G-XXXX are ignored). If analytics is ever turned on, update `/privacy`.
 > - **Accessibility (axe-core, all pages, desktop + phone):** fixed `aria-label` on `<p>` headings (AnimatedHeading only labels real headings now), button names (experience/project cards now named by their visible content; YouTube facade label starts with its visible text), contrast (white text on green buttons on /research), decorative react-icons now `aria-hidden`. Re-run `axe.mjs`-style checks after big UI changes (tooling lives in the scratchpad, recreate with `npm i @axe-core/playwright playwright-core`).

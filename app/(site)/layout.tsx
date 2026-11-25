@@ -7,6 +7,7 @@ import { SiteFooter } from "@/components/studio/site-footer";
 
 const display = Bricolage_Grotesque({
   subsets: ["latin"],
+  weight: "700", // the display face is only ever used bold; a single weight is a much smaller file
   variable: "--font-display",
   display: "swap",
 });
