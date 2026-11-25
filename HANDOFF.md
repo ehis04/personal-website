@@ -6,6 +6,11 @@
 
 ---
 
+> ## UPDATE 2026-11-25 (merged to main). Newest note.
+> - **GitHub default branch is `main` and it now holds the new site.** `origin/main` used to be a single unrelated "Initial commit" (a 2-line README); the real history grew from `master`. Merged with `git merge -s ours --allow-unrelated-histories origin/main` (tree unchanged) and pushed to `main` as a normal fast-forward, no force. Work on `main` from now on. `redesign-prototype` (identical, can be deleted on GitHub) and the old `master` (old template) still exist. Verified on GitHub: README shows the new project; `.env`, `ideas/` and `public/papers/` are not in the repo.
+> - **Professional email:** the user is setting up Cloudflare Email Routing (hello@ehisoghina.com forwarding to Gmail). When they give the address: put it in `.env` as `NEXT_PUBLIC_CONTACT_EMAIL`, then `npm run deploy:cf`. Note Email Routing only forwards incoming mail; replying FROM that address needs Gmail "Send mail as" (SMTP) or a paid mailbox.
+> - Blurbs (Hugging Face, Scholar, Kaggle, TikTok): the user said to keep them written as if content exists behind the links. No change needed.
+
 > ## UPDATE 2026-11-25 (perf results after fixes + open list). Newest note.
 > - **Live phone numbers after the image fixes** (throttled phone, noisy because the dev machine was loaded): Home LCP 4.5 s -> ~2.5 s, Experience 4.6 -> ~2.3 s, Projects 3.1 -> ~1.6 s (also 848 -> 459 KB), CV 5.0 -> ~3.3 s. What remains is bandwidth: on the 1.6 Mbps test the JS (~230 KB), fonts and images share one link. Further gains need a JS/font diet (framer-motion is the big one) and are diminishing; real 4G is much faster. The user can check real-world numbers with pagespeed.web.dev.
 > - **Open list for the user:** real photos/clips (current ones are stand-ins), YouTube videos, xgGaffer code + demos, SSRN link then Google Scholar, confirm four blurbs (Hugging Face, Scholar, Kaggle, TikTok), merge `redesign-prototype` into the GitHub default branch (master still shows the old template), set up a professional email via Cloudflare Email Routing (then set `NEXT_PUBLIC_CONTACT_EMAIL`), turn on Cloudflare Web Analytics (free, no cookies), back up `ideas/` and `public/papers/` (neither is in git), re-request indexing for the new paper page in Search Console.
