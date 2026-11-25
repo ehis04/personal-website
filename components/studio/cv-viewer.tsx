@@ -9,6 +9,8 @@ import { useCallback, useEffect, useState } from "react";
 import { CvHotspot, cvHotspots, cvLinks, cvPages } from "@/config/cv";
 import { degrees, experiences, skillGroups, studioProjects } from "@/config/studio";
 
+import { trapTab } from "./dialog-utils";
+
 const spring = { type: "spring", stiffness: 260, damping: 32, mass: 0.9 } as const;
 
 interface Detail {
@@ -88,7 +90,10 @@ export function CvViewer() {
 
   useEffect(() => {
     if (!openId) return;
-    const onKey = (e: KeyboardEvent) => e.key === "Escape" && close();
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") close();
+      else trapTab(e);
+    };
     window.addEventListener("keydown", onKey);
     const prev = document.body.style.overflow;
     document.body.style.overflow = "hidden";
@@ -187,7 +192,7 @@ function Expanded({ hotspot, onClose }: { hotspot: CvHotspot; onClose: () => voi
         exit={{ opacity: 0, transition: { duration: 0.1 } }}
         className="flex max-h-[88svh] flex-col overflow-y-auto bg-[#0c110f]/95 p-7 md:p-10"
       >
-        <p className="text-[11px] uppercase tracking-[0.22em] text-[var(--green-glow)]">{d.kicker}</p>
+        <p className="pr-12 text-[11px] uppercase tracking-[0.22em] text-[var(--green-glow)]">{d.kicker}</p>
         <h2 className="mt-2 pr-10 font-display text-3xl md:text-5xl">{d.title}</h2>
         {d.meta && <p className="mt-2 text-sm text-[var(--ink-dim)]">{d.meta}</p>}
         {d.summary && <p className="mt-5 text-lg text-white/90">{d.summary}</p>}

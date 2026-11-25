@@ -8,6 +8,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { StudioProject, studioProjects } from "@/config/studio";
 import { cn } from "@/lib/utils";
 
+import { trapTab } from "./dialog-utils";
 import { LazyVideo } from "./lazy-video";
 
 const spring = { type: "spring", stiffness: 260, damping: 32, mass: 0.9 } as const;
@@ -78,7 +79,10 @@ export function ProjectStrip() {
 
   useEffect(() => {
     if (!openId) return;
-    const onKey = (e: KeyboardEvent) => e.key === "Escape" && close();
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") close();
+      else trapTab(e);
+    };
     window.addEventListener("keydown", onKey);
     const prev = document.body.style.overflow;
     document.body.style.overflow = "hidden";
@@ -312,7 +316,7 @@ function Expanded({ project: p, onClose }: { project: StudioProject; onClose: ()
           exit={{ opacity: 0, transition: { duration: 0.1 } }}
           className="relative flex flex-col overflow-y-auto bg-[#0c110f]/95 p-7 md:p-10"
         >
-          <p className="text-[11px] uppercase tracking-[0.22em] text-[var(--green-glow)]">{p.kicker}</p>
+          <p className="pr-12 text-[11px] uppercase tracking-[0.22em] text-[var(--green-glow)]">{p.kicker}</p>
           <h2 className="mt-2 font-display text-4xl md:text-5xl">{p.title}</h2>
           <p className="mt-1 text-sm text-[var(--ink-dim)] md:hidden">{p.status}</p>
           <p className="mt-6 text-lg text-white/90">{p.summary}</p>

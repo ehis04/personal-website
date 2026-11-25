@@ -21,8 +21,7 @@ Performance is a hard requirement: scroll and entrance effects are plain CSS (sc
 | `/cv` | Interactive CV: hover a section to highlight it, click to expand the detail |
 | `/ask` | Chat assistant with typed or dictated questions and spoken answers |
 | `/platforms` | Everywhere Ehis can be found |
-| `/api/chat` | Streaming chat endpoint (server-side API key, rate limited) |
-| `/api/contact` | Contact relay to a Google Form (no page uses it yet) |
+| `/api/chat` | Streaming chat endpoint, the only server code (`worker/index.ts`; server-side API key, rate limited) |
 
 ## Run it
 
@@ -48,7 +47,6 @@ npx eslint .                 # lint
 | `NEXT_PUBLIC_CONTACT_EMAIL` | Optional public contact email, shown on the Contact tile and in the footer. Kept in `.env` so it never lands in the public repo. Unset = no email is shown. |
 | `NEXT_PUBLIC_GOOGLE_MEASUREMENT_ID` | Optional Google Analytics id. |
 | `NEXT_PUBLIC_GOOGLE_VERIFICATION` | Optional Search Console verification token. |
-| `GOOGLE_FORM_LINK`, `GOOGLE_FORM_FIELD_ID_NAME/EMAIL/MESSAGE/SOCIAL` | Only for `/api/contact`. |
 
 `.env` is git-ignored. The `ideas/` folder (references and raw media) is git-ignored too and is never committed.
 
@@ -92,15 +90,15 @@ public/media/    photos and clips
 scripts/         make-clip.sh
 ```
 
-## Hosting: Cloudflare Workers
+## Hosting: Cloudflare (static files + one tiny Worker)
 
-The site is set up for **Cloudflare Workers via the OpenNext adapter** (`wrangler.jsonc`, `open-next.config.ts`). The free plan allows 100,000 requests per day and 10 ms of CPU per request ([limits](https://developers.cloudflare.com/workers/platform/limits)); waiting on network calls is not CPU time, and every page is prerendered, so the streaming chat fits. Vercel Hobby is restricted to non-commercial use ([policy](https://vercel.com/docs/platform/fair-use-policy)), which is why it is not the first pick. Cloudflare now points brand-new Next.js apps at its own `vinext` ([guide](https://developers.cloudflare.com/workers/framework-guides/web-apps/opennext/)); OpenNext is what Social Olympics already uses, so it was kept here.
+Every page is **static**. `npm run build` writes plain files to the `out/` folder and Cloudflare serves them straight from its edge, with no code running, so there is no cold start and no CPU limit on the free plan. The only server code is `worker/index.ts` (the Ask assistant), which Cloudflare runs **only for `/api/*`** (`assets.run_worker_first` in `wrangler.jsonc`). It talks to Anthropic with plain `fetch`, so it stays light.
 
-Checked locally on the Workers runtime (`workerd`): all six pages, the 404, sitemap, robots, manifest, icon, images and video served correctly, the chat streamed a real answer, and the chat rate limit returned 429 after 15 messages.
+> Why not Next.js on Workers (OpenNext)? It worked, but each fresh Worker had to boot the whole Next server. On the free plan (10 ms CPU per request) that failed about 1 request in 8 with Cloudflare error 1102, including some chat messages. Static files plus a tiny API Worker fixed it: 0 failures in 80 page requests and 12 simultaneous chats, and the server wait fell from a median of 159 ms (worst 762 ms) to about 60 ms.
 
 ```bash
-npm run build:cf     # build the Worker bundle into .open-next/
-npm run preview:cf   # run it locally on the Workers runtime
+npm run build        # static site into out/
+npm run preview:cf   # build, then run site + API locally on the Workers runtime
 npm run deploy:cf    # build and deploy to Cloudflare
 ```
 
@@ -110,17 +108,17 @@ npm run deploy:cf    # build and deploy to Cloudflare
 2. Set the chat key as a Worker secret (it never goes in git):
    `npx wrangler secret put ANTHROPIC_API_KEY`
 3. `npm run deploy:cf`. The site appears at `https://ehisoghina.<your-subdomain>.workers.dev`.
-4. Add `ehisoghina.com` as a zone in Cloudflare (change the domain's nameservers). `wrangler.jsonc` already lists the custom-domain routes for `ehisoghina.com` and `www.ehisoghina.com`; once the zone is active, `npm run deploy:cf` attaches them and creates the DNS records automatically. Check Workers & Pages → ehisoghina → Settings → Domains & Routes.
-5. Optional: create a free Upstash Redis database and set `UPSTASH_REDIS_REST_URL` and `UPSTASH_REDIS_REST_TOKEN` as secrets. The rate limits then hold across every Worker instance; without them they fall back to per-instance memory (`lib/rate-limit.ts`).
-6. Set a monthly spend limit on the API key in the Anthropic Console. This is the real ceiling.
+4. `ehisoghina.com` and `www.ehisoghina.com` are attached through the `routes` in `wrangler.jsonc` once the domain is a zone on your Cloudflare account.
+5. **www to the main domain:** a static site cannot redirect by host name, so add the free Cloudflare template: Rules → Redirect Rules → "Redirect from WWW to root". Pages already name `ehisoghina.com` as their canonical address, so search engines are not confused in the meantime.
+6. Optional: a free Upstash Redis database and the secrets `UPSTASH_REDIS_REST_URL` / `UPSTASH_REDIS_REST_TOKEN` make the chat's rate limits hold across every Worker instance (`lib/rate-limit.ts`); without them they are per instance.
+7. Set a monthly spend limit on the API key in the Anthropic Console. This is the real ceiling.
 
-For local Worker testing, put secrets in `.dev.vars` (git-ignored).
+For local Worker testing, put secrets in `.dev.vars` (git-ignored). Security and cache headers live in `public/_headers`.
 
 ### Later
 
 - Put large videos on Cloudflare R2 (free tier) rather than in `public/`.
-- The football prediction demo needs a small Python service. Free options: Hugging Face Spaces (CPU) or Render's free tier (cold starts). The site would call it through a server route so keys stay server-side.
-- Swap the placeholder social image (`/media/photo-3.jpg`) for a 1200×630 card.
+- The football prediction demo needs a small Python service. Free options: Hugging Face Spaces (CPU) or Render's free tier (cold starts). The Worker would call it so keys stay server-side.
 
 ## Status
 

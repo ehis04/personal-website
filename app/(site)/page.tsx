@@ -32,9 +32,9 @@ export default function PreviewHome() {
           alt={profile.name}
           priority
           sizes="(min-width: 1024px) 50vw, 100vw"
-          className="col-span-12 min-h-[70svh] lg:col-span-6 lg:row-span-2 lg:min-h-0"
+          className="col-span-12 min-h-[max(70svh,36rem)] lg:col-span-6 lg:row-span-2 lg:min-h-0"
         >
-          <div className="mt-auto p-6 md:p-9">
+          <div className="mt-auto p-6 pt-20 md:p-9">
             <AnimatedHeading as="h1" text={profile.name} wordClassName="text-extrude" className="font-display text-5xl leading-[0.95] md:text-8xl" />
             <AnimatedHeading as="p" text="AI *Engineer*" delay={0.25} wordClassName="text-shimmer" className="font-display mt-3 text-3xl md:text-5xl" />
             <p className="mt-3 text-sm text-white/85 md:text-base">

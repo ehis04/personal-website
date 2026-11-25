@@ -14,6 +14,8 @@ const pages: { path: string; priority: number }[] = [
   { path: "/privacy", priority: 0.3 },
 ];
 
+export const dynamic = "force-static";
+
 export default function sitemap(): MetadataRoute.Sitemap {
   // Papers hosted on this site get their own page.
   const paperPages = papers

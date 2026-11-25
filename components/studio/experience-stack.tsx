@@ -7,6 +7,8 @@ import { useCallback, useEffect, useState } from "react";
 
 import { Experience, experiences } from "@/config/studio";
 
+import { trapTab } from "./dialog-utils";
+
 // Placeholder gallery; each role will list its own photos and clips.
 const gallery = ["/media/photo-5.jpg", "/media/photo-3.jpg", "/media/photo-1.jpg"];
 
@@ -36,7 +38,10 @@ export function ExperienceStack() {
 
   useEffect(() => {
     if (!openId) return;
-    const onKey = (e: KeyboardEvent) => e.key === "Escape" && close();
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") close();
+      else trapTab(e);
+    };
     window.addEventListener("keydown", onKey);
     const prev = document.body.style.overflow;
     document.body.style.overflow = "hidden";
@@ -183,7 +188,7 @@ function Expanded({ exp, onClose }: { exp: Experience; onClose: () => void }) {
           exit={{ opacity: 0, transition: { duration: 0.1 } }}
           className="relative flex flex-col overflow-y-auto bg-[#0c110f]/95 p-7 md:p-10"
         >
-          <p className="text-[11px] uppercase tracking-[0.22em] text-[var(--green-glow)]">
+          <p className="pr-12 text-[11px] uppercase tracking-[0.22em] text-[var(--green-glow)]">
             {exp.role}
           </p>
           <h2 className="mt-2 font-display text-4xl md:text-5xl">{exp.company}</h2>
