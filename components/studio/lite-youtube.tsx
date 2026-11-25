@@ -51,7 +51,7 @@ export function LiteYouTube({
         className="object-cover transition-transform duration-700 group-hover:scale-[1.04]"
       />
       <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/20 to-black/10" />
-      <span className="absolute left-1/2 top-1/2 grid h-14 w-14 -translate-x-1/2 -translate-y-1/2 place-items-center rounded-full bg-[#2f7d50] shadow-xl shadow-black/50 transition-transform group-hover:scale-110">
+      <span className="absolute left-1/2 top-1/2 grid h-14 w-14 -translate-x-1/2 -translate-y-1/2 place-items-center rounded-full bg-[#2f7d50] shadow-xl shadow-black/50 transition-transform group-hover:scale-110 text-white">
         <Play className="h-5 w-5 fill-current" />
       </span>
       {!valid && (
