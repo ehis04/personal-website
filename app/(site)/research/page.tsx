@@ -6,13 +6,15 @@ import { AnimatedHeading } from "@/components/studio/animated-heading";
 import { DocPreview } from "@/components/studio/doc-preview";
 import { LiteYouTube } from "@/components/studio/lite-youtube";
 import { Tile } from "@/components/studio/tile";
-import { papers, socials, videos } from "@/config/studio";
+import { platforms } from "@/config/platforms";
+import { papers, videos } from "@/config/studio";
 
 export const metadata = { title: "Research & videos", alternates: { canonical: "/research" } };
 
 const eyebrow = "legible text-[11px] uppercase tracking-[0.22em] text-[#46b07a]";
 const chip = "rounded-full bg-black/40 px-3 py-1.5 text-xs text-white/85 ring-1 ring-white/10";
-const icons = { youtube: Youtube, github: Github, linkedin: Linkedin, newsletter: Mail } as const;
+const icons = { youtube: Youtube, github: Github, linkedin: Linkedin, substack: Mail } as const;
+const socialIds = Object.keys(icons) as (keyof typeof icons)[];
 
 function SectionHead({ kicker, title }: { kicker: string; title: string }) {
   return (
@@ -125,7 +127,7 @@ export default function ResearchPage() {
       </div>
 
       {/* Videos */}
-      <SectionHead kicker="Videos" title="What I've *filmed*" />
+      <SectionHead kicker="Videos" title="What I'm *filming*" />
       <div className="grid grid-cols-12 gap-3">
         {videos.map((v) => (
           <Tile key={v.id} className="col-span-12 aspect-video md:col-span-6">
@@ -141,19 +143,21 @@ export default function ResearchPage() {
       {/* Socials */}
       <SectionHead kicker="Elsewhere" title="Find me *online*" />
       <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
-        {socials.map((s) => {
-          const Icon = icons[s.id];
+        {socialIds.map((id) => {
+          const p = platforms.find((x) => x.id === id);
+          if (!p) return null;
+          const Icon = icons[id];
           return (
-            <Tile key={s.id} href="/platforms" className="min-h-[190px] bg-[#121a16]">
+            <Tile key={p.id} href={p.url} className="min-h-[190px] bg-[#121a16]">
               <div className="flex h-full flex-col justify-between p-5">
                 <div className="flex items-start justify-between">
                   <Icon className="h-9 w-9 text-[#46b07a]" />
                   <ArrowUpRight className="h-5 w-5 transition-transform group-hover:-translate-y-1 group-hover:translate-x-1" />
                 </div>
                 <div>
-                  <p className="font-display text-2xl">{s.name}</p>
-                  <p className="text-sm text-[#8c9a91]">{s.handle}</p>
-                  <p className="mt-2 border-t border-white/10 pt-2 text-xs text-white/65">{s.note}</p>
+                  <p className="font-display text-2xl">{p.name}</p>
+                  <p className="text-sm text-[#8c9a91]">{p.handle}</p>
+                  <p className="mt-2 border-t border-white/10 pt-2 text-xs text-white/65">{p.blurb}</p>
                 </div>
               </div>
             </Tile>

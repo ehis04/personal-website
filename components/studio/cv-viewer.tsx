@@ -113,7 +113,6 @@ export function CvViewer() {
               src={src}
               alt={`Curriculum vitae, page ${i + 1} of ${cvPages.length}`}
               fill
-              unoptimized
               priority={i === 0}
               sizes="(min-width: 1024px) 50vw, 100vw"
               className="select-none object-contain"

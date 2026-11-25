@@ -64,6 +64,14 @@ npx eslint .                 # lint
 
 Photos and clips on the site are currently Ehis's own pictures used as placeholders. Projects are not hosted yet, so their pages link to GitHub where a public repo exists and say "Live demo coming soon".
 
+### Adding or changing photos
+
+```bash
+node scripts/make-image-variants.mjs
+```
+
+Next.js cannot resize images on Cloudflare Workers, so every photo in `public/media/` (and the CV page images in `public/cv/`) is pre-sized into small WebP files. Run this after adding or replacing a photo, then commit the generated `-384/-640/-828/-1200.webp` files.
+
 ### Adding a video clip
 
 ```bash

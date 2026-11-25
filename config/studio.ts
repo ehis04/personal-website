@@ -397,15 +397,7 @@ export interface VideoItem {
 }
 
 export const videos: VideoItem[] = [
-  { id: "v1", title: "Video title placeholder", meta: "Placeholder · football analytics", poster: "/media/talk-a.jpg" },
-  { id: "v2", title: "Second video placeholder", meta: "Placeholder · build log", poster: "/media/photo-2.jpg" },
-  { id: "v3", title: "Third video placeholder", meta: "Placeholder · explainer", poster: "/media/photo-5.jpg" },
-  { id: "v4", title: "Fourth video placeholder", meta: "Placeholder · talk", poster: "/media/photo-3.jpg" },
+  { id: "v1", title: "First video coming soon", meta: "YouTube", poster: "/media/talk-a.jpg" },
+  { id: "v2", title: "Build logs and explainers to follow", meta: "YouTube", poster: "/media/photo-2.jpg" },
 ];
 
-export const socials = [
-  { id: "youtube", name: "YouTube", handle: "Channel name", note: "Football analytics and builds" },
-  { id: "github", name: "GitHub", handle: "ehis04", note: "Code and models" },
-  { id: "linkedin", name: "LinkedIn", handle: "Profile", note: "Work and updates" },
-  { id: "newsletter", name: "Newsletter", handle: "Subscribe", note: "New posts, in your inbox" },
-] as const;

@@ -8,6 +8,7 @@ import { DocPreview } from "@/components/studio/doc-preview";
 import { Scroller, Screen } from "@/components/studio/scroller";
 import { SiteFooter } from "@/components/studio/site-footer";
 import { Tile } from "@/components/studio/tile";
+import { platforms } from "@/config/platforms";
 import { contactEmail } from "@/config/site";
 import { degrees, experiences, profile, studioProjects } from "@/config/studio";
 
@@ -155,8 +156,8 @@ export default function PreviewHome() {
               <Play className="h-4 w-4 fill-current" />
             </span>
             <div>
-              <p className={eyebrow}>Latest video</p>
-              <p className="text-sm">Video title placeholder</p>
+              <p className={eyebrow}>Videos</p>
+              <p className="text-sm">Coming soon on YouTube</p>
             </div>
           </div>
         </Tile>
@@ -343,26 +344,23 @@ export default function PreviewHome() {
                 <Play className="h-5 w-5 fill-current" />
               </span>
               <div>
-                <p className={eyebrow}>Latest on YouTube</p>
-                <p className="font-display text-2xl">Video title placeholder</p>
+                <p className={eyebrow}>On YouTube</p>
+                <p className="font-display text-2xl">Videos coming soon</p>
               </div>
             </div>
           </Tile>
           <div className="col-span-12 grid grid-cols-3 gap-3 lg:col-span-7">
-            {[
-              [Youtube, "YouTube", "Channel name"],
-              [Github, "GitHub", "Username"],
-              [Linkedin, "LinkedIn", "Profile"],
-            ].map(([Icon, name, sub]) => {
-              const I = Icon as typeof Youtube;
+            {(["youtube", "github", "linkedin"] as const).map((id) => {
+              const p = platforms.find((x) => x.id === id);
+              if (!p) return null;
+              const I = { youtube: Youtube, github: Github, linkedin: Linkedin }[id];
               return (
-                <Tile key={name as string} href="/platforms" className="min-h-[130px] bg-[var(--surface-2)] lg:min-h-0">
+                <Tile key={id} href={p.url} className="min-h-[130px] bg-[var(--surface-2)] lg:min-h-0">
                   <div className="flex h-full flex-col justify-between p-4">
                     <I className="h-9 w-9 text-[#46b07a]" />
                     <div>
-                      <p className="font-display text-lg">{name as string}</p>
-                      <p className="text-xs text-[var(--ink-dim)]">{sub as string}</p>
-                      <p className="mt-3 border-t border-white/10 pt-3 text-xs text-white/70">Latest: placeholder title</p>
+                      <p className="font-display text-lg">{p.name}</p>
+                      <p className="text-xs text-[var(--ink-dim)]">{p.handle}</p>
                     </div>
                   </div>
                 </Tile>
@@ -376,14 +374,14 @@ export default function PreviewHome() {
           <Tile className={`col-span-12 bg-[var(--surface-2)] lg:col-span-8 lg:row-span-2 ${mobileMin}`}>
             <div className="flex h-full flex-col gap-3 p-5 md:p-6">
               {[
-                ["What did you build with football data?", "Sample answer: the real assistant will answer from my CV, projects and papers, in text or read aloud."],
-                ["Which roles have you held?", "Sample answer: it will list my roles with dates, and link to the full experience page."],
-                ["What is xgGaffer?", "Sample answer: it will explain the platform, the data it uses and the models behind it, and link to the live demo."],
+                ["What is xgGaffer?", "xgGaffer is a football analytics platform Ehis built as his final-year project at DCU, covering five European leagues with seven ML models and role-based tools for coaches, referees, players and fans."],
+                ["Which roles have you held?", "Ehis is an NLP Researcher at the University of Birmingham and founder of R.V. Uncovered. Earlier roles include Optum, EPAM Systems and DCU Soccer."],
+                ["What are you researching?", "Ehis is part of a University of Birmingham NLP team taking part in SemEval 2027, studying cross-lingual alignment and activation steering for large language models."],
               ].map(([q, a]) => (
                 <div key={q} className="flex flex-col gap-3">
                   <div className="ml-auto max-w-[80%] rounded-2xl rounded-br-sm bg-[var(--green)] px-4 py-3 text-sm">{q}</div>
                   <div className="max-w-[88%] rounded-2xl rounded-bl-sm bg-black/40 px-4 py-3.5 text-[15px] text-white/85 ring-1 ring-white/10">
-                    <p className="mb-1 text-[10px] uppercase tracking-[0.18em] text-[var(--green-glow)]">Sample</p>
+                    <p className="mb-1 text-[10px] uppercase tracking-[0.18em] text-[var(--green-glow)]">Example answer</p>
                     {a}
                   </div>
                 </div>
