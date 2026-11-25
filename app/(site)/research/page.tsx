@@ -64,7 +64,7 @@ export default function ResearchPage() {
               {featuredPage ? (
                 <Link
                   href={featuredPage}
-                  className="mt-auto inline-flex w-fit items-center gap-2 rounded-full bg-[#2f7d50] px-5 py-2.5 text-sm font-medium transition-colors hover:bg-[#46b07a]"
+                  className="mt-auto inline-flex w-fit items-center gap-2 rounded-full bg-[#2f7d50] px-5 py-2.5 text-sm font-medium text-white transition-colors hover:bg-[#46b07a]"
                 >
                   {featured.status} <ArrowUpRight className="h-4 w-4" />
                 </Link>
@@ -73,12 +73,12 @@ export default function ResearchPage() {
                   href={featured.href}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="mt-auto inline-flex w-fit items-center gap-2 rounded-full bg-[#2f7d50] px-5 py-2.5 text-sm font-medium"
+                  className="mt-auto inline-flex w-fit items-center gap-2 rounded-full bg-[#2f7d50] px-5 py-2.5 text-sm font-medium text-white"
                 >
                   {featured.status} <ArrowUpRight className="h-4 w-4" />
                 </a>
               ) : (
-                <span className="mt-auto inline-flex w-fit items-center rounded-full bg-[#2f7d50] px-5 py-2.5 text-sm font-medium">
+                <span className="mt-auto inline-flex w-fit items-center rounded-full bg-[#2f7d50] px-5 py-2.5 text-sm font-medium text-white">
                   {featured.status}
                 </span>
               )}

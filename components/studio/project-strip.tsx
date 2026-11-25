@@ -209,7 +209,6 @@ function Card({
       layoutId={`proj-${p.id}`}
       transition={spring}
       onClick={onOpen}
-      aria-label={`Open ${p.title}`}
       aria-current={active}
       data-card={p.id}
       className="recess relative h-full w-full select-none text-left"

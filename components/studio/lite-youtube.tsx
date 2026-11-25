@@ -40,7 +40,7 @@ export function LiteYouTube({
       type="button"
       onClick={() => valid && setLoaded(true)}
       disabled={!valid}
-      aria-label={valid ? `Play ${title}` : `${title} (video coming soon)`}
+      aria-label={valid ? `Play ${title}` : `Coming soon: ${title}`}
       className="group absolute inset-0 block h-full w-full text-left disabled:cursor-default"
     >
       <Image

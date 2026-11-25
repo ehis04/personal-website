@@ -6,6 +6,12 @@
 
 ---
 
+> ## UPDATE 2026-11-25 (accessibility, privacy page, error pages, CI, analytics placeholder bug). Newest note.
+> - **BUG FOUND AND FIXED:** `.env` still held the template placeholder `NEXT_PUBLIC_GOOGLE_MEASUREMENT_ID=G-XXXXXXXXXX`, so the LIVE site was loading Google's gtag script for a fake id (privacy + weight). Blanked the value and `app/layout.tsx` now only enables Google Analytics for a real-looking id (placeholders like G-XXXX are ignored). If analytics is ever turned on, update `/privacy`.
+> - **Accessibility (axe-core, all pages, desktop + phone):** fixed `aria-label` on `<p>` headings (AnimatedHeading only labels real headings now), button names (experience/project cards now named by their visible content; YouTube facade label starts with its visible text), contrast (white text on green buttons on /research), decorative react-icons now `aria-hidden`. Re-run `axe.mjs`-style checks after big UI changes (tooling lives in the scratchpad, recreate with `npm i @axe-core/playwright playwright-core`).
+> - **New pages:** `/privacy` (factual: no cookies/analytics; chat text goes to Anthropic and is not saved; IP used for rate limiting; Cloudflare hosting and Email Routing). Drafted by Claude from how the site works: the user should read it once. Linked from both footers and the sitemap. `app/(site)/error.tsx` + `app/global-error.tsx` added.
+> - **CI:** `.github/workflows/ci.yml` runs tsc, eslint and build on pushes to main and pull requests (no secrets needed). If GitHub rejected the push for missing `workflow` scope, the user must run `gh auth refresh -s workflow`.
+
 > ## UPDATE 2026-11-25 (professional email live). Newest note.
 > - **`hello@ehisoghina.com` is live** via Cloudflare Email Routing (forwards to the user's Gmail). Verified by an SMTP RCPT probe against `route1/2.mx.cloudflare.net`: `hello@` accepted (250), a made-up address rejected (550). `.env` has `NEXT_PUBLIC_CONTACT_EMAIL=hello@ehisoghina.com` (replaced the personal Gmail); redeployed. Forwarding only: replies go out from the user's Gmail unless they set up Gmail "Send mail as".
 
