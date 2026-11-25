@@ -2,7 +2,7 @@
 //
 // On Cloudflare Workers (and any serverless host) in-memory counters are per
 // instance and reset often, so they only slow casual abuse. When
-// UPSTASH_REDIS_REST_URL and UPSTASH_REDIS_REST_TOKEN are set, counters live in
+// UPSTASH_REDIS_REST_URL and UPSTASH_REDIS_REST_TOKEN are provided, counters live in
 // Upstash Redis instead and hold across every instance. Without them, or if
 // Redis is unreachable, this falls back to memory (it never blocks visitors
 // because Redis is down). The hard spending ceiling is still the monthly limit
@@ -27,9 +27,15 @@ function memoryHit(key: string, windowSec: number): number {
   return entry.count;
 }
 
-async function redisHit(key: string, windowSec: number): Promise<number | null> {
-  const url = process.env.UPSTASH_REDIS_REST_URL;
-  const token = process.env.UPSTASH_REDIS_REST_TOKEN;
+/** Upstash credentials, passed in by the caller (a Worker reads them from its bindings). */
+export interface LimitConfig {
+  UPSTASH_REDIS_REST_URL?: string;
+  UPSTASH_REDIS_REST_TOKEN?: string;
+}
+
+async function redisHit(key: string, windowSec: number, cfg?: LimitConfig): Promise<number | null> {
+  const url = cfg?.UPSTASH_REDIS_REST_URL;
+  const token = cfg?.UPSTASH_REDIS_REST_TOKEN;
   if (!url || !token) return null;
   try {
     const res = await fetch(`${url.replace(/\/+$/, "")}/pipeline`, {
@@ -51,8 +57,8 @@ async function redisHit(key: string, windowSec: number): Promise<number | null> 
 }
 
 /** Counts one hit for `key` and returns true while it is within `max` per `windowSec`. */
-export async function allow(key: string, max: number, windowSec: number): Promise<boolean> {
-  const count = (await redisHit(`rl:${key}`, windowSec)) ?? memoryHit(key, windowSec);
+export async function allow(key: string, max: number, windowSec: number, cfg?: LimitConfig): Promise<boolean> {
+  const count = (await redisHit(`rl:${key}`, windowSec, cfg)) ?? memoryHit(key, windowSec);
   return count <= max;
 }
 

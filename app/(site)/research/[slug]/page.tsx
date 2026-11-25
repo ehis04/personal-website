@@ -13,6 +13,8 @@ const find = (slug: string) => hosted.find((p) => p.slug === slug);
 
 const eyebrow = "legible text-[11px] uppercase tracking-[0.22em] text-[#46b07a]";
 
+export const dynamicParams = false;
+
 export function generateStaticParams() {
   return hosted.map((p) => ({ slug: p.slug }));
 }

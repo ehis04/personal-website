@@ -48,3 +48,6 @@ ideas/
 
 # Papers are hosted on the site but kept out of the public GitHub repo
 public/papers/
+
+# Static build output (Cloudflare serves this folder)
+out/
