@@ -1,6 +1,7 @@
 import type { MetadataRoute } from "next";
 
 import { siteConfig } from "@/config/site";
+import { papers } from "@/config/studio";
 
 const pages: { path: string; priority: number }[] = [
   { path: "", priority: 1 },
@@ -13,7 +14,12 @@ const pages: { path: string; priority: number }[] = [
 ];
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  return pages.map(({ path, priority }) => ({
+  // Papers hosted on this site get their own page.
+  const paperPages = papers
+    .filter((p) => p.slug)
+    .map((p) => ({ path: `/research/${p.slug}`, priority: 0.7 }));
+
+  return [...pages, ...paperPages].map(({ path, priority }) => ({
     url: `${siteConfig.url}${path}`,
     lastModified: new Date(),
     changeFrequency: "monthly",

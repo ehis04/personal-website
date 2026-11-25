@@ -45,3 +45,6 @@ ideas/
 .wrangler/
 .dev.vars
 .dev.vars.*
+
+# Papers are hosted on the site but kept out of the public GitHub repo
+public/papers/

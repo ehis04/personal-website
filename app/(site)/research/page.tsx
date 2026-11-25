@@ -1,4 +1,6 @@
 import { ArrowUpRight, Github, Linkedin, Mail, Youtube } from "lucide-react";
+import Image from "next/image";
+import Link from "next/link";
 
 import { AnimatedHeading } from "@/components/studio/animated-heading";
 import { DocPreview } from "@/components/studio/doc-preview";
@@ -28,6 +30,8 @@ function SectionHead({ kicker, title }: { kicker: string; title: string }) {
 
 export default function ResearchPage() {
   const [featured, ...rest] = papers;
+  // A paper hosted on this site opens its own page; others link out.
+  const featuredPage = featured.slug ? `/research/${featured.slug}` : undefined;
 
   return (
     <div className="mx-auto max-w-[1600px] px-3 pb-10 pt-[4.5rem]">
@@ -48,14 +52,21 @@ export default function ResearchPage() {
           <div className="grid h-full gap-6 p-6 md:grid-cols-[1.2fr_1fr] md:p-8">
             <div className="flex flex-col">
               <p className={eyebrow}>Featured · {featured.venue} · {featured.year}</p>
-              <p className="font-display text-extrude mt-3 text-3xl leading-[1.02] md:text-5xl">{featured.title}</p>
+              <p className={`font-display text-extrude mt-3 leading-[1.05] ${featured.title.length > 70 ? "text-2xl md:text-4xl" : "text-3xl md:text-5xl"}`}>{featured.title}</p>
               <p className="mt-4 text-[15px] text-white/80">{featured.abstract}</p>
               <div className="mt-4 flex flex-wrap gap-2">
                 {featured.tags.map((t) => (
                   <span key={t} className={chip}>{t}</span>
                 ))}
               </div>
-              {featured.href ? (
+              {featuredPage ? (
+                <Link
+                  href={featuredPage}
+                  className="mt-auto inline-flex w-fit items-center gap-2 rounded-full bg-[#2f7d50] px-5 py-2.5 text-sm font-medium transition-colors hover:bg-[#46b07a]"
+                >
+                  {featured.status} <ArrowUpRight className="h-4 w-4" />
+                </Link>
+              ) : featured.href ? (
                 <a
                   href={featured.href}
                   target="_blank"
@@ -71,7 +82,18 @@ export default function ResearchPage() {
               )}
             </div>
             <div className="flex items-center py-4">
-              <DocPreview className="w-[min(80%,260px)]" />
+              {featured.cover ? (
+                <Image
+                  src={featured.cover}
+                  alt="First page of the paper"
+                  width={640}
+                  height={561}
+                  unoptimized
+                  className="w-full max-w-[420px] rounded-lg bg-white shadow-2xl ring-1 ring-white/10"
+                />
+              ) : (
+                <DocPreview className="w-[min(80%,260px)]" />
+              )}
             </div>
           </div>
         </Tile>

@@ -297,16 +297,62 @@ export interface Paper {
   title: string;
   venue: string;
   year: string;
+  /** Short summary shown on cards. */
   abstract: string;
   tags: string[];
   /** Where to read more (a public repo or paper). Omit while there is nothing public. */
   href?: string;
   /** Short status shown on the button when there is no link. */
   status: string;
+  // The fields below are for a paper hosted on this site (it gets its own page at /research/<slug>).
+  slug?: string;
+  subtitle?: string;
+  /** Author names exactly as printed on the paper, for example "Oghina, E.". */
+  authors?: string[];
+  /** ISO date (YYYY-MM-DD) the preprint was released. */
+  date?: string;
+  /** The abstract exactly as in the paper. */
+  fullAbstract?: string;
+  keywords?: string[];
+  /** Path of the PDF under /public (kept out of git, see .gitignore). */
+  pdf?: string;
+  /** Image of the first page. */
+  cover?: string;
+  /** Add these when the paper is posted elsewhere. */
+  ssrnUrl?: string;
+  doi?: string;
 }
 
 // Real research activity from the CV and the public repos. No published papers yet.
 export const papers: Paper[] = [
+  {
+    id: "remote-hybrid-work",
+    slug: "remote-hybrid-work-software-engineering",
+    title: "Remote and Hybrid Work in Software Engineering: Productivity, Collaboration, Wellbeing and Organisational Design",
+    subtitle: "A critical synthesis of post-pandemic evidence (2023–November 2026)",
+    venue: "Literature review · preprint",
+    year: "2026",
+    authors: ["Oghina, E."],
+    date: "2026-11-24",
+    abstract:
+      "A critical synthesis of post-pandemic evidence on productivity, collaboration, wellbeing and organisational outcomes in remote and hybrid software engineering, proposing a socio-technical framework for context-sensitive policy.",
+    fullAbstract:
+      "Remote and hybrid work have become enduring features of software engineering, yet evidence on their consequences is difficult to interpret because work arrangements, research designs and performance measures differ substantially. This review synthesises selected academic and grey literature, prioritising publications from 2023 to November 2026 and using earlier pandemic studies as historical context. Four questions examine productivity, communication and collaboration, developer wellbeing, and management and organisational outcomes. The synthesis distinguishes self-reported performance from behavioural indicators and causal estimates, as well as individual outcomes from team and organisational outcomes. Evidence from a randomised hybrid-work trial supports improved retention and job satisfaction without detectable deterioration in measured performance in its particular setting. Software-engineering studies indicate that flexibility can support focused individual work, while distributed coordination, informal learning and feedback remain vulnerable to reduced shared context. Evidence on proximity and mentoring also challenges the assumption that short-term individual output adequately captures engineering effectiveness. A socio-technical framework is proposed in which task interdependence, coordination practices, access to mentorship and boundary management condition the relationship between work arrangements and sustainable performance. The evidence supports context-sensitive policy design rather than a universal preference for either remote or office-based work. The review identifies priorities for longitudinal evaluation, equitable career development and the interaction between generative AI and distributed work. Because the original search records were not provided for audit, findings are presented as a structured critical synthesis rather than a comprehensive systematic review.",
+    keywords: [
+      "software engineering",
+      "hybrid work",
+      "remote work",
+      "developer productivity",
+      "collaboration",
+      "wellbeing",
+      "socio-technical systems",
+      "literature review",
+    ],
+    tags: ["Software engineering", "Remote work", "Literature review"],
+    pdf: "/papers/remote-hybrid-work-software-engineering.pdf",
+    cover: "/papers/remote-hybrid-work-cover.webp",
+    status: "Read the paper",
+  },
   {
     id: "semeval-2027",
     title: "Cross-lingual alignment & activation steering for LLMs",
