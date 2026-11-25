@@ -16,7 +16,7 @@ import sharp from "sharp";
 
 const root = path.join(path.dirname(fileURLToPath(import.meta.url)), "..", "public");
 const MEDIA_WIDTHS = [384, 640, 828, 1200];
-const CV_WIDTHS = [640, 900, 1251];
+const CV_WIDTHS = [640, 750, 900, 1251];
 
 async function make(srcFile, outBase, widths) {
   const meta = await sharp(srcFile).metadata();

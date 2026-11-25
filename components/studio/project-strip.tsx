@@ -159,6 +159,7 @@ export function ProjectStrip() {
               <Card
                 project={p}
                 active={i === active}
+                eager={i === 0}
                 onOpen={() => {
                   if (drag.current.moved) return;
                   setActive(i);
@@ -196,10 +197,12 @@ function Card({
   project: p,
   active,
   onOpen,
+  eager,
 }: {
   project: StudioProject;
   active: boolean;
   onOpen: () => void;
+  eager?: boolean;
 }) {
   return (
     <motion.button
@@ -226,6 +229,7 @@ function Card({
             src={p.media.src}
             poster={p.media.poster}
             playing={active}
+            eager={eager}
             className="absolute inset-0 h-full w-full"
           />
         ) : (
@@ -233,6 +237,7 @@ function Card({
             src={p.media.src}
             alt=""
             fill
+            priority={eager}
             sizes="400px"
             draggable={false}
             className="object-cover"
