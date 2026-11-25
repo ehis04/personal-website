@@ -5,6 +5,7 @@
 // It talks to Anthropic with plain fetch (no SDK) to stay light: waiting on the network is
 // free, only our own computing counts against the CPU limit.
 import { buildSystemPrompt } from "../config/knowledge";
+import { DEFAULT_VOICE, forSpeech, isVoice } from "../config/voices";
 import { allow, clientIp, type LimitConfig } from "../lib/rate-limit";
 
 interface Env extends LimitConfig {
@@ -29,13 +30,13 @@ const WINDOW_SEC = 10 * 60;
 const MAX_PER_IP = 15;
 const MAX_PER_DAY = 500;
 
-// Natural voices (Deepgram Aura-1 on Workers AI). Free plan: ~10,000 neurons/day (about 7,000
-// characters); beyond that the call fails, it never charges, and the page falls back to the
-// device's own voice.
-const VOICES = ["helios", "angus", "orion", "arcas", "perseus", "orpheus", "zeus", "athena", "asteria", "luna", "stella", "hera"];
+// Natural voices (Deepgram Aura-2 on Workers AI). Free plan: ~10,000 neurons/day (about 3,600
+// characters, roughly 15 spoken answers); beyond that the call fails, it never charges, and the
+// page falls back to the device's own voice. Previews are ready-made files and cost nothing.
+const TTS_MODEL = "@cf/deepgram/aura-2-en";
 const SPEAK_MAX_CHARS = 500;
-const SPEAK_PER_IP = 8; // per 10 minutes
-const SPEAK_PER_DAY = 30; // across all visitors, protects the daily free allowance
+const SPEAK_PER_IP = 12; // per 10 minutes
+const SPEAK_PER_DAY = 60; // across all visitors, stops one script hammering the endpoint
 
 // Only this site's own pages may call the API from a browser. (Scripts and curl send no Origin
 // and are held back by the rate limits instead.)
@@ -195,7 +196,7 @@ async function speak(request: Request, env: Env): Promise<Response> {
   if (Number(request.headers.get("content-length") ?? 0) > MAX_BODY_BYTES) return json({ error: "Too large." }, 413);
 
   let text = "";
-  let voice = "helios";
+  let voice: string = DEFAULT_VOICE;
   try {
     const body = (await request.json()) as { text?: unknown; voice?: unknown };
     if (typeof body.text !== "string") throw new Error("text");
@@ -204,7 +205,7 @@ async function speak(request: Request, env: Env): Promise<Response> {
   } catch {
     return json({ error: "Invalid request." }, 400);
   }
-  if (!text || text.length > SPEAK_MAX_CHARS || !VOICES.includes(voice)) {
+  if (!text || text.length > SPEAK_MAX_CHARS || !isVoice(voice)) {
     return json({ error: "Please check the text and voice." }, 400);
   }
 
@@ -217,7 +218,7 @@ async function speak(request: Request, env: Env): Promise<Response> {
   }
 
   try {
-    const out = (await env.AI.run("@cf/deepgram/aura-1", { text, speaker: voice, encoding: "mp3" }, { returnRawResponse: true })) as Response;
+    const out = (await env.AI.run(TTS_MODEL, { text: forSpeech(text), speaker: voice, encoding: "mp3" }, { returnRawResponse: true })) as Response;
     if (!out.ok || !out.body) return json({ error: "The natural voice is unavailable right now." }, 502);
     return new Response(out.body, { headers: { ...baseHeaders, "content-type": "audio/mpeg" } });
   } catch {

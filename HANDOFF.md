@@ -6,7 +6,11 @@
 
 ---
 
-> ## UPDATE 2026-11-25 (user's 7-point review + security + search pass). Newest note.
+> ## UPDATE 2026-11-25 (more natural voice). Newest note.
+> - The user found the Aura-1 voice broken up and robotic. `/api/speak` now uses `@cf/deepgram/aura-2-en`; the voice list, default (Draco) and pronunciation fixes (`forSpeech`) live in `config/voices.ts`, shared by page and Worker. Previews are static files in `public/media/voices/` (`scripts/make-voice-samples.sh`), so trying voices uses no allowance (previewing 12 voices used to hit the per-visitor limit and drop to the robot device voice). Aura-2 costs twice as much: the free 10,000 neurons/day is about 3,600 characters, roughly 15 spoken answers, then the device voice. Caps: 12 per IP per 10 min, 60 per day. Privacy page mentions the speech processing.
+> - The user confirmed the Cloudflare security steps are done and that the AI-crawler rules are fine as they are.
+
+> ## UPDATE 2026-11-25 (user's 7-point review + security + search pass). 
 > - **Footer:** removed "Built with Next.js / Hosted on Cloudflare"; now "(c) 2026 Ehis Oghina. All rights reserved." + Privacy link.
 > - **Ask page:** the assistant now answers in the FIRST person but still says plainly it is an AI that speaks for Ehis if asked (system prompt in `config/knowledge.ts`; UI copy "Ask me about my work", "an AI assistant that answers in my voice"). The prompt gets today's date and request-time wording for the MSc/BSc (`{{msc}}`/`{{bsc}}` placeholders; a Worker's clock is unreliable at startup, so never compute dates at module level). **Voice:** new `/api/speak` (Workers AI `@cf/deepgram/aura-1`, 12 voices, mp3) with a voice picker, Preview button and speed slider (saved in localStorage); falls back to the best installed device voice when over the free allowance (10,000 neurons/day ~ 7,000 characters ~ 30 answers; on the Free plan it errors and never charges). Server caps: 500 chars/request, 8 per IP per 10 min, 30 per day. Needs the `ai` binding in `wrangler.jsonc`.
 > - **Projects page:** subheading "Investigate the public projects in more detail...", a slider above the strip (appears only when cards overflow, mirrors and drives the strip scroll), more space above the footer. **Dialogs** (experience, project, CV) now render through `components/studio/dialog-portal.tsx` into the `.studio` wrapper so they sit above the footer (the footer used to paint over an open card because the page content has its own stacking context).

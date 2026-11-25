@@ -3,6 +3,7 @@
 import { ArrowUp, Mic, Play, Square, Volume2, VolumeX } from "lucide-react";
 import { useCallback, useEffect, useRef, useState, useSyncExternalStore } from "react";
 
+import { DEFAULT_VOICE, isVoice, VOICE_SAMPLE, VOICES } from "@/config/voices";
 import { cn } from "@/lib/utils";
 
 import { Tile } from "./tile";
@@ -48,11 +49,15 @@ const prompts = [
 ];
 
 // Natural voices come from the site's own /api/speak (Workers AI). "device" uses the browser's own voice.
-const NATURAL_VOICES = ["helios", "angus", "orion", "arcas", "perseus", "orpheus", "zeus", "athena", "asteria", "luna", "stella", "hera"];
-const titleCase = (v: string) => v.charAt(0).toUpperCase() + v.slice(1);
 const VOICE_KEY = "ehis-voice";
 const RATE_KEY = "ehis-voice-rate";
-const SAMPLE = "Hello, this is how I sound when I read my answers out loud.";
+
+/** The remembered voice, if it is still one on offer. */
+function savedVoice(): string {
+  if (typeof window === "undefined") return DEFAULT_VOICE;
+  const v = window.localStorage.getItem(VOICE_KEY) ?? "";
+  return v === "device" || isVoice(v) ? v : DEFAULT_VOICE;
+}
 
 /** The best-sounding voice already installed on the device (natural/neural voices first). */
 function pickDeviceVoice(): SpeechSynthesisVoice | undefined {
@@ -85,9 +90,7 @@ export function Chat() {
   const [error, setError] = useState<string | null>(null);
   const [notice, setNotice] = useState<string | null>(null);
   // Voice choice and speed are remembered on this device (read once, before the settings show).
-  const [voice, setVoice] = useState<string>(() =>
-    typeof window === "undefined" ? "helios" : window.localStorage.getItem(VOICE_KEY) ?? "helios"
-  );
+  const [voice, setVoice] = useState<string>(savedVoice);
   const [rate, setRate] = useState<number>(() =>
     typeof window === "undefined" ? 1 : Number(window.localStorage.getItem(RATE_KEY)) || 1
   );
@@ -144,6 +147,24 @@ export function Chat() {
     [rate]
   );
 
+  /** Plays audio at the chosen speed; throws if the browser refuses to start it. */
+  const playAudio = useCallback(
+    async (url: string, release?: () => void) => {
+      const audio = new Audio(url);
+      audio.playbackRate = rate;
+      audio.onplay = () => setSpeaking(true);
+      const done = () => {
+        setSpeaking(false);
+        release?.();
+      };
+      audio.onended = done;
+      audio.onerror = done;
+      audioRef.current = audio;
+      await audio.play();
+    },
+    [rate]
+  );
+
   const speak = useCallback(
     async (raw: string) => {
       const text = raw.replace(/[*_#`]/g, "").trim();
@@ -159,17 +180,7 @@ export function Chat() {
           });
           if (!res.ok) throw new Error(String(res.status));
           const url = URL.createObjectURL(await res.blob());
-          const audio = new Audio(url);
-          audio.playbackRate = rate;
-          audio.onplay = () => setSpeaking(true);
-          const done = () => {
-            setSpeaking(false);
-            URL.revokeObjectURL(url);
-          };
-          audio.onended = done;
-          audio.onerror = done;
-          audioRef.current = audio;
-          await audio.play();
+          await playAudio(url, () => URL.revokeObjectURL(url));
           return;
         } catch {
           // Over the daily limit, offline, or the browser blocked autoplay: use the device voice.
@@ -178,8 +189,16 @@ export function Chat() {
       }
       speakOnDevice(text);
     },
-    [voice, rate, speakOnDevice, stopSpeaking]
+    [voice, playAudio, speakOnDevice, stopSpeaking]
   );
+
+  // Previews are ready-made files, so trying voices never uses up the daily allowance.
+  const preview = useCallback(() => {
+    stopSpeaking();
+    setNotice(null);
+    if (voice === "device") return speakOnDevice(VOICE_SAMPLE);
+    playAudio(`/media/voices/${voice}.mp3`).catch(() => setNotice("The preview couldn't be played."));
+  }, [voice, playAudio, speakOnDevice, stopSpeaking]);
 
   const send = useCallback(
     async (raw: string) => {
@@ -437,9 +456,9 @@ export function Chat() {
                     className="min-w-0 flex-1 rounded-full bg-black/45 px-4 py-2 text-sm ring-1 ring-white/15 outline-none focus:ring-[#46b07a]/60"
                   >
                     <optgroup label="Natural voices">
-                      {NATURAL_VOICES.map((v) => (
-                        <option key={v} value={v}>
-                          {titleCase(v)}
+                      {VOICES.map((v) => (
+                        <option key={v.id} value={v.id}>
+                          {v.label}
                         </option>
                       ))}
                     </optgroup>
@@ -449,7 +468,7 @@ export function Chat() {
                   </select>
                   <button
                     type="button"
-                    onClick={() => (speaking ? stopSpeaking() : void speak(SAMPLE))}
+                    onClick={() => (speaking ? stopSpeaking() : preview())}
                     aria-label={speaking ? "Stop the preview" : "Preview this voice"}
                     className="inline-flex shrink-0 items-center gap-2 rounded-full px-4 py-2 text-sm ring-1 ring-white/20 transition-colors hover:bg-white/10"
                   >

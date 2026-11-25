@@ -37,8 +37,10 @@ const sections: { title: string; body: React.ReactNode }[] = [
         </p>
         <p>
           If you use the microphone, dictation is done by your browser&apos;s built-in speech recognition. Depending on
-          your browser, that audio may be processed by the browser&apos;s vendor, not by this site. The assistant can
-          also read replies aloud using your browser&apos;s speech voice.
+          your browser, that audio may be processed by the browser&apos;s vendor, not by this site. If you have a reply
+          read aloud in a natural voice, its text is sent to my server and turned into speech by Cloudflare Workers AI
+          (using a Deepgram model); this site does not save the text or the audio. Otherwise your browser&apos;s own
+          speech voice is used.
         </p>
       </>
     ),

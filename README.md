@@ -70,6 +70,10 @@ node scripts/make-image-variants.mjs
 
 Next.js cannot resize images on Cloudflare Workers, so every photo in `public/media/` (and the CV page images in `public/cv/`) is pre-sized into small WebP files. Run this after adding or replacing a photo, then commit the generated `-384/-640/-828/-1200.webp` files.
 
+### The Ask page voices
+
+Listed in `config/voices.ts`. After changing the list, run `npm run preview:cf` and then `scripts/make-voice-samples.sh` to remake the preview files.
+
 ### Adding a video clip
 
 ```bash
@@ -83,11 +87,11 @@ Makes a 6-second, silent, compressed clip and a poster in `public/media/`. Needs
 ```
 app/
   (site)/        the pages above, the .studio layout, nav and studio.css (all styling)
-  api/           chat and contact routes
 components/studio/   tiles, scroller, experience stack, project strip, chat ...
 config/          content and site settings
-public/media/    photos and clips
-scripts/         make-clip.sh
+public/media/    photos, clips and voice previews
+worker/          the API Worker (chat and voice)
+scripts/         image, clip and voice-sample scripts
 ```
 
 ## Hosting: Cloudflare (static files + one tiny Worker)
