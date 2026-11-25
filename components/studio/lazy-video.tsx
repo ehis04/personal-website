@@ -28,6 +28,19 @@ interface LazyVideoProps {
   className?: string;
   /** If given, overrides the scroll-into-view behaviour (e.g. "is the active slide"). */
   playing?: boolean;
+  /** Load the poster straight away with high priority (use for the first thing on screen). */
+  eager?: boolean;
+}
+
+// Posters are pre-sized by scripts/make-image-variants.mjs; serve the small versions.
+function posterSources(poster: string) {
+  const m = poster.match(/^\/media\/(.+)\.(?:jpe?g|png)$/i);
+  if (!m) return { src: poster };
+  return {
+    src: `/media/${m[1]}-640.webp`,
+    srcSet: `/media/${m[1]}-384.webp 384w, /media/${m[1]}-640.webp 640w, /media/${m[1]}-828.webp 828w`,
+    sizes: "(min-width: 1024px) 420px, 80vw",
+  };
 }
 
 /**
@@ -37,7 +50,7 @@ interface LazyVideoProps {
  *    when the browser is idle, so it never competes with the first paint;
  *  - skipped entirely for reduced-motion or data-saver visitors.
  */
-export function LazyVideo({ src, poster, className, playing }: LazyVideoProps) {
+export function LazyVideo({ src, poster, className, playing, eager }: LazyVideoProps) {
   const root = useRef<HTMLDivElement>(null);
   const ref = useRef<HTMLVideoElement>(null);
   const allowed = useRef(true);
@@ -99,9 +112,10 @@ export function LazyVideo({ src, poster, className, playing }: LazyVideoProps) {
     <div ref={root} className={cn("overflow-hidden", className)} aria-hidden="true">
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
-        src={poster}
+        {...posterSources(poster)}
         alt=""
-        loading="lazy"
+        loading={eager ? "eager" : "lazy"}
+        fetchPriority={eager ? "high" : "auto"}
         decoding="async"
         className="absolute inset-0 h-full w-full object-cover"
       />

@@ -5,7 +5,7 @@
 // is at least as wide as the browser asked for. Anything else is served as is.
 
 const MEDIA_WIDTHS = [384, 640, 828, 1200];
-const CV_WIDTHS = [640, 900, 1251];
+const CV_WIDTHS = [640, 750, 900, 1251];
 
 const pick = (widths: number[], want: number) => widths.find((w) => w >= want) ?? widths[widths.length - 1];
 
