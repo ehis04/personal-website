@@ -12,6 +12,10 @@
     "run_worker_first": ["/api/*"]
   },
   "observability": { "enabled": true },
+  // Natural text-to-speech for the Ask page (free plan: about 7,000 characters a day).
+  "ai": { "binding": "AI" },
+  // Cloudflare's per-visitor burst limiter for /api/*: at most 12 requests a minute per IP.
+  "ratelimits": [{ "name": "API_LIMITER", "namespace_id": "1001", "simple": { "limit": 12, "period": 60 } }],
   "workers_dev": true,
   "preview_urls": false,
   // Custom domains (the ehisoghina.com zone must be active on this Cloudflare account).

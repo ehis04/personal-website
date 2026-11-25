@@ -2,19 +2,30 @@
 
 /*
   X-Content-Type-Options: nosniff
-  X-Frame-Options: SAMEORIGIN
+  X-Frame-Options: DENY
   Referrer-Policy: strict-origin-when-cross-origin
-  Permissions-Policy: camera=(), geolocation=(), microphone=(self)
+  Permissions-Policy: camera=(), geolocation=(), microphone=(self), payment=(), usb=(), accelerometer=(), gyroscope=(), magnetometer=(), browsing-topics=()
+  Cross-Origin-Opener-Policy: same-origin
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; media-src 'self' blob:; font-src 'self'; connect-src 'self'; frame-src https://www.youtube-nocookie.com; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'; upgrade-insecure-requests
+
+# PDFs open in the browser's own viewer, which a strict CSP can break, so they carry no CSP.
+/papers/*
+  ! Content-Security-Policy
+/cv/*
+  ! Content-Security-Policy
 
 # Hashed build files never change, so they can be cached for a year.
 /_next/static/*
   Cache-Control: public, max-age=31536000, immutable
 
 # Photos and clips are replaced by new file names, so a day is safe and fast.
+# Other websites may not embed them (stops hotlinking); link previews are fetched server-side and still work.
 /media/*
   Cache-Control: public, max-age=86400, stale-while-revalidate=604800
+  Cross-Origin-Resource-Policy: same-site
 /cv/*
   Cache-Control: public, max-age=86400, stale-while-revalidate=604800
+  Cross-Origin-Resource-Policy: same-site
 
 /icon.png
   Cache-Control: public, max-age=86400

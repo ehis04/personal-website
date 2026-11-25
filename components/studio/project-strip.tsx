@@ -9,6 +9,7 @@ import { StudioProject, studioProjects } from "@/config/studio";
 import { cn } from "@/lib/utils";
 
 import { trapTab } from "./dialog-utils";
+import { DialogPortal } from "./dialog-portal";
 import { LazyVideo } from "./lazy-video";
 
 const spring = { type: "spring", stiffness: 260, damping: 32, mass: 0.9 } as const;
@@ -23,6 +24,28 @@ export function ProjectStrip() {
   const drag = useRef({ down: false, x: 0, left: 0, moved: false });
   const [active, setActive] = useState(0);
   const [dragging, setDragging] = useState(false);
+  const slider = useRef<HTMLInputElement>(null);
+  const [overflowing, setOverflowing] = useState(false);
+
+  // The slider above the strip mirrors the strip's scroll position and also drives it.
+  const syncSlider = useCallback(() => {
+    const s = scroller.current;
+    const sl = slider.current;
+    if (!s || !sl) return;
+    const max = s.scrollWidth - s.clientWidth;
+    sl.value = String(max > 0 ? Math.round((s.scrollLeft / max) * 1000) : 0);
+  }, []);
+
+  // Show the slider only when there are more projects than fit on screen.
+  useEffect(() => {
+    const s = scroller.current;
+    if (!s) return;
+    // The observer reports once as soon as it starts watching, so no separate first check is needed.
+    const ro = new ResizeObserver(() => setOverflowing(s.scrollWidth - s.clientWidth > 4));
+    ro.observe(s);
+    return () => ro.disconnect();
+  }, []);
+  useEffect(() => syncSlider(), [overflowing, syncSlider]);
   const [openId, setOpenId] = useState<string | null>(null);
   const open = studioProjects.find((p) => p.id === openId) ?? null;
 
@@ -95,9 +118,15 @@ export function ProjectStrip() {
   }, [openId, close]);
 
   return (
-    <section aria-label="Projects" className="pt-24">
-      <div className="mb-5 flex items-end justify-between px-4 md:px-8">
-        <h1 className="font-display text-5xl leading-none md:text-7xl">Projects</h1>
+    <section aria-label="Projects" className="pb-14 pt-24">
+      <div className="mb-5 flex flex-wrap items-end justify-between gap-4 px-4 md:px-8">
+        <div>
+          <h1 className="font-display text-5xl leading-none md:text-7xl">Projects</h1>
+          <p className="mt-3 max-w-2xl text-[15px] text-white/75">
+            Investigate the public projects in more detail. Open any card for the full write-up, the tech stack and
+            the code.
+          </p>
+        </div>
         <div className="flex items-center gap-3">
           <p className="hidden text-xs uppercase tracking-[0.2em] text-[var(--ink-dim)] sm:block">
             Tap a project to open · {active + 1} / {studioProjects.length}
@@ -115,9 +144,32 @@ export function ProjectStrip() {
         </div>
       </div>
 
+      {overflowing && (
+        <div className="px-4 pb-1 md:px-8">
+          <input
+            ref={slider}
+            type="range"
+            min={0}
+            max={1000}
+            step={1}
+            defaultValue={0}
+            aria-label="Slide through the projects"
+            onChange={(e) => {
+              const s = scroller.current;
+              if (!s) return;
+              s.scrollLeft = (Number(e.target.value) / 1000) * (s.scrollWidth - s.clientWidth);
+            }}
+            className="proj-slider"
+          />
+        </div>
+      )}
+
       <div
         ref={scroller}
-        onScroll={onScroll}
+        onScroll={() => {
+          onScroll();
+          syncSlider();
+        }}
         onPointerDown={(e) => {
           if (e.pointerType !== "mouse" || !scroller.current) return;
           drag.current = { down: true, x: e.clientX, left: scroller.current.scrollLeft, moved: false };
@@ -175,6 +227,7 @@ export function ProjectStrip() {
         ))}
       </div>
 
+      <DialogPortal>
       <AnimatePresence>
         {open && (
           <>
@@ -193,6 +246,7 @@ export function ProjectStrip() {
           </>
         )}
       </AnimatePresence>
+      </DialogPortal>
     </section>
   );
 }

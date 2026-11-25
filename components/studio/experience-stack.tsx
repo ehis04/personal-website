@@ -8,6 +8,8 @@ import { useCallback, useEffect, useState } from "react";
 import { Experience, experiences } from "@/config/studio";
 
 import { trapTab } from "./dialog-utils";
+import { DialogPortal } from "./dialog-portal";
+import { LazyVideo } from "./lazy-video";
 
 // Placeholder gallery; each role will list its own photos and clips.
 const gallery = ["/media/photo-5.jpg", "/media/photo-3.jpg", "/media/photo-1.jpg"];
@@ -75,6 +77,7 @@ export function ExperienceStack() {
         ))}
       </div>
 
+      <DialogPortal>
       <AnimatePresence>
         {open && (
           <>
@@ -93,6 +96,7 @@ export function ExperienceStack() {
           </>
         )}
       </AnimatePresence>
+      </DialogPortal>
     </>
   );
 }
@@ -107,15 +111,19 @@ function Card({ exp, onOpen, first }: { exp: Experience; onOpen: () => void; fir
       className="recess sheet group relative h-full w-full text-left"
       style={{ borderRadius: 26 }}
     >
-      <Image
-        src={exp.image}
-        alt=""
-        fill
-        sizes="(min-width: 1024px) 1000px, 100vw"
-        priority={first}
-        className="object-cover transition-transform duration-700 group-hover:scale-[1.03]"
-        style={{ objectPosition: exp.imagePosition }}
-      />
+      {exp.video ? (
+        <LazyVideo src={exp.video.src} poster={exp.video.poster} className="absolute inset-0 h-full w-full" />
+      ) : (
+        <Image
+          src={exp.image}
+          alt=""
+          fill
+          sizes="(min-width: 1024px) 1000px, 100vw"
+          priority={first}
+          className="object-cover transition-transform duration-700 group-hover:scale-[1.03]"
+          style={{ objectPosition: exp.imagePosition }}
+        />
+      )}
       <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/35 to-black/85" />
       <div className="relative z-10 flex h-full flex-col">
         <div className="flex h-[3.4rem] items-center justify-between gap-4 px-5">
@@ -161,14 +169,18 @@ function Expanded({ exp, onClose }: { exp: Experience; onClose: () => void }) {
     >
       <div className="grid h-full md:grid-cols-[5fr_7fr]">
         <div className="relative hidden md:block">
-          <Image
-            src={exp.image}
-            alt=""
-            fill
-            sizes="500px"
-            className="object-cover"
-            style={{ objectPosition: exp.imagePosition }}
-          />
+          {exp.video ? (
+            <LazyVideo src={exp.video.src} poster={exp.video.poster} playing className="absolute inset-0 h-full w-full" />
+          ) : (
+            <Image
+              src={exp.image}
+              alt=""
+              fill
+              sizes="500px"
+              className="object-cover"
+              style={{ objectPosition: exp.imagePosition }}
+            />
+          )}
           <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-black/30" />
           <motion.div
             initial={{ opacity: 0, y: 12 }}

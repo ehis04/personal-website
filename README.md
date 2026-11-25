@@ -21,7 +21,7 @@ Performance is a hard requirement: scroll and entrance effects are plain CSS (sc
 | `/cv` | Interactive CV: hover a section to highlight it, click to expand the detail |
 | `/ask` | Chat assistant with typed or dictated questions and spoken answers |
 | `/platforms` | Everywhere Ehis can be found |
-| `/api/chat` | Streaming chat endpoint, the only server code (`worker/index.ts`; server-side API key, rate limited) |
+| `/api/chat`, `/api/speak` | The only server code (`worker/index.ts`): streaming chat (Claude) and natural text-to-speech (Workers AI). Server-side keys, same-site only, rate limited |
 
 ## Run it
 

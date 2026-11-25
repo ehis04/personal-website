@@ -1,8 +1,11 @@
 import Link from "next/link";
 
 import { platforms } from "@/config/platforms";
-import { contactEmail, navLinks } from "@/config/site";
+import { navLinks } from "@/config/nav";
+import { contactEmailEncoded } from "@/config/site";
 import { profile } from "@/config/studio";
+
+import { EmailLink } from "./email-link";
 
 const github = platforms.find((p) => p.id === "github")?.url;
 const year = new Date().getFullYear();
@@ -18,7 +21,7 @@ export function SiteFooter({ compact = false }: { compact?: boolean }) {
     return (
       <footer className="flex flex-wrap items-center justify-between gap-x-6 gap-y-2 px-3 pb-1 pt-1 text-xs text-[var(--ink-dim)]">
         <p>
-          © {year} {profile.name} · {profile.mainRole}
+          © {year} {profile.name}. All rights reserved.
         </p>
         <nav aria-label="Footer" className="flex flex-wrap gap-x-4 gap-y-1">
           {navLinks
@@ -33,10 +36,10 @@ export function SiteFooter({ compact = false }: { compact?: boolean }) {
               GitHub
             </a>
           )}
-          {contactEmail && (
-            <a href={`mailto:${contactEmail}`} className={linkClass}>
+          {contactEmailEncoded && (
+            <EmailLink encoded={contactEmailEncoded} className={linkClass}>
               Email
-            </a>
+            </EmailLink>
           )}
           <Link href="/privacy" className={linkClass}>
             Privacy
@@ -71,11 +74,11 @@ export function SiteFooter({ compact = false }: { compact?: boolean }) {
           <div>
             <p className="text-[11px] uppercase tracking-[0.22em] text-[var(--green-glow)]">Elsewhere</p>
             <ul className="mt-3 space-y-2 text-sm">
-              {contactEmail && (
+              {contactEmailEncoded && (
                 <li>
-                  <a href={`mailto:${contactEmail}`} className={linkClass}>
+                  <EmailLink encoded={contactEmailEncoded} className={linkClass}>
                     Email me
-                  </a>
+                  </EmailLink>
                 </li>
               )}
               {github && (
@@ -100,13 +103,12 @@ export function SiteFooter({ compact = false }: { compact?: boolean }) {
         </div>
         <div className="mt-8 flex flex-wrap items-center justify-between gap-2 border-t border-white/10 pt-5 text-xs text-[var(--ink-dim)]">
           <p>
-            © {year} {profile.name}
+            © {year} {profile.name}. All rights reserved.
           </p>
           <p>
             <Link href="/privacy" className={linkClass}>
               Privacy
             </Link>
-            {" · "}Built with Next.js · Hosted on Cloudflare
           </p>
         </div>
       </div>

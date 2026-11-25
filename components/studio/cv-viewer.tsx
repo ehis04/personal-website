@@ -10,6 +10,7 @@ import { CvHotspot, cvHotspots, cvLinks, cvPages } from "@/config/cv";
 import { degrees, experiences, skillGroups, studioProjects } from "@/config/studio";
 
 import { trapTab } from "./dialog-utils";
+import { DialogPortal } from "./dialog-portal";
 
 const spring = { type: "spring", stiffness: 260, damping: 32, mass: 0.9 } as const;
 
@@ -151,6 +152,7 @@ export function CvViewer() {
         ))}
       </div>
 
+      <DialogPortal>
       <AnimatePresence>
         {open && (
           <>
@@ -169,6 +171,7 @@ export function CvViewer() {
           </>
         )}
       </AnimatePresence>
+      </DialogPortal>
     </>
   );
 }

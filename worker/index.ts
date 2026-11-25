@@ -10,6 +10,10 @@ import { allow, clientIp, type LimitConfig } from "../lib/rate-limit";
 interface Env extends LimitConfig {
   ASSETS: { fetch(request: Request): Promise<Response> };
   ANTHROPIC_API_KEY?: string;
+  /** Workers AI (text-to-speech). */
+  AI?: { run(model: string, input: unknown, options?: unknown): Promise<unknown> };
+  /** Cloudflare's built-in per-visitor limiter (wrangler.jsonc "ratelimits"). */
+  API_LIMITER?: { limit(options: { key: string }): Promise<{ success: boolean }> };
 }
 
 const MODEL = "claude-haiku-5-5";
@@ -24,6 +28,27 @@ const MAX_MESSAGE_CHARS = 600;
 const WINDOW_SEC = 10 * 60;
 const MAX_PER_IP = 15;
 const MAX_PER_DAY = 500;
+
+// Natural voices (Deepgram Aura-1 on Workers AI). Free plan: ~10,000 neurons/day (about 7,000
+// characters); beyond that the call fails, it never charges, and the page falls back to the
+// device's own voice.
+const VOICES = ["helios", "angus", "orion", "arcas", "perseus", "orpheus", "zeus", "athena", "asteria", "luna", "stella", "hera"];
+const SPEAK_MAX_CHARS = 500;
+const SPEAK_PER_IP = 8; // per 10 minutes
+const SPEAK_PER_DAY = 30; // across all visitors, protects the daily free allowance
+
+// Only this site's own pages may call the API from a browser. (Scripts and curl send no Origin
+// and are held back by the rate limits instead.)
+const ALLOWED_HOSTS = new Set(["ehisoghina.com", "www.ehisoghina.com", "ehisoghina.ehisoghina.workers.dev", "localhost"]);
+function crossSite(request: Request): boolean {
+  const origin = request.headers.get("origin");
+  if (!origin) return false;
+  try {
+    return !ALLOWED_HOSTS.has(new URL(origin).hostname);
+  } catch {
+    return true;
+  }
+}
 
 const baseHeaders = { "cache-control": "no-store", "x-content-type-options": "nosniff" };
 const json = (body: unknown, status: number) =>
@@ -165,11 +190,56 @@ async function chat(request: Request, env: Env): Promise<Response> {
   return new Response(body, { headers: { ...baseHeaders, "content-type": "text/plain; charset=utf-8" } });
 }
 
+async function speak(request: Request, env: Env): Promise<Response> {
+  if (!env.AI) return json({ error: "The natural voice isn't switched on." }, 503);
+  if (Number(request.headers.get("content-length") ?? 0) > MAX_BODY_BYTES) return json({ error: "Too large." }, 413);
+
+  let text = "";
+  let voice = "helios";
+  try {
+    const body = (await request.json()) as { text?: unknown; voice?: unknown };
+    if (typeof body.text !== "string") throw new Error("text");
+    text = body.text.trim();
+    if (typeof body.voice === "string") voice = body.voice;
+  } catch {
+    return json({ error: "Invalid request." }, 400);
+  }
+  if (!text || text.length > SPEAK_MAX_CHARS || !VOICES.includes(voice)) {
+    return json({ error: "Please check the text and voice." }, 400);
+  }
+
+  const today = new Date().toISOString().slice(0, 10);
+  if (!(await allow(`speak:day:${today}`, SPEAK_PER_DAY, 86400, env))) {
+    return json({ error: "The natural voice has reached its daily limit." }, 429);
+  }
+  if (!(await allow(`speak:ip:${clientIp(request)}`, SPEAK_PER_IP, WINDOW_SEC, env))) {
+    return json({ error: "Please wait a few minutes before using the voice again." }, 429);
+  }
+
+  try {
+    const out = (await env.AI.run("@cf/deepgram/aura-1", { text, speaker: voice, encoding: "mp3" }, { returnRawResponse: true })) as Response;
+    if (!out.ok || !out.body) return json({ error: "The natural voice is unavailable right now." }, 502);
+    return new Response(out.body, { headers: { ...baseHeaders, "content-type": "audio/mpeg" } });
+  } catch {
+    return json({ error: "The natural voice is unavailable right now." }, 502);
+  }
+}
+
 const worker = {
   async fetch(request: Request, env: Env): Promise<Response> {
     const { pathname } = new URL(request.url);
-    if (pathname === "/api/chat") {
-      return request.method === "POST" ? chat(request, env) : plain("Method not allowed", 405);
+    if (pathname === "/api/chat" || pathname === "/api/speak") {
+      if (request.method !== "POST") return plain("Method not allowed", 405);
+      if (crossSite(request)) return json({ error: "Forbidden." }, 403);
+      if (!(request.headers.get("content-type") ?? "").includes("application/json")) {
+        return json({ error: "Expected JSON." }, 415);
+      }
+      // Burst limiter per visitor (Cloudflare's own limiter; also guards against rapid scripts).
+      if (env.API_LIMITER) {
+        const { success } = await env.API_LIMITER.limit({ key: clientIp(request) });
+        if (!success) return json({ error: "Too many requests. Please slow down." }, 429);
+      }
+      return pathname === "/api/chat" ? chat(request, env) : speak(request, env);
     }
     if (pathname.startsWith("/api/")) return json({ error: "Not found." }, 404);
     // Only /api/* reaches this Worker; anything else is served as a static file.
