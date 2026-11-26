@@ -20,6 +20,7 @@ function profileState(start: string, end: string, now: string, future: string, p
 
 export const facts: string[] = [
   `${profile.name}'s main role is ${profile.mainRole}.`,
+  `The first name Ehis is pronounced "E-hees": the second part sounds like "he" (as in he/him) followed by an s.`,
   `Other roles and hats: ${profile.otherRoles.join(", ")}.`,
   `${profile.name} works across football analytics, data science and software, and creates content (including videos).`,
 

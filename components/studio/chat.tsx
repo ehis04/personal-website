@@ -3,7 +3,7 @@
 import { ArrowUp, Mic, Play, Square, Volume2, VolumeX } from "lucide-react";
 import { useCallback, useEffect, useRef, useState, useSyncExternalStore } from "react";
 
-import { DEFAULT_VOICE, isVoice, VOICE_SAMPLE, VOICES } from "@/config/voices";
+import { DEFAULT_VOICE, forSpeech, isVoice, VOICE_SAMPLE, VOICES } from "@/config/voices";
 import { cn } from "@/lib/utils";
 
 import { Tile } from "./tile";
@@ -134,7 +134,7 @@ export function Chat() {
     (text: string) => {
       if (!("speechSynthesis" in window)) return;
       window.speechSynthesis.cancel();
-      const u = new SpeechSynthesisUtterance(text);
+      const u = new SpeechSynthesisUtterance(forSpeech(text));
       const v = pickDeviceVoice();
       if (v) u.voice = v;
       u.lang = v?.lang ?? (navigator.language || "en-GB");

@@ -21,6 +21,8 @@ export const VOICE_SAMPLE = "Hello, this is how I sound when I read my answers o
 /** Spell out the few words a speech model tends to stumble over. Only changes what is heard. */
 export function forSpeech(text: string): string {
   return text
+    // The name, said "E-hees" (a plain "s" ending, not a "z").
+    .replace(/\b(Ehis|E-?hees)\b/gi, "E-heece")
     .replace(/xg\s?gaffer/gi, "X G Gaffer")
     .replace(/\bMSc\b/g, "M.S.C.")
     .replace(/\bBSc\b/g, "B.S.C.")
