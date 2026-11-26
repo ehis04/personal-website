@@ -25,6 +25,8 @@ function release(video: HTMLVideoElement) {
 interface LazyVideoProps {
   src: string;
   poster: string;
+  /** CSS object-position, so a tall clip in a wide frame keeps the face in view. */
+  position?: string;
   className?: string;
   /** If given, overrides the scroll-into-view behaviour (e.g. "is the active slide"). */
   playing?: boolean;
@@ -50,7 +52,7 @@ function posterSources(poster: string) {
  *    when the browser is idle, so it never competes with the first paint;
  *  - skipped entirely for reduced-motion or data-saver visitors.
  */
-export function LazyVideo({ src, poster, className, playing, eager }: LazyVideoProps) {
+export function LazyVideo({ src, poster, position, className, playing, eager }: LazyVideoProps) {
   const root = useRef<HTMLDivElement>(null);
   const ref = useRef<HTMLVideoElement>(null);
   const allowed = useRef(true);
@@ -118,6 +120,7 @@ export function LazyVideo({ src, poster, className, playing, eager }: LazyVideoP
         fetchPriority={eager ? "high" : "auto"}
         decoding="async"
         className="absolute inset-0 h-full w-full object-cover"
+        style={{ objectPosition: position }}
       />
       <video
         ref={ref}
@@ -125,6 +128,7 @@ export function LazyVideo({ src, poster, className, playing, eager }: LazyVideoP
         loop
         playsInline
         preload="none"
+        style={{ objectPosition: position }}
         onPlaying={() => setShown(true)}
         className={cn(
           "absolute inset-0 h-full w-full object-cover transition-opacity duration-500",

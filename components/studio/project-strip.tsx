@@ -285,6 +285,7 @@ function Card({
           <LazyVideo
             src={p.media.src}
             poster={p.media.poster}
+            position={p.media.position}
             playing={active}
             eager={eager}
             className="absolute inset-0 h-full w-full"
@@ -343,7 +344,7 @@ function Expanded({ project: p, onClose }: { project: StudioProject; onClose: ()
       <div className="grid h-full md:grid-cols-[5fr_7fr]">
         <div className="relative hidden overflow-hidden md:block" style={{ borderRadius: DIALOG_RADIUS }}>
           {p.media.kind === "video" && videoReady ? (
-            <LazyVideo src={p.media.src} poster={p.media.poster} playing className="absolute inset-0 h-full w-full" />
+            <LazyVideo src={p.media.src} poster={p.media.poster} position={p.media.position} playing className="absolute inset-0 h-full w-full" />
           ) : (
             <Image
               src={p.media.kind === "video" ? p.media.poster : p.media.src}
@@ -351,7 +352,7 @@ function Expanded({ project: p, onClose }: { project: StudioProject; onClose: ()
               fill
               sizes="500px"
               className="object-cover"
-              style={{ objectPosition: p.media.kind === "image" ? p.media.position : undefined }}
+              style={{ objectPosition: p.media.position }}
             />
           )}
           <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-black/30" />

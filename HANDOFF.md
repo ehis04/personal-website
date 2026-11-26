@@ -6,6 +6,10 @@
 
 ---
 
+> ## UPDATE 2026-11-26 (placeholder video swapped; history cleaned). Newest note.
+> - The gym clips (`gym-a`, `gym-b`) were removed and replaced with `mic-a` / `mic-b`, cut from the user's `ideas/DJI_20260616135203_0149_D.MP4` (starts 238 s and 213.5 s). Video media now takes an optional `position` (CSS object-position) so the face stays in frame in wide tiles. Still placeholders.
+> - The user ran the history rewrite: `main` holds only their own commits; `master` and `redesign-prototype` are deleted (full backup bundle is in the parent folder, not in git). Open Dependabot PRs predate the rewrite: do not merge them as they are.
+
 > ## UPDATE 2026-11-25 (more natural voice). Newest note.
 > - The user found the Aura-1 voice broken up and robotic. `/api/speak` now uses `@cf/deepgram/aura-2-en`; the voice list, default (Draco) and pronunciation fixes (`forSpeech`) live in `config/voices.ts`, shared by page and Worker. Previews are static files in `public/media/voices/` (`scripts/make-voice-samples.sh`), so trying voices uses no allowance (previewing 12 voices used to hit the per-visitor limit and drop to the robot device voice). Aura-2 costs twice as much: the free 10,000 neurons/day is about 3,600 characters, roughly 15 spoken answers, then the device voice. Caps: 12 per IP per 10 min, 60 per day. Privacy page mentions the speech processing.
 > - The user confirmed the Cloudflare security steps are done and that the AI-crawler rules are fine as they are.

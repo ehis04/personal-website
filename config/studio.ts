@@ -165,7 +165,7 @@ export const experiences: Experience[] = [
 
 export type StudioMedia =
   | { kind: "image"; src: string; position?: string; zoom?: number }
-  | { kind: "video"; src: string; poster: string };
+  | { kind: "video"; src: string; poster: string; position?: string };
 
 export interface StudioProject {
   id: string;
@@ -209,7 +209,7 @@ export const studioProjects: StudioProject[] = [
     ],
     status: "Aug 2025 – May 2026",
     tags: ["Python", "Django", "React", "TypeScript", "PostgreSQL", "Scikit-learn"],
-    media: { kind: "video", src: "/media/gym-a.mp4", poster: "/media/gym-a.jpg" },
+    media: { kind: "video", src: "/media/mic-a.mp4", poster: "/media/mic-a.jpg", position: "50% 15%" },
     repo: "https://github.com/ehis04/xggaffer",
   },
   {
@@ -252,7 +252,7 @@ export const studioProjects: StudioProject[] = [
     ],
     status: "Jun 2026 – Oct 2026",
     tags: ["TypeScript", "Next.js", "React Native", "Expo", "Supabase", "PostgreSQL"],
-    media: { kind: "video", src: "/media/gym-b.mp4", poster: "/media/gym-b.jpg" },
+    media: { kind: "video", src: "/media/mic-b.mp4", poster: "/media/mic-b.jpg", position: "50% 15%" },
     repo: "https://github.com/ehis04/social-olympics",
   },
   {

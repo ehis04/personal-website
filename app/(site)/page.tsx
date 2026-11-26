@@ -95,7 +95,7 @@ export default function PreviewHome() {
 
         <Tile
           href="/projects"
-          media={{ kind: "video", src: "/media/gym-a.mp4", poster: "/media/gym-a.jpg" }}
+          media={{ kind: "video", src: "/media/mic-a.mp4", poster: "/media/mic-a.jpg", position: "50% 15%" }}
           className="col-span-12 min-h-[420px] md:col-span-6 lg:col-span-3 lg:row-span-2 lg:min-h-0"
         >
           <div className="mt-auto flex items-end justify-between p-5">
@@ -240,8 +240,9 @@ export default function PreviewHome() {
         <Chapter index={2} kicker="Projects" title="What I've *made*" href="/projects" cta="All projects">
           <Tile
             href="/projects"
-            media={{ kind: "video", src: "/media/gym-b.mp4", poster: "/media/gym-b.jpg" }}
-            className={`col-span-12 lg:col-span-7 lg:row-span-2 ${mobileMin}`}
+            media={{ kind: "video", src: "/media/mic-b.mp4", poster: "/media/mic-b.jpg", position: "50% 15%" }}
+            // Taller on phones so the face in the upright clip sits above the text.
+            className={`col-span-12 max-lg:!min-h-[380px] lg:col-span-7 lg:row-span-2 ${mobileMin}`}
           >
             <div className="mt-auto flex items-end justify-between gap-4 p-6 md:p-8">
               <div>

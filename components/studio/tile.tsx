@@ -53,6 +53,7 @@ export function Tile({
                 <LazyVideo
                   src={media.src}
                   poster={media.poster}
+                  position={media.position}
                   className="absolute inset-0 h-full w-full"
                 />
               )}
