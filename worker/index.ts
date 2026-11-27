@@ -130,10 +130,12 @@ async function chat(request: Request, env: Env): Promise<Response> {
 
   // Don't leak provider error details to the browser.
   if (!upstream.ok || !upstream.body) {
+    // Shows in the Worker's logs, e.g. a bad key or the monthly spend limit being reached.
+    console.error("Anthropic request failed", upstream.status, (await upstream.text().catch(() => "")).slice(0, 300));
     return plain(
       upstream.status === 429
         ? "The assistant is busy right now. Please try again in a moment."
-        : "Sorry, something went wrong. Please try again."
+        : "The assistant is unavailable right now. The Experience and Projects pages cover my background in the meantime."
     );
   }
 

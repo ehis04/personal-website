@@ -10,6 +10,13 @@ updates:
     groups:
       minor-and-patch:
         update-types: [minor, patch]
+    # Major versions can break the site (Tailwind 4, for example, is a rewrite of the styling
+    # setup), so they are upgraded deliberately, by hand. Security updates still arrive.
+    ignore:
+      - dependency-name: "*"
+        update-types: ["version-update:semver-major"]
+      # Newer releases dropped the LinkedIn logo (SiLinkedin) used on the Platforms page.
+      - dependency-name: react-icons
   - package-ecosystem: github-actions
     directory: /
     schedule:

@@ -6,7 +6,11 @@
 
 ---
 
-> ## UPDATE 2026-11-26 (placeholder video swapped; history cleaned). Newest note.
+> ## UPDATE 2026-11-27 (dependency updates). Newest note.
+> - Applied all minor/patch npm updates by hand plus actions/checkout and setup-node v7 (the old Dependabot PRs predated the history rewrite, so they were closed, not merged). `npm audit`: 0. Held back on purpose: framer-motion 14, Tailwind 4, ESLint 10, @types/node above 20, TypeScript 7, and `react-icons` pinned at 5.5.0 (5.7 removed `SiLinkedin`). `.github/dependabot.yml` ignores major versions and react-icons.
+> - Found while testing: the chat was failing because the Anthropic API key had reached its usage limit (access returns 2026-12-01 00:00 UTC unless the limit is raised in the Console). The Worker now logs upstream errors and shows a clearer "unavailable" message.
+
+> ## UPDATE 2026-11-26 (placeholder video swapped; history cleaned).
 > - The gym clips (`gym-a`, `gym-b`) were removed and replaced with `mic-a` / `mic-b`, cut from the user's `ideas/DJI_20260616135203_0149_D.MP4` (starts 238 s and 213.5 s). Video media now takes an optional `position` (CSS object-position) so the face stays in frame in wide tiles. Still placeholders.
 > - The user ran the history rewrite: `main` holds only their own commits; `master` and `redesign-prototype` are deleted (full backup bundle is in the parent folder, not in git). Open Dependabot PRs predate the rewrite: do not merge them as they are.
 
